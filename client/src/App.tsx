@@ -25,6 +25,7 @@ function App()
     return (
         <div>
             {data.dvds.map((d, i) => <div key={i}>{d}</div>)}
+            {JSON.stringify(data)}
         </div>
     )
 }
