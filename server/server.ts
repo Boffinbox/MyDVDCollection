@@ -1,5 +1,22 @@
-const express = require("express");
+import express from "express"
 const app = express();
+
+// start up mongoose
+const mongoose = require("mongoose");
+const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017/yelp-camp"
+// break glass to manually override
+// const dbUrl = "mongodb://127.0.0.1:27017/yelp-camp"
+mongoose.connect(dbUrl)
+    .then(() =>
+    {
+        console.log(`MongoDB Connection Open :)`);
+    })
+    .catch((err) =>
+    {
+        console.log("Oh no! MongoDB Connection Error :(");
+        console.log(err);
+    });
+// end mongoose
 
 import { ExpressError } from "./helpers/ExpressError"
 
@@ -23,11 +40,7 @@ app.use((err, req, res, next) =>
 
 // Lastly, serve the app
 const port = 5000;
-app.listen(port, (err) =>
+app.listen(port, () =>
 {
-    if (err)
-    {
-        console.log(`Problem found with serving app on ${port}:` + err);
-    }
     console.log(`Server started on port ${port}`)
 })
