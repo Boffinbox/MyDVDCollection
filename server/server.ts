@@ -1,5 +1,10 @@
-import express from "express"
+const express = require("express");
+const logger = require("morgan");
 const app = express();
+
+import { ExpressError } from "./helpers/ExpressError"
+import { TryCatchAsync } from "./helpers/TryCatchAsync"
+import { DVD } from "./models/dvd"
 
 // start up mongoose
 const mongoose = require("mongoose");
@@ -18,12 +23,29 @@ mongoose.connect(dbUrl)
     });
 // end mongoose
 
-import { ExpressError } from "./helpers/ExpressError"
+app.use(logger("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }))
 
-app.get("/api", (req, res) =>
+app.get("/api", TryCatchAsync(async (req, res, next) =>
 {
-    res.json({ "dvds": ["indiana jones", "oppenheimer", "teletubbies", "die hard"] })
-})
+    const allDVDs = await DVD.find({})
+    const returnString = JSON.stringify(allDVDs);
+    res.send(returnString);
+
+}))
+app.post("/api", TryCatchAsync(async (req, res, next) =>
+{
+    console.log("Someone tried to use API post");
+    console.log(req.body)
+    // const newDisc = new DVD({
+    //     title: "The Test DVD",
+    //     barcode: `0123456789012`
+    // });
+    // await newDisc.save();
+    // console.log(newDisc);
+    res.status(200).json(req.body);
+}));
 
 app.use((req, res, next) =>
 {
