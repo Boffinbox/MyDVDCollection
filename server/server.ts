@@ -41,11 +41,12 @@ app.get("/api", TryCatchAsync(async (req, res, next) =>
 }))
 app.post("/api", TryCatchAsync(async (req, res, next) =>
 {
+    const { title, barcode } = req.body
     console.log("Someone tried to use API post");
     console.log(req.body)
     const newDisc = new DVD({
-        title: "The Test DVD",
-        barcode: `0123456789012`
+        title,
+        barcode
     });
     await newDisc.save();
     console.log(newDisc);
