@@ -16,17 +16,22 @@ function App()
         return { title: ``, barcode: `` }
     }
 
-    const [data, setData] = useState<IData>({ dvds: ["test"] })
+    const [data, setData] = useState<IData>()
     const [formData, setFormData] = useState<IDVD>(defaultFormData)
 
-    useEffect(() =>
+    function getCurrentData()
     {
         axios.get("/api")
             .then((response) =>
             {
-                console.log(response.data);
-                setData(response.data);
+                console.log("our data is: ", response.data);
+                setData((prevData) => response.data);
             })
+    }
+
+    useEffect(() =>
+    {
+        getCurrentData();
     }, [])
 
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
@@ -52,7 +57,8 @@ function App()
         axios.post("/api", userData).then((response) =>
         {
             console.log("Post request sent.");
-            console.log(response.data)
+            console.log(response.data);
+            getCurrentData();
         }).catch((e) =>
         {
             console.log(e);
