@@ -72,7 +72,10 @@ function App()
     return (
         <div>
             <div>
-                {JSON.stringify(data)}
+                {data.map((dvd) =>
+                {
+                    return <p>{dvd.title}, {dvd.barcode}</p>
+                })}
             </div>
             <div style={{ backgroundColor: "darkblue" }}>
                 <form action="" onSubmit={handleSubmit}>
