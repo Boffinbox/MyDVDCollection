@@ -6,7 +6,10 @@ import { useState, useEffect } from "react"
 
 interface IData
 {
-    dvds: string[]
+    _id: string;
+    title: string;
+    barcode: string;
+    __v: number;
 }
 
 function App()
@@ -16,7 +19,7 @@ function App()
         return { title: ``, barcode: `` }
     }
 
-    const [data, setData] = useState<IData>()
+    const [data, setData] = useState<IData[]>([{ _id: "1", title: "a", barcode: "1", __v: 1 }])
     const [formData, setFormData] = useState<IDVD>(defaultFormData)
 
     function getCurrentData()
