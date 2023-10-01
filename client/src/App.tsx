@@ -1,16 +1,8 @@
 import "./App.css"
-import { IDVD } from "../../Interfaces"
+import { IDVD, IData } from "../../Interfaces"
 
 import axios from "axios"
 import { useState, useEffect } from "react"
-
-interface IData
-{
-    _id: string;
-    title: string;
-    barcode: string;
-    __v: number;
-}
 
 function App()
 {
