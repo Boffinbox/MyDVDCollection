@@ -19,12 +19,12 @@ function App()
         return { title: ``, barcode: `` }
     }
 
-    const [data, setData] = useState<IData[]>([{ _id: "1", title: "a", barcode: "1", __v: 1 }])
+    const [data, setData] = useState<IData[]>([{ _id: "1", title: "nodata", barcode: "check line 22", __v: 1 }])
     const [formData, setFormData] = useState<IDVD>(defaultFormData)
 
     function getCurrentData()
     {
-        axios.get("/api")
+        axios.get("/api/dvds")
             .then((response) =>
             {
                 console.log("our data is: ", response.data);
@@ -57,7 +57,7 @@ function App()
             title: formData.title,
             barcode: formData.barcode,
         };
-        axios.post("/api", userData).then((response) =>
+        axios.post("/api/dvds", userData).then((response) =>
         {
             console.log("Post request sent.");
             console.log(response.data);

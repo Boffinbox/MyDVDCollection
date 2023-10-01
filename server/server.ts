@@ -32,14 +32,14 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 
-app.get("/api", TryCatchAsync(async (req, res, next) =>
+app.get("/api/dvds", TryCatchAsync(async (req, res, next) =>
 {
     const allDVDs = await DVD.find({})
     const returnString = JSON.stringify(allDVDs);
     res.send(returnString);
 
 }))
-app.post("/api", TryCatchAsync(async (req, res, next) =>
+app.post("/api/dvds", TryCatchAsync(async (req, res, next) =>
 {
     const { title, barcode } = req.body
     console.log("Someone tried to use API post");
