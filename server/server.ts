@@ -13,7 +13,7 @@ import { DVD } from "./models/dvd"
 import { DiscCollection } from "./models/disccollection"
 
 // start up mongoose
-const mongoose = require("mongoose");
+import mongoose from "mongoose"
 const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017/myDVDCollectionDB"
 // break glass to manually override
 // const dbUrl = "mongodb://127.0.0.1:27017/myDVDCollectionDB"
@@ -56,7 +56,10 @@ app.post("/api/dvds", TryCatchAsync(async (req, res, next) =>
 
 app.get("/api/disccollections", TryCatchAsync(async (req, res, next) =>
 {
-    const allCollections = await DiscCollection.find({})
+    const allCollections = await DiscCollection
+        .find({})
+        .populate("discs")
+        .exec();
     const returnString = JSON.stringify(allCollections);
     res.send(returnString);
 
@@ -72,12 +75,21 @@ app.post("/api/disccollections", TryCatchAsync(async (req, res, next) =>
             title: "die hard"
         }
     )
-    console.log(exampleDVD[0].title)
+    console.log("first dvd located was: ", exampleDVD[0].title)
     const newDiscCollection = new DiscCollection({
         title,
         discs: [exampleDVD[0]]
     });
-    console.log(newDiscCollection);
+    console.log("collection with first dvd added: ", newDiscCollection);
+    const secondDVD = await DVD.find(
+        {
+            title: "indiana jones"
+        }
+    )
+    const dvdToPush = secondDVD[0]
+    console.log("the second dvd is: ", dvdToPush)
+    await newDiscCollection.discs.push(dvdToPush._id)
+    console.log("and finally: ", newDiscCollection);
     await newDiscCollection.save();
     res.status(200).json(req.body);
 }));

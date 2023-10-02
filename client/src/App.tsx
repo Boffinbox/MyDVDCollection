@@ -1,4 +1,5 @@
 import "./App.css"
+import { TestCollectionRender } from "./TestCollectionRender"
 
 import { TestCollectionSubmit } from "./TestCollectionSubmit"
 import { TestDVDSubmit } from "./TestDVDSubmit"
@@ -9,6 +10,7 @@ function App()
         <div>
             {/* <TestDVDSubmit /> */}
             <TestCollectionSubmit />
+            <TestCollectionRender />
         </div>
     )
 }

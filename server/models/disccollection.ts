@@ -1,9 +1,9 @@
-import { Schema, model } from "mongoose"
+import { Schema, model, Types } from "mongoose"
 
 interface IDiscCollectionSchema
 {
     title: string;
-    discs: [Schema.Types.ObjectId]
+    discs: [Types.ObjectId]
 }
 
 const DiscCollectionSchema = new Schema(
@@ -11,7 +11,7 @@ const DiscCollectionSchema = new Schema(
         title: { type: String, required: true },
         discs: [
             {
-                type: Schema.Types.ObjectId,
+                type: Types.ObjectId,
                 ref: "DVD"
             }
         ]

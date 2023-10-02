@@ -10,7 +10,7 @@ export function TestDVDSubmit()
         return { title: ``, barcode: `` }
     }
 
-    const [data, setData] = useState<IData[]>([{ _id: "1", title: "nodata", barcode: "check line 22", __v: 1 }])
+    const [data, setData] = useState<IData[]>([{ _id: "1", title: "nodata", barcode: "check line 13", __v: 1 }])
     const [formData, setFormData] = useState<IDVD>(defaultFormData)
 
     function getCurrentData()
