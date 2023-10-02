@@ -10,6 +10,7 @@ const app = express();
 import { ExpressError } from "./helpers/ExpressError"
 import { TryCatchAsync } from "./helpers/TryCatchAsync"
 import { DVD } from "./models/dvd"
+import { DiscCollection } from "./models/disccollection"
 
 // start up mongoose
 const mongoose = require("mongoose");
@@ -42,7 +43,7 @@ app.get("/api/dvds", TryCatchAsync(async (req, res, next) =>
 app.post("/api/dvds", TryCatchAsync(async (req, res, next) =>
 {
     const { title, barcode } = req.body
-    console.log("Someone tried to use API post");
+    console.log("Someone tried to use API to post a DVD");
     console.log(req.body)
     const newDisc = new DVD({
         title,
@@ -50,6 +51,28 @@ app.post("/api/dvds", TryCatchAsync(async (req, res, next) =>
     });
     await newDisc.save();
     console.log(newDisc);
+    res.status(200).json(req.body);
+}));
+
+app.get("/api/disccollections", TryCatchAsync(async (req, res, next) =>
+{
+    const allCollections = await DiscCollection.find({})
+    const returnString = JSON.stringify(allCollections);
+    res.send(returnString);
+
+}))
+
+app.post("/api/disccollections", TryCatchAsync(async (req, res, next) =>
+{
+    const { title } = req.body
+    console.log("Someone tried to use API to post a disc collection");
+    console.log(req.body)
+    const newDiscCollection = new DiscCollection({
+        title,
+        discs: []
+    });
+    console.log(newDiscCollection);
+    await newDiscCollection.save();
     res.status(200).json(req.body);
 }));
 

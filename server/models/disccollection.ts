@@ -1,12 +1,6 @@
-import { Schema, model, Document } from "mongoose"
+import { Schema, model, InferSchemaType } from "mongoose"
 
-interface IDiscCollection extends Document
-{
-    title: string;
-    discs: [Schema.Types.ObjectId];
-}
-
-const DiscCollectionSchema = new Schema<IDiscCollection>(
+const DiscCollectionSchema = new Schema(
     {
         title: { type: String, required: true },
         discs: [
@@ -18,4 +12,6 @@ const DiscCollectionSchema = new Schema<IDiscCollection>(
     }
 )
 
-export const DiscCollection = model<IDiscCollection>("disccollection", DiscCollectionSchema); 
+type TDiscCollectionSchema = InferSchemaType<typeof DiscCollectionSchema>
+
+export const DiscCollection = model<TDiscCollectionSchema>("disccollection", DiscCollectionSchema); 

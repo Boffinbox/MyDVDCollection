@@ -1,12 +1,14 @@
 import "./App.css"
 
+import { TestCollectionSubmit } from "./TestCollectionSubmit"
 import { TestDVDSubmit } from "./TestDVDSubmit"
 
 function App()
 {
     return (
         <div>
-            <TestDVDSubmit />
+            {/* <TestDVDSubmit /> */}
+            <TestCollectionSubmit />
         </div>
     )
 }
