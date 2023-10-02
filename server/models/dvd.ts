@@ -1,4 +1,10 @@
-import { Schema, model, InferSchemaType } from "mongoose"
+import { Schema, model } from "mongoose"
+
+interface IDVDSchema
+{
+    title: string;
+    barcode: string;
+}
 
 const DVDSchema = new Schema(
     {
@@ -7,6 +13,4 @@ const DVDSchema = new Schema(
     }
 )
 
-type TDVDSchema = InferSchemaType<typeof DVDSchema>
-
-export const DVD = model<TDVDSchema>("DVD", DVDSchema);
+export const DVD = model<IDVDSchema>("DVD", DVDSchema);

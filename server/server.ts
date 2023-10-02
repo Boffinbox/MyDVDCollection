@@ -67,9 +67,15 @@ app.post("/api/disccollections", TryCatchAsync(async (req, res, next) =>
     const { title } = req.body
     console.log("Someone tried to use API to post a disc collection");
     console.log(req.body)
+    const exampleDVD = await DVD.find(
+        {
+            title: "die hard"
+        }
+    )
+    console.log(exampleDVD[0].title)
     const newDiscCollection = new DiscCollection({
         title,
-        discs: []
+        discs: [exampleDVD[0]]
     });
     console.log(newDiscCollection);
     await newDiscCollection.save();
