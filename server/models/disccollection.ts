@@ -18,4 +18,4 @@ const DiscCollectionSchema = new Schema<IDiscCollection>(
     }
 )
 
-export const DVD = model<IDiscCollection>("disccollection", DiscCollectionSchema); 
+export const DiscCollection = model<IDiscCollection>("disccollection", DiscCollectionSchema); 
