@@ -1,4 +1,4 @@
-import { IDVD, IData } from "../../Interfaces"
+import { IDVD, IData } from "../Interfaces"
 
 import axios from "axios"
 import { useState, useEffect } from "react"

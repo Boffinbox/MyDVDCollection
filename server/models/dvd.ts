@@ -1,5 +1,5 @@
-import { Schema, model, connect } from "mongoose"
-import { IDVD } from "../../Interfaces"
+import { Schema, model } from "mongoose"
+import { IDVD } from "../Interfaces"
 
 const DVDSchema = new Schema<IDVD>(
     {
