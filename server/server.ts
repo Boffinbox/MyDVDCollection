@@ -41,7 +41,7 @@ app.get("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
     const allCollections = await DiscCollection
         .find({})
     const returnString = JSON.stringify(allCollections);
-    res.send(returnString);
+    res.status(200).send(returnString);
 }))
 
 // show individual disc collection
@@ -52,7 +52,7 @@ app.get("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, 
         .populate("discs")
         .exec();
     const returnString = JSON.stringify(collectionOfConcern);
-    res.send(returnString);
+    res.status(200).send(returnString);
 }))
 
 // create new disc collection
@@ -67,7 +67,7 @@ app.post("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
     });
     await newDiscCollection.save();
     console.log("New disccollection added to db");
-    res.status(200).json(newDiscCollection);
+    res.status(201).json(newDiscCollection);
 }));
 
 // delete route
@@ -90,7 +90,7 @@ app.get("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
 {
     const allDVDs = await DVD.find({})
     const returnString = JSON.stringify(allDVDs);
-    res.send(returnString);
+    res.status(200).send(returnString);
 
 }))
 app.post("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
@@ -104,7 +104,7 @@ app.post("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
     });
     await newDisc.save();
     console.log(newDisc);
-    res.status(200).json(req.body);
+    res.status(201).json(req.body);
 }));
 
 app.use((req, res, next) =>
