@@ -70,6 +70,21 @@ app.post("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
     res.status(200).json(newDiscCollection);
 }));
 
+// delete route
+app.delete("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, next) =>
+{
+    const { collectionId } = req.params
+    console.log("Someone tried to use API to post a disc collection");
+    console.log(`using the param ${collectionId}`)
+    const collectionToDelete = await DiscCollection.findOneAndDelete(
+        {
+            _id: collectionId
+        }
+    )
+    console.log(`Collection ${collectionToDelete} is possibly removed from DB`);
+    res.status(200).json(collectionToDelete);
+}));
+
 // dvd logic
 app.get("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
 {

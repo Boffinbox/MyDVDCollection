@@ -1,4 +1,5 @@
 import "./App.css"
+import { TestCollectionRemove } from "./TestCollectionRemove"
 import { TestCollectionRender } from "./TestCollectionRender"
 
 import { TestCollectionSubmit } from "./TestCollectionSubmit"
@@ -9,7 +10,7 @@ function App()
     return (
         <div>
             {/* <TestDVDSubmit /> */}
-            <TestCollectionSubmit />
+            <TestCollectionRemove />
             <TestCollectionRender />
         </div>
     )
