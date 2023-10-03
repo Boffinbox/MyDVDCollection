@@ -35,7 +35,7 @@ app.use(express.urlencoded({ extended: false }))
 
 // disc collection restful routing
 
-// index
+// index a list of all disc collections (in future: only DCs that user is authorized to see)
 app.get("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
 {
     const allCollections = await DiscCollection
@@ -44,6 +44,7 @@ app.get("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
     res.send(returnString);
 }))
 
+// show individual disc collection
 app.get("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, next) =>
 {
     const collectionOfConcern = await DiscCollection
@@ -54,35 +55,20 @@ app.get("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, 
     res.send(returnString);
 }))
 
+// create new disc collection
 app.post("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
 {
     const { title } = req.body
     console.log("Someone tried to use API to post a disc collection");
-    console.log(req.body)
-    const exampleDVD = await DVD.find(
-        {
-            title: "die hard"
-        }
-    )
-    console.log("first dvd located was: ", exampleDVD[0].title)
+    console.log("with the title of: ", req.body)
     const newDiscCollection = new DiscCollection({
         title,
-        discs: [exampleDVD[0]]
+        discs: []
     });
-    console.log("collection with first dvd added: ", newDiscCollection);
-    const secondDVD = await DVD.find(
-        {
-            title: "indiana jones"
-        }
-    )
-    const dvdToPush = secondDVD[0]
-    console.log("the second dvd is: ", dvdToPush)
-    await newDiscCollection.discs.push(dvdToPush._id)
-    console.log("and finally: ", newDiscCollection);
     await newDiscCollection.save();
-    res.status(200).json(req.body);
+    console.log("New disccollection added to db");
+    res.status(200).json(newDiscCollection);
 }));
-
 
 // dvd logic
 app.get("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
