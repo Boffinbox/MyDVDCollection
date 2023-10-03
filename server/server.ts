@@ -33,14 +33,14 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 
-app.get("/api/dvds", TryCatchAsync(async (req, res, next) =>
+app.get("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
 {
     const allDVDs = await DVD.find({})
     const returnString = JSON.stringify(allDVDs);
     res.send(returnString);
 
 }))
-app.post("/api/dvds", TryCatchAsync(async (req, res, next) =>
+app.post("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
 {
     const { title, barcode } = req.body
     console.log("Someone tried to use API to post a DVD");
@@ -54,7 +54,7 @@ app.post("/api/dvds", TryCatchAsync(async (req, res, next) =>
     res.status(200).json(req.body);
 }));
 
-app.get("/api/disccollections", TryCatchAsync(async (req, res, next) =>
+app.get("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
 {
     const allCollections = await DiscCollection
         .find({})
@@ -65,7 +65,7 @@ app.get("/api/disccollections", TryCatchAsync(async (req, res, next) =>
 
 }))
 
-app.post("/api/disccollections", TryCatchAsync(async (req, res, next) =>
+app.post("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
 {
     const { title } = req.body
     console.log("Someone tried to use API to post a disc collection");

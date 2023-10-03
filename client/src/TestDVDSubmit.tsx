@@ -15,7 +15,7 @@ export function TestDVDSubmit()
 
     function getCurrentData()
     {
-        axios.get("/api/dvds")
+        axios.get("/api/v1/dvds")
             .then((response) =>
             {
                 console.log("our data is: ", response.data);
