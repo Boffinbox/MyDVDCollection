@@ -20,7 +20,7 @@ export function TestCollectionRender()
 
     function getCurrentData()
     {
-        axios.get("/api/v1/disccollections")
+        axios.get("/api/v1/disccollections/651b12b5041b613511c671c3")
             .then((response) =>
             {
                 console.log("our data is: ", response.data);

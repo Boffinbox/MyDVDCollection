@@ -33,36 +33,25 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 
-app.get("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
-{
-    const allDVDs = await DVD.find({})
-    const returnString = JSON.stringify(allDVDs);
-    res.send(returnString);
+// disc collection restful routing
 
-}))
-app.post("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
-{
-    const { title, barcode } = req.body
-    console.log("Someone tried to use API to post a DVD");
-    console.log(req.body)
-    const newDisc = new DVD({
-        title,
-        barcode
-    });
-    await newDisc.save();
-    console.log(newDisc);
-    res.status(200).json(req.body);
-}));
-
+// index
 app.get("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
 {
     const allCollections = await DiscCollection
         .find({})
-        .populate("discs")
-        .exec();
     const returnString = JSON.stringify(allCollections);
     res.send(returnString);
+}))
 
+app.get("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, next) =>
+{
+    const collectionOfConcern = await DiscCollection
+        .find({ _id: req.params.collectionId })
+        .populate("discs")
+        .exec();
+    const returnString = JSON.stringify(collectionOfConcern);
+    res.send(returnString);
 }))
 
 app.post("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
@@ -91,6 +80,29 @@ app.post("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
     await newDiscCollection.discs.push(dvdToPush._id)
     console.log("and finally: ", newDiscCollection);
     await newDiscCollection.save();
+    res.status(200).json(req.body);
+}));
+
+
+// dvd logic
+app.get("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
+{
+    const allDVDs = await DVD.find({})
+    const returnString = JSON.stringify(allDVDs);
+    res.send(returnString);
+
+}))
+app.post("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
+{
+    const { title, barcode } = req.body
+    console.log("Someone tried to use API to post a DVD");
+    console.log(req.body)
+    const newDisc = new DVD({
+        title,
+        barcode
+    });
+    await newDisc.save();
+    console.log(newDisc);
     res.status(200).json(req.body);
 }));
 
