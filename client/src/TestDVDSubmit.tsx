@@ -48,7 +48,7 @@ export function TestDVDSubmit()
             title: formData.title,
             barcode: formData.barcode,
         };
-        axios.post("/api/dvds", userData).then((response) =>
+        axios.post("/api/v1/dvds", userData).then((response) =>
         {
             console.log("Post request sent.");
             console.log(response.data);
