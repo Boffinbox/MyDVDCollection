@@ -38,7 +38,7 @@ export function TestCollectionSubmit()
         <div>
             <div style={{ backgroundColor: "darkblue" }}>
                 <form action="" onSubmit={handleSubmit}>
-                    <p>basic form</p>
+                    <p>add a new collection</p>
                     <div>
                         <label htmlFor="title">Title</label>
                         <input type="text" id="title" name="title" onChange={handleChange} value={formData.title} />

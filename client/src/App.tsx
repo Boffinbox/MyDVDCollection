@@ -10,11 +10,12 @@ function App()
 {
     return (
         <div>
-            {/* <TestDVDSubmit /> */}
-            {/* <TestCollectionRemove /> */}
+            <TestDVDSubmit />
+            <TestCollectionSubmit />
+            <TestCollectionRemove />
             <TestCollectionUpdate />
             <TestCollectionRender />
-        </div>
+        </div >
     )
 }
 

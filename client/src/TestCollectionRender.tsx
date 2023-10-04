@@ -37,7 +37,7 @@ export function TestCollectionRender()
         <div>
             {data.map((coll) =>
             {
-                return <p>{coll.title}, { }
+                return <p>{coll._id}, {coll.title}, { }
                     {coll.discs.map((disc) =>
                     {
                         return <>{disc.title}, {disc.barcode}, </>

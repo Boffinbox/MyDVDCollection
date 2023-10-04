@@ -65,12 +65,12 @@ export function TestDVDSubmit()
             <div>
                 {data.map((dvd) =>
                 {
-                    return <p>{dvd.title}, {dvd.barcode}</p>
+                    return <div>{dvd.title}, {dvd.barcode}</div>
                 })}
             </div>
             <div style={{ backgroundColor: "darkblue" }}>
                 <form action="" onSubmit={handleSubmit}>
-                    <p>basic form</p>
+                    <p>form to add dvds</p>
                     <div>
                         <label htmlFor="title">Title</label>
                         <input type="text" id="title" name="title" onChange={handleChange} value={formData.title} />
