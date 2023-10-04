@@ -40,6 +40,8 @@ app.get("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
 {
     const allCollections = await DiscCollection
         .find({})
+        .populate("discs")
+        .exec();
     const returnString = JSON.stringify(allCollections);
     res.status(200).send(returnString);
 }))
@@ -70,7 +72,46 @@ app.post("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
     res.status(201).json(newDiscCollection);
 }));
 
-// delete route
+// update a collection, to either add or remove discs
+app.patch("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, next) =>
+{
+    const { collectionId } = req.params
+    const { barcode, modifyType } = req.body;
+    console.log("Someone tried to use API to patch a disc collection");
+    console.log(`using the param ${collectionId}`)
+    const collectionToModify = await DiscCollection.findOne(
+        {
+            _id: collectionId
+        }
+    )
+    const dvdToModify = await DVD.findOne({
+        barcode
+    })
+    console.log("Found dvd was: ", dvdToModify);
+    if (modifyType === "remove")
+    {
+        console.log(dvdToModify._id);
+        const updatedDiscList = collectionToModify.discs.filter((dvd) =>
+        {
+            if (String(dvd._id) !== String(dvdToModify._id))
+            {
+                return dvd
+            }
+        })
+        console.log("list of discs is: ", updatedDiscList);
+        collectionToModify.discs = updatedDiscList
+        await collectionToModify.save();
+    }
+    else // do an addition
+    {
+        collectionToModify.discs.push(dvdToModify._id);
+        await collectionToModify.save();
+    }
+    console.log(`Collection ${collectionToModify} now modified`);
+    res.status(200).json({ message: "it worked" });
+}));
+
+// delete route, to nuke a collection from orbit
 app.delete("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, next) =>
 {
     const { collectionId } = req.params
