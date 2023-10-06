@@ -53,7 +53,21 @@ export function TestCollectionRender()
             {data.map((coll, idx) =>
             {
                 return <>
-                    <p>Collection {idx + 1}: {coll.title}, with secret id of: {coll._id}.</p>
+                    <p>Collection {idx + 1}: {coll.title}, with secret id of: {coll._id}.
+                        <form action="" onSubmit={function (evt)
+                        {
+                            evt.preventDefault();
+                            axios.delete(`/api/v1/disccollections/${coll._id}`).then((response) =>
+                            {
+                                console.log("Delete request received.");
+                            }).catch((e) =>
+                            {
+                                console.log(e);
+                            })
+                        }
+                        }>
+                            <button>Click to delete collection.</button>
+                        </form></p>
                     <p> DVDS: { }
                         {coll.discs.map((disc) =>
                         {
@@ -64,14 +78,14 @@ export function TestCollectionRender()
                                     evt.preventDefault();
                                     axios.delete(`/api/v1/disccollections/${coll._id}/dvds/${disc.barcode}`).then((response) =>
                                     {
-                                        console.log("Post request received.");
+                                        console.log("Delete request received.");
                                     }).catch((e) =>
                                     {
                                         console.log(e);
                                     })
                                 }
                                 }>
-                                    <button>Remove</button>
+                                    <button>Click to delete dvd</button>
                                 </form>
                             </>
                         })}</p >
