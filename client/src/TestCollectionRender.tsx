@@ -7,8 +7,12 @@ interface IDiscCollectionData
     title: string;
     discs: [
         {
-            title: string;
-            barcode: string;
+            referenceDVD: {
+                title: string;
+                barcode: string;
+            },
+            rating: number;
+            watched: boolean;
         }
     ];
     __v: number;
@@ -33,17 +37,6 @@ export function TestCollectionRender()
         getCurrentData();
     }, [])
 
-    function handleSubmit(evt: React.FormEvent<HTMLFormElement>)
-    {
-        evt.preventDefault();
-        axios.post(`/api/v1/disccollections/${formData.id}/dvds/${formData.barcode}`).then((response) =>
-        {
-            console.log("Post request received.");
-        }).catch((e) =>
-        {
-            console.log(e);
-        })
-    }
 
     return (
         <div>
@@ -72,7 +65,7 @@ export function TestCollectionRender()
                         {coll.discs.map((disc) =>
                         {
                             return <>
-                                {disc.title}, with barcode: {disc.barcode}.
+                                {disc.referenceDVD.title}, with barcode: {disc.referenceDVD.barcode}.
                                 <form action="" onSubmit={function (evt)
                                 {
                                     evt.preventDefault();

@@ -8,7 +8,7 @@ export interface IRefDVDSchema
 
 export interface IDVDSchema
 {
-    ref: Types.ObjectId;
+    referenceDVD: Types.ObjectId;
     rating: number;
     watched: boolean;
 }

@@ -1,10 +1,5 @@
-import { Schema, model } from "mongoose"
-
-interface IRefDVDSchema
-{
-    title: string;
-    barcode: string;
-}
+import { Schema, model, Types } from "mongoose"
+import { IRefDVDSchema } from "Interfaces"
 
 const RefDVDSchema = new Schema(
     {
@@ -13,4 +8,4 @@ const RefDVDSchema = new Schema(
     }
 )
 
-export const RefDVD = model<IRefDVDSchema>("refdvd", RefDVDSchema);
+export const RefDVD = model<IRefDVDSchema>("referencedvd", RefDVDSchema);

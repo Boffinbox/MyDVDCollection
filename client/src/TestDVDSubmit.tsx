@@ -15,7 +15,7 @@ export function TestDVDSubmit()
 
     function getCurrentData()
     {
-        axios.get("/api/v1/refdvds")
+        axios.get("/api/v1/referencedvds")
             .then((response) =>
             {
                 console.log("our data is: ", response.data);
@@ -48,7 +48,7 @@ export function TestDVDSubmit()
             title: formData.title,
             barcode: formData.barcode,
         };
-        axios.post("/api/v1/refdvds", userData).then((response) =>
+        axios.post("/api/v1/referencedvds", userData).then((response) =>
         {
             console.log("Post request sent.");
             console.log(response.data);

@@ -12,6 +12,12 @@ import { TryCatchAsync } from "./helpers/TryCatchAsync"
 import { RefDVD } from "./models/refdvd"
 import { DVD } from "./models/dvd"
 import { DiscCollection } from "./models/disccollection"
+import
+{
+    IDVDSchema,
+    IRefDVDSchema,
+    IDiscCollectionSchema
+} from "Interfaces"
 
 // start up mongoose
 import mongoose from "mongoose"
@@ -41,7 +47,14 @@ app.get("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
 {
     const allCollections = await DiscCollection
         .find({})
-        .populate("discs")
+        .populate({
+            path: "discs",
+            model: "dvd",
+            populate: {
+                path: "referenceDVD",
+                model: "referencedvd"
+            }
+        })
         .exec();
     const returnString = JSON.stringify(allCollections);
     res.status(200).send(returnString);
@@ -52,7 +65,14 @@ app.get("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, 
 {
     const collectionOfConcern = await DiscCollection
         .find({ _id: req.params.collectionId })
-        .populate("discs")
+        .populate({
+            path: "discs",
+            model: "dvd",
+            populate: {
+                path: "referenceDVD",
+                model: "referencedvd"
+            }
+        })
         .exec();
     const returnString = JSON.stringify(collectionOfConcern);
     res.status(200).send(returnString);
@@ -100,11 +120,18 @@ app.post("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(as
             _id: collectionId
         }
     )
-    const dvdToModify = await DVD.findOne({ barcode })
-    console.log("Found dvd was: ", dvdToModify.title);
-    collectionToModify.discs.push(dvdToModify._id);
+    const refDVD = await RefDVD.findOne({ barcode });
+    console.log("Found a refdvd: ", refDVD.title);
+    const newDVD = new DVD({
+        referenceDVD: refDVD._id,
+        rating: 5,
+        watched: false
+    })
+    newDVD.populate<{ referenceDVD: IRefDVDSchema }>("referenceDVD");
+    collectionToModify.discs.push(newDVD._id);
+    await newDVD.save();
     await collectionToModify.save();
-    console.log(`DVD "${dvdToModify.title}" was added to Collection "${collectionToModify.title}"`);
+    console.log(`DVD "${refDVD.title}" was added to Collection "${collectionToModify.title}"`);
     res.status(200).json({ message: "it worked" });
 }));
 
@@ -119,8 +146,10 @@ app.delete("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(
             _id: collectionId
         }
     )
-    const dvdToModify = await DVD.findOne({ barcode })
-    console.log("Found dvd was: ", dvdToModify.title);
+    const dvdToModify = await DVD.findOne({
+        barcode
+    }).populate<{ ref: IRefDVDSchema }>("ref");
+    console.log("Found dvd was: ", dvdToModify.ref.title);
     const updatedDiscList = collectionToModify.discs.filter((dvd) =>
     {
         if (String(dvd._id) !== String(dvdToModify._id))
@@ -131,19 +160,19 @@ app.delete("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(
     console.log("list of discs is: ", updatedDiscList);
     collectionToModify.discs = updatedDiscList
     await collectionToModify.save();
-    console.log(`DVD "${dvdToModify.title}" was removed from Collection "${collectionToModify.title}"`);
+    console.log(`DVD "${dvdToModify.ref.title}" was removed from Collection "${collectionToModify.title}"`);
     res.status(200).json({ message: "it worked" });
 }));
 
 // reference dvd logic
-app.get("/api/v1/refdvds", TryCatchAsync(async (req, res, next) =>
+app.get("/api/v1/referencedvds", TryCatchAsync(async (req, res, next) =>
 {
     const listOfAllReferenceDVDs = await RefDVD.find({})
     const returnString = JSON.stringify(listOfAllReferenceDVDs);
     res.status(200).send(returnString);
 
 }))
-app.post("/api/v1/refdvds", TryCatchAsync(async (req, res, next) =>
+app.post("/api/v1/referencedvds", TryCatchAsync(async (req, res, next) =>
 {
     const { title, barcode } = req.body
     console.log("Someone tried to use API to post a DVD");
