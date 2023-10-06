@@ -20,7 +20,7 @@ export function TestCollectionRender()
 
     function getCurrentData()
     {
-        axios.get("/api/disccollections")
+        axios.get("/api/v1/disccollections/")
             .then((response) =>
             {
                 console.log("our data is: ", response.data);
@@ -37,7 +37,7 @@ export function TestCollectionRender()
         <div>
             {data.map((coll) =>
             {
-                return <p>{coll.title}, { }
+                return <p>{coll._id}, {coll.title}, { }
                     {coll.discs.map((disc) =>
                     {
                         return <>{disc.title}, {disc.barcode}, </>

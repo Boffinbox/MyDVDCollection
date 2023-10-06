@@ -3,7 +3,7 @@ import { Schema, model, Types } from "mongoose"
 interface IDiscCollectionSchema
 {
     title: string;
-    discs: [Types.ObjectId]
+    discs: Types.ObjectId[]
 }
 
 const DiscCollectionSchema = new Schema(

@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
 
-export function TestCollectionSubmit()
+export function TestCollectionRemove()
 {
-    const [formData, setFormData] = useState({ title: "" })
+    const [formData, setFormData] = useState({ id: "" })
 
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
     {
@@ -20,14 +20,11 @@ export function TestCollectionSubmit()
     {
         evt.preventDefault();
         console.log("Form submitted!");
-        const userData =
+        console.log(formData.id);
+        axios.delete(`/api/v1/disccollections/${formData.id}`).then((response) =>
         {
-            title: formData.title
-        }
-        axios.post("/api/v1/disccollections", userData).then((response) =>
-        {
-            console.log("Post request sent.");
-            console.log(response.data);
+            console.log("Delete request received.");
+            console.log("Collection deleted was: ", response.data);
         }).catch((e) =>
         {
             console.log(e);
@@ -38,10 +35,10 @@ export function TestCollectionSubmit()
         <div>
             <div style={{ backgroundColor: "darkblue" }}>
                 <form action="" onSubmit={handleSubmit}>
-                    <p>add a new collection</p>
+                    <p>basic form to delete a collection</p>
                     <div>
-                        <label htmlFor="title">Title</label>
-                        <input type="text" id="title" name="title" onChange={handleChange} value={formData.title} />
+                        <label htmlFor="id">Id to delete</label>
+                        <input type="text" id="id" name="id" onChange={handleChange} value={formData.id} />
                     </div>
                     <button>Submit!</button>
                 </form>

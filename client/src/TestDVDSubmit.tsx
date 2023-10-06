@@ -15,7 +15,7 @@ export function TestDVDSubmit()
 
     function getCurrentData()
     {
-        axios.get("/api/dvds")
+        axios.get("/api/v1/dvds")
             .then((response) =>
             {
                 console.log("our data is: ", response.data);
@@ -48,7 +48,7 @@ export function TestDVDSubmit()
             title: formData.title,
             barcode: formData.barcode,
         };
-        axios.post("/api/dvds", userData).then((response) =>
+        axios.post("/api/v1/dvds", userData).then((response) =>
         {
             console.log("Post request sent.");
             console.log(response.data);
@@ -65,12 +65,12 @@ export function TestDVDSubmit()
             <div>
                 {data.map((dvd) =>
                 {
-                    return <p>{dvd.title}, {dvd.barcode}</p>
+                    return <div>{dvd.title}, {dvd.barcode}</div>
                 })}
             </div>
             <div style={{ backgroundColor: "darkblue" }}>
                 <form action="" onSubmit={handleSubmit}>
-                    <p>basic form</p>
+                    <p>form to add dvds</p>
                     <div>
                         <label htmlFor="title">Title</label>
                         <input type="text" id="title" name="title" onChange={handleChange} value={formData.title} />

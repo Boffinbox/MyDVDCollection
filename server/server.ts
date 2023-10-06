@@ -33,14 +33,108 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 
-app.get("/api/dvds", TryCatchAsync(async (req, res, next) =>
+// disc collection restful routing
+
+// index a list of all disc collections (in future: only DCs that user is authorized to see)
+app.get("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
+{
+    const allCollections = await DiscCollection
+        .find({})
+        .populate("discs")
+        .exec();
+    const returnString = JSON.stringify(allCollections);
+    res.status(200).send(returnString);
+}))
+
+// show individual disc collection
+app.get("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, next) =>
+{
+    const collectionOfConcern = await DiscCollection
+        .find({ _id: req.params.collectionId })
+        .populate("discs")
+        .exec();
+    const returnString = JSON.stringify(collectionOfConcern);
+    res.status(200).send(returnString);
+}))
+
+// create new disc collection
+app.post("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
+{
+    const { title } = req.body
+    console.log("Someone tried to use API to post a disc collection");
+    console.log("with the title of: ", req.body)
+    const newDiscCollection = new DiscCollection({
+        title,
+        discs: []
+    });
+    await newDiscCollection.save();
+    console.log("New disccollection added to db");
+    res.status(201).json(newDiscCollection);
+}));
+
+// update a collection, to either add or remove discs
+app.patch("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, next) =>
+{
+    const { collectionId } = req.params
+    const { barcode, modifyType } = req.body;
+    console.log("Someone tried to use API to patch a disc collection");
+    console.log(`using the param ${collectionId}`)
+    const collectionToModify = await DiscCollection.findOne(
+        {
+            _id: collectionId
+        }
+    )
+    const dvdToModify = await DVD.findOne({
+        barcode
+    })
+    console.log("Found dvd was: ", dvdToModify);
+    if (modifyType === "remove")
+    {
+        console.log(dvdToModify._id);
+        const updatedDiscList = collectionToModify.discs.filter((dvd) =>
+        {
+            if (String(dvd._id) !== String(dvdToModify._id))
+            {
+                return dvd
+            }
+        })
+        console.log("list of discs is: ", updatedDiscList);
+        collectionToModify.discs = updatedDiscList
+        await collectionToModify.save();
+    }
+    else // do an addition
+    {
+        collectionToModify.discs.push(dvdToModify._id);
+        await collectionToModify.save();
+    }
+    console.log(`Collection ${collectionToModify} now modified`);
+    res.status(200).json({ message: "it worked" });
+}));
+
+// delete route, to nuke a collection from orbit
+app.delete("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, next) =>
+{
+    const { collectionId } = req.params
+    console.log("Someone tried to use API to post a disc collection");
+    console.log(`using the param ${collectionId}`)
+    const collectionToDelete = await DiscCollection.findOneAndDelete(
+        {
+            _id: collectionId
+        }
+    )
+    console.log(`Collection ${collectionToDelete} is possibly removed from DB`);
+    res.status(200).json(collectionToDelete);
+}));
+
+// dvd logic
+app.get("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
 {
     const allDVDs = await DVD.find({})
     const returnString = JSON.stringify(allDVDs);
-    res.send(returnString);
+    res.status(200).send(returnString);
 
 }))
-app.post("/api/dvds", TryCatchAsync(async (req, res, next) =>
+app.post("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
 {
     const { title, barcode } = req.body
     console.log("Someone tried to use API to post a DVD");
@@ -51,47 +145,7 @@ app.post("/api/dvds", TryCatchAsync(async (req, res, next) =>
     });
     await newDisc.save();
     console.log(newDisc);
-    res.status(200).json(req.body);
-}));
-
-app.get("/api/disccollections", TryCatchAsync(async (req, res, next) =>
-{
-    const allCollections = await DiscCollection
-        .find({})
-        .populate("discs")
-        .exec();
-    const returnString = JSON.stringify(allCollections);
-    res.send(returnString);
-
-}))
-
-app.post("/api/disccollections", TryCatchAsync(async (req, res, next) =>
-{
-    const { title } = req.body
-    console.log("Someone tried to use API to post a disc collection");
-    console.log(req.body)
-    const exampleDVD = await DVD.find(
-        {
-            title: "die hard"
-        }
-    )
-    console.log("first dvd located was: ", exampleDVD[0].title)
-    const newDiscCollection = new DiscCollection({
-        title,
-        discs: [exampleDVD[0]]
-    });
-    console.log("collection with first dvd added: ", newDiscCollection);
-    const secondDVD = await DVD.find(
-        {
-            title: "indiana jones"
-        }
-    )
-    const dvdToPush = secondDVD[0]
-    console.log("the second dvd is: ", dvdToPush)
-    await newDiscCollection.discs.push(dvdToPush._id)
-    console.log("and finally: ", newDiscCollection);
-    await newDiscCollection.save();
-    res.status(200).json(req.body);
+    res.status(201).json(req.body);
 }));
 
 app.use((req, res, next) =>
