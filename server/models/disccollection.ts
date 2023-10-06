@@ -12,7 +12,7 @@ const DiscCollectionSchema = new Schema(
         discs: [
             {
                 type: Types.ObjectId,
-                ref: "DVD"
+                ref: "dvd"
             }
         ]
     }
