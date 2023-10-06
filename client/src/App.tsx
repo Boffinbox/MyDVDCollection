@@ -13,9 +13,7 @@ function App()
         <div>
             <TestDVDSubmit />
             <TestCollectionSubmit />
-            <TestCollectionRemove />
             <TestCollectionAddDVD />
-            <TestCollectionRemoveDVD />
             <TestCollectionRender />
         </div >
     )
