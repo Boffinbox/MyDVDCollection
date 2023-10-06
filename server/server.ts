@@ -72,45 +72,6 @@ app.post("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
     res.status(201).json(newDiscCollection);
 }));
 
-// update a collection, to either add or remove discs
-app.patch("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, next) =>
-{
-    const { collectionId } = req.params
-    const { barcode, modifyType } = req.body;
-    console.log("Someone tried to use API to patch a disc collection");
-    console.log(`using the param ${collectionId}`)
-    const collectionToModify = await DiscCollection.findOne(
-        {
-            _id: collectionId
-        }
-    )
-    const dvdToModify = await DVD.findOne({
-        barcode
-    })
-    console.log("Found dvd was: ", dvdToModify);
-    if (modifyType === "remove")
-    {
-        console.log(dvdToModify._id);
-        const updatedDiscList = collectionToModify.discs.filter((dvd) =>
-        {
-            if (String(dvd._id) !== String(dvdToModify._id))
-            {
-                return dvd
-            }
-        })
-        console.log("list of discs is: ", updatedDiscList);
-        collectionToModify.discs = updatedDiscList
-        await collectionToModify.save();
-    }
-    else // do an addition
-    {
-        collectionToModify.discs.push(dvdToModify._id);
-        await collectionToModify.save();
-    }
-    console.log(`Collection ${collectionToModify} now modified`);
-    res.status(200).json({ message: "it worked" });
-}));
-
 // delete route, to nuke a collection from orbit
 app.delete("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, next) =>
 {
@@ -124,6 +85,53 @@ app.delete("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, re
     )
     console.log(`Collection ${collectionToDelete} is possibly removed from DB`);
     res.status(200).json(collectionToDelete);
+}));
+
+
+// add a dvd to an existing collection by dvd barcode
+app.post("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(async (req, res, next) =>
+{
+    const { collectionId, barcode } = req.params
+    console.log("Someone tried to use API to add a dvd to a disc collection");
+    console.log(`using the collId ${collectionId} and barcode ${barcode}`)
+    const collectionToModify = await DiscCollection.findOne(
+        {
+            _id: collectionId
+        }
+    )
+    const dvdToModify = await DVD.findOne({ barcode })
+    console.log("Found dvd was: ", dvdToModify.title);
+    collectionToModify.discs.push(dvdToModify._id);
+    await collectionToModify.save();
+    console.log(`DVD "${dvdToModify.title}" was added to Collection "${collectionToModify.title}"`);
+    res.status(200).json({ message: "it worked" });
+}));
+
+// remove a dvd from an existing collection by dvd barcode
+app.delete("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(async (req, res, next) =>
+{
+    const { collectionId, barcode } = req.params
+    console.log("Someone tried to use API to remove a dvd from a disc collection");
+    console.log(`using the collId ${collectionId} and barcode ${barcode}`)
+    const collectionToModify = await DiscCollection.findOne(
+        {
+            _id: collectionId
+        }
+    )
+    const dvdToModify = await DVD.findOne({ barcode })
+    console.log("Found dvd was: ", dvdToModify.title);
+    const updatedDiscList = collectionToModify.discs.filter((dvd) =>
+    {
+        if (String(dvd._id) !== String(dvdToModify._id))
+        {
+            return dvd
+        }
+    })
+    console.log("list of discs is: ", updatedDiscList);
+    collectionToModify.discs = updatedDiscList
+    await collectionToModify.save();
+    console.log(`DVD "${dvdToModify.title}" was removed from Collection "${collectionToModify.title}"`);
+    res.status(200).json({ message: "it worked" });
 }));
 
 // dvd logic
