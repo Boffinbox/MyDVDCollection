@@ -127,7 +127,7 @@ app.post("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(as
         rating: 5,
         watched: false
     })
-    newDVD.populate<{ referenceDVD: IRefDVDSchema }>("referenceDVD");
+    await newDVD.populate<{ referenceDVD: IRefDVDSchema }>("referenceDVD");
     collectionToModify.discs.push(newDVD._id);
     await newDVD.save();
     await collectionToModify.save();
@@ -135,32 +135,14 @@ app.post("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(as
     res.status(200).json({ message: "it worked" });
 }));
 
-// remove a dvd from an existing collection by dvd barcode
-app.delete("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(async (req, res, next) =>
+// remove a dvd from an existing collection by discId
+app.delete("/api/v1/disccollections/:collectionId/dvds/:discId", TryCatchAsync(async (req, res, next) =>
 {
-    const { collectionId, barcode } = req.params
+    const { collectionId, discId } = req.params
     console.log("Someone tried to use API to remove a dvd from a disc collection");
-    console.log(`using the collId ${collectionId} and barcode ${barcode}`)
-    const collectionToModify = await DiscCollection.findOne(
-        {
-            _id: collectionId
-        }
-    )
-    const dvdToModify = await DVD.findOne({
-        barcode
-    }).populate<{ ref: IRefDVDSchema }>("ref");
-    console.log("Found dvd was: ", dvdToModify.ref.title);
-    const updatedDiscList = collectionToModify.discs.filter((dvd) =>
-    {
-        if (String(dvd._id) !== String(dvdToModify._id))
-        {
-            return dvd
-        }
-    })
-    console.log("list of discs is: ", updatedDiscList);
-    collectionToModify.discs = updatedDiscList
-    await collectionToModify.save();
-    console.log(`DVD "${dvdToModify.ref.title}" was removed from Collection "${collectionToModify.title}"`);
+    console.log(`using the collId ${collectionId} and disc id ${discId}`)
+    await DVD.findByIdAndDelete(discId);
+    await DiscCollection.findByIdAndUpdate(collectionId, { $pull: { discs: discId } });
     res.status(200).json({ message: "it worked" });
 }));
 

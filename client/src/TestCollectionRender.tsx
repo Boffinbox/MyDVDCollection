@@ -7,6 +7,7 @@ interface IDiscCollectionData
     title: string;
     discs: [
         {
+            _id: string;
             referenceDVD: {
                 title: string;
                 barcode: string;
@@ -69,7 +70,7 @@ export function TestCollectionRender()
                                 <form action="" onSubmit={function (evt)
                                 {
                                     evt.preventDefault();
-                                    axios.delete(`/api/v1/disccollections/${coll._id}/dvds/${disc.barcode}`).then((response) =>
+                                    axios.delete(`/api/v1/disccollections/${coll._id}/dvds/${disc._id}`).then((response) =>
                                     {
                                         console.log("Delete request received.");
                                     }).catch((e) =>
