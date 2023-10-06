@@ -33,16 +33,51 @@ export function TestCollectionRender()
         getCurrentData();
     }, [])
 
+    function handleSubmit(evt: React.FormEvent<HTMLFormElement>)
+    {
+        evt.preventDefault();
+        axios.post(`/api/v1/disccollections/${formData.id}/dvds/${formData.barcode}`).then((response) =>
+        {
+            console.log("Post request received.");
+        }).catch((e) =>
+        {
+            console.log(e);
+        })
+    }
+
     return (
         <div>
-            {data.map((coll) =>
+            All Collections:
+            <br />
+            <br />
+            {data.map((coll, idx) =>
             {
-                return <p>{coll._id}, {coll.title}, { }
-                    {coll.discs.map((disc) =>
-                    {
-                        return <>{disc.title}, {disc.barcode}, </>
-                    })}</p>
+                return <>
+                    <p>Collection {idx + 1}: {coll.title}, with secret id of: {coll._id}.</p>
+                    <p> DVDS: { }
+                        {coll.discs.map((disc) =>
+                        {
+                            return <>
+                                {disc.title}, with barcode: {disc.barcode}.
+                                <form action="" onSubmit={function (evt)
+                                {
+                                    evt.preventDefault();
+                                    axios.delete(`/api/v1/disccollections/${coll._id}/dvds/${disc.barcode}`).then((response) =>
+                                    {
+                                        console.log("Post request received.");
+                                    }).catch((e) =>
+                                    {
+                                        console.log(e);
+                                    })
+                                }
+                                }>
+                                    <button>Remove</button>
+                                </form>
+                            </>
+                        })}</p >
+                    <br />
+                </>
             })}
-        </div>
+        </div >
     )
 }
