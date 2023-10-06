@@ -9,6 +9,7 @@ const app = express();
 
 import { ExpressError } from "./helpers/ExpressError"
 import { TryCatchAsync } from "./helpers/TryCatchAsync"
+import { RefDVD } from "./models/refdvd"
 import { DVD } from "./models/dvd"
 import { DiscCollection } from "./models/disccollection"
 
@@ -134,20 +135,20 @@ app.delete("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(
     res.status(200).json({ message: "it worked" });
 }));
 
-// dvd logic
-app.get("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
+// reference dvd logic
+app.get("/api/v1/refdvds", TryCatchAsync(async (req, res, next) =>
 {
-    const allDVDs = await DVD.find({})
-    const returnString = JSON.stringify(allDVDs);
+    const listOfAllReferenceDVDs = await RefDVD.find({})
+    const returnString = JSON.stringify(listOfAllReferenceDVDs);
     res.status(200).send(returnString);
 
 }))
-app.post("/api/v1/dvds", TryCatchAsync(async (req, res, next) =>
+app.post("/api/v1/refdvds", TryCatchAsync(async (req, res, next) =>
 {
     const { title, barcode } = req.body
     console.log("Someone tried to use API to post a DVD");
     console.log(req.body)
-    const newDisc = new DVD({
+    const newDisc = new RefDVD({
         title,
         barcode
     });
