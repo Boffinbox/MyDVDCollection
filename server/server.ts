@@ -139,7 +139,7 @@ app.post("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(as
 app.patch("/api/v1/disccollections/:collectionId/dvds/:discId", TryCatchAsync(async (req, res, next) =>
 {
     const { collectionId, discId } = req.params
-    const { rating, watched }: { rating: number, watched: boolean } = req.body;
+    const { rating = 0, watched = false }: { rating: number, watched: boolean } = req.body;
     console.log("Someone tried to use API to update a dvd in a disc collection");
     console.log(`using the collId ${collectionId} and discId ${discId}`)
     const collectionToModify = await DiscCollection.findById(collectionId)
