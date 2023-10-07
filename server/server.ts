@@ -108,7 +108,7 @@ app.delete("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, re
     res.status(200).json(collectionToDelete);
 }));
 
-
+// dvd logic
 // add a dvd to an existing collection by dvd barcode
 app.post("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(async (req, res, next) =>
 {
@@ -121,7 +121,7 @@ app.post("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(as
         }
     )
     const refDVD = await RefDVD.findOne({ barcode });
-    console.log("Found a refdvd: ", refDVD.title);
+    console.log("Found a referencedvd: ", refDVD.title);
     const newDVD = new DVD({
         referenceDVD: refDVD._id,
         rating: 5,
@@ -132,6 +132,34 @@ app.post("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(as
     await newDVD.save();
     await collectionToModify.save();
     console.log(`DVD "${refDVD.title}" was added to Collection "${collectionToModify.title}"`);
+    res.status(200).json({ message: "it worked" });
+}));
+
+// update a dvd in a collection by discId
+app.patch("/api/v1/disccollections/:collectionId/dvds/:discId", TryCatchAsync(async (req, res, next) =>
+{
+    const { collectionId, discId } = req.params
+    const { rating, watched }: { rating: number, watched: boolean } = req.body;
+    console.log("Someone tried to use API to update a dvd in a disc collection");
+    console.log(`using the collId ${collectionId} and discId ${discId}`)
+    const collectionToModify = await DiscCollection.findById(collectionId)
+        .populate<{ discs: { _id: string }[] }>("discs");
+    console.log(collectionToModify.discs)
+    const discToModify = await DVD.findById(discId);
+    const discInCollection = collectionToModify.discs.find((disc) =>
+    {
+        if (disc._id.toString() === discId)
+        {
+            return disc
+        }
+    });
+    if (discToModify._id.toString() == discInCollection._id)
+    {
+        console.log("found disc: ", discToModify)
+        discToModify.rating = rating;
+        discToModify.watched = watched;
+        await discToModify.save();
+    }
     res.status(200).json({ message: "it worked" });
 }));
 

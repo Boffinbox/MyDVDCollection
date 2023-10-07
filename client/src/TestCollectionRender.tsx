@@ -66,7 +66,27 @@ export function TestCollectionRender()
                         {coll.discs.map((disc) =>
                         {
                             return <>
-                                {disc.referenceDVD.title}, with barcode: {disc.referenceDVD.barcode}.
+                                {disc.referenceDVD.title}, with barcode: {disc.referenceDVD.barcode}. rating is: {disc.rating},
+                                watched? {disc.watched.toString()}
+                                <form action="" onSubmit={function (evt)
+                                {
+                                    evt.preventDefault();
+                                    const userData =
+                                    {
+                                        rating: disc.rating + 1,
+                                        watched: !disc.watched
+                                    }
+                                    axios.patch(`/api/v1/disccollections/${coll._id}/dvds/${disc._id}`, userData).then((response) =>
+                                    {
+                                        console.log("Delete request received.");
+                                    }).catch((e) =>
+                                    {
+                                        console.log(e);
+                                    })
+                                }
+                                }>
+                                    <button>Click to increase rating and toggle watched</button>
+                                </form>
                                 <form action="" onSubmit={function (evt)
                                 {
                                     evt.preventDefault();
