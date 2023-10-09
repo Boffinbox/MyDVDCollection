@@ -1,6 +1,6 @@
 import { Types } from "mongoose"
 
-export interface IRefDVDSchema
+export interface IReferenceDVDSchema
 {
     title: string;
     barcode: string;

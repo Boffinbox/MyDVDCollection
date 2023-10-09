@@ -9,13 +9,13 @@ const app = express();
 
 import { ExpressError } from "./helpers/ExpressError"
 import { TryCatchAsync } from "./helpers/TryCatchAsync"
-import { RefDVD } from "./models/refdvd"
+import { ReferenceDVD } from "./models/referencedvd"
 import { DVD } from "./models/dvd"
 import { DiscCollection } from "./models/disccollection"
 import
 {
     IDVDSchema,
-    IRefDVDSchema,
+    IReferenceDVDSchema,
     IDiscCollectionSchema
 } from "Interfaces"
 
@@ -120,18 +120,18 @@ app.post("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(as
             _id: collectionId
         }
     )
-    const refDVD = await RefDVD.findOne({ barcode });
-    console.log("Found a referencedvd: ", refDVD.title);
+    const referenceDVD = await ReferenceDVD.findOne({ barcode });
+    console.log("Found a referencedvd: ", referenceDVD.title);
     const newDVD = new DVD({
-        referenceDVD: refDVD._id,
+        referenceDVD: referenceDVD._id,
         rating: 5,
         watched: false
     })
-    await newDVD.populate<{ referenceDVD: IRefDVDSchema }>("referenceDVD");
+    await newDVD.populate<{ referenceDVD: IReferenceDVDSchema }>("referenceDVD");
     collectionToModify.discs.push(newDVD._id);
     await newDVD.save();
     await collectionToModify.save();
-    console.log(`DVD "${refDVD.title}" was added to Collection "${collectionToModify.title}"`);
+    console.log(`DVD "${referenceDVD.title}" was added to Collection "${collectionToModify.title}"`);
     res.status(200).json({ message: "it worked" });
 }));
 
@@ -177,7 +177,7 @@ app.delete("/api/v1/disccollections/:collectionId/dvds/:discId", TryCatchAsync(a
 // reference dvd logic
 app.get("/api/v1/referencedvds", TryCatchAsync(async (req, res, next) =>
 {
-    const listOfAllReferenceDVDs = await RefDVD.find({})
+    const listOfAllReferenceDVDs = await ReferenceDVD.find({})
     const returnString = JSON.stringify(listOfAllReferenceDVDs);
     res.status(200).send(returnString);
 
@@ -187,7 +187,7 @@ app.post("/api/v1/referencedvds", TryCatchAsync(async (req, res, next) =>
     const { title, barcode } = req.body
     console.log("Someone tried to use API to post a DVD");
     console.log(req.body)
-    const newDisc = new RefDVD({
+    const newDisc = new ReferenceDVD({
         title,
         barcode
     });
