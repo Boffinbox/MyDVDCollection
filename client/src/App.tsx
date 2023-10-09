@@ -3,8 +3,9 @@ import { TestCollectionRemove } from "./TestCollectionRemove"
 import { TestCollectionRender } from "./TestCollectionRender"
 
 import { TestCollectionSubmit } from "./TestCollectionSubmit"
-import { TestCollectionUpdate } from "./TestCollectionUpdate"
+import { TestCollectionAddDVD } from "./TestCollectionAddDVD"
 import { TestDVDSubmit } from "./TestDVDSubmit"
+import { TestCollectionRemoveDVD } from "./TestCollectionRemoveDVD"
 
 function App()
 {
@@ -12,8 +13,7 @@ function App()
         <div>
             <TestDVDSubmit />
             <TestCollectionSubmit />
-            <TestCollectionRemove />
-            <TestCollectionUpdate />
+            <TestCollectionAddDVD />
             <TestCollectionRender />
         </div >
     )
