@@ -11,6 +11,8 @@
         ],
         "allowJs": true,
         "forceConsistentCasingInFileNames": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
     },
     "include": [
         "**.ts"
