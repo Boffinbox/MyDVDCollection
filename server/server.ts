@@ -9,18 +9,16 @@ const app = express();
 
 import { ExpressError } from "./helpers/ExpressError"
 import { TryCatchAsync } from "./helpers/TryCatchAsync"
-import { ReferenceDVD } from "./models/referencedvd"
-import { DVD } from "./models/dvd"
-import { DiscCollection } from "./models/disccollection"
 import
 {
-    IDVDSchema,
-    IReferenceDVDSchema,
-    IDiscCollectionSchema
-} from "Interfaces"
+    ReferenceDVDModel, ReferenceDVD,
+    DVDModel, DVD,
+    DiscCollectionModel, DiscCollection
+} from "./models/models"
 
 // start up mongoose
 import mongoose from "mongoose"
+import e from "express";
 const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017/myDVDCollectionDB"
 // break glass to manually override
 // const dbUrl = "mongodb://127.0.0.1:27017/myDVDCollectionDB"
@@ -45,14 +43,12 @@ app.use(express.urlencoded({ extended: false }))
 // index a list of all disc collections (in future: only DCs that user is authorized to see)
 app.get("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
 {
-    const allCollections = await DiscCollection
+    const allCollections = await DiscCollectionModel
         .find({})
         .populate({
             path: "discs",
-            model: "dvd",
             populate: {
-                path: "referenceDVD",
-                model: "referencedvd"
+                path: "referenceDVD"
             }
         })
         .exec();
@@ -63,14 +59,13 @@ app.get("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
 // show individual disc collection
 app.get("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, res, next) =>
 {
-    const collectionOfConcern = await DiscCollection
-        .find({ _id: req.params.collectionId })
+    console.log(req.params.collectionId);
+    const collectionOfConcern = await DiscCollectionModel
+        .findOne({ _id: req.params.collectionId })
         .populate({
             path: "discs",
-            model: "dvd",
             populate: {
-                path: "referenceDVD",
-                model: "referencedvd"
+                path: "referenceDVD"
             }
         })
         .exec();
@@ -84,7 +79,7 @@ app.post("/api/v1/disccollections", TryCatchAsync(async (req, res, next) =>
     const { title } = req.body
     console.log("Someone tried to use API to post a disc collection");
     console.log("with the title of: ", req.body)
-    const newDiscCollection = new DiscCollection({
+    const newDiscCollection = new DiscCollectionModel({
         title,
         discs: []
     });
@@ -99,7 +94,7 @@ app.delete("/api/v1/disccollections/:collectionId", TryCatchAsync(async (req, re
     const { collectionId } = req.params
     console.log("Someone tried to use API to post a disc collection");
     console.log(`using the param ${collectionId}`)
-    const collectionToDelete = await DiscCollection.findOneAndDelete(
+    const collectionToDelete = await DiscCollectionModel.findOneAndDelete(
         {
             _id: collectionId
         }
@@ -115,52 +110,74 @@ app.post("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(as
     const { collectionId, barcode } = req.params
     console.log("Someone tried to use API to add a dvd to a disc collection");
     console.log(`using the collId ${collectionId} and barcode ${barcode}`)
-    const collectionToModify = await DiscCollection.findOne(
+    const collectionToModify = await DiscCollectionModel.findOne(
         {
             _id: collectionId
         }
     )
-    const referenceDVD = await ReferenceDVD.findOne({ barcode });
-    console.log("Found a referencedvd: ", referenceDVD.title);
-    const newDVD = new DVD({
-        referenceDVD: referenceDVD._id,
-        rating: 5,
-        watched: false
-    })
-    await newDVD.populate<{ referenceDVD: IReferenceDVDSchema }>("referenceDVD");
-    collectionToModify.discs.push(newDVD._id);
-    await newDVD.save();
-    await collectionToModify.save();
-    console.log(`DVD "${referenceDVD.title}" was added to Collection "${collectionToModify.title}"`);
-    res.status(200).json({ message: "it worked" });
+    const referenceDVD = await ReferenceDVDModel.findOne({ barcode });
+    if (!referenceDVD || !collectionToModify)
+    {
+        console.log("Couldn't find DVD or collection, aborting...");
+        res.status(400).json({ message: "couldn't find dvd with this barcode" });
+    }
+    else
+    {
+        console.log("Found a referencedvd: ", referenceDVD.title);
+        const newDVD = new DVDModel({
+            referenceDVD: referenceDVD._id,
+            rating: 5,
+            watched: false
+        })
+        await newDVD.populate("referenceDVD");
+        collectionToModify.discs.push(newDVD._id);
+        await newDVD.save();
+        await collectionToModify.save();
+        console.log(`DVD "${referenceDVD.title}" was added to Collection "${collectionToModify.title}"`);
+        res.status(200).json({ message: "it worked" });
+    }
 }));
 
 // update a dvd in a collection by discId
 app.patch("/api/v1/disccollections/:collectionId/dvds/:discId", TryCatchAsync(async (req, res, next) =>
 {
-    const { collectionId, discId } = req.params
+    const { collectionId, discId }: { collectionId: string, discId: string } = req.params
     const { rating = 0, watched = false }: { rating: number, watched: boolean } = req.body;
     console.log("Someone tried to use API to update a dvd in a disc collection");
     console.log(`using the collId ${collectionId} and discId ${discId}`)
-    const collectionToModify = await DiscCollection.findById(collectionId)
-        .populate<{ discs: { _id: string }[] }>("discs");
-    console.log(collectionToModify.discs)
-    const discToModify = await DVD.findById(discId);
+    const collectionToModify = await DiscCollectionModel.findById(collectionId)
+        .populate("discs");
+    if (!collectionToModify)
+    {
+        return res.status(400).json({ message: "couldn't find collection" });
+    }
     const discInCollection = collectionToModify.discs.find((disc) =>
     {
         if (disc._id.toString() === discId)
         {
+            console.log("we found the disc, proceed");
             return disc
         }
-    });
-    if (discToModify._id.toString() == discInCollection._id)
+    })
+    if (!discInCollection)
+    {
+        console.log("we couldn't find the disc, rip");
+        return res.status(400).json({ message: "couldn't find dvd with this discId" });
+    }
+    const discToModify = await DVDModel.findById(discInCollection._id);
+    if (!discToModify)
+    {
+        console.log("Couldn't find disc despite having disc??, aborting...");
+        res.status(400).json({ message: "stop trying to modify dvds that aren't yours!" });
+    }
+    else
     {
         console.log("found disc: ", discToModify)
         discToModify.rating = rating;
         discToModify.watched = watched;
         await discToModify.save();
+        res.status(200).json({ message: "it worked" });
     }
-    res.status(200).json({ message: "it worked" });
 }));
 
 // remove a dvd from an existing collection by discId
@@ -169,15 +186,15 @@ app.delete("/api/v1/disccollections/:collectionId/dvds/:discId", TryCatchAsync(a
     const { collectionId, discId } = req.params
     console.log("Someone tried to use API to remove a dvd from a disc collection");
     console.log(`using the collId ${collectionId} and disc id ${discId}`)
-    await DVD.findByIdAndDelete(discId);
-    await DiscCollection.findByIdAndUpdate(collectionId, { $pull: { discs: discId } });
+    await DVDModel.findByIdAndDelete(discId);
+    await DiscCollectionModel.findByIdAndUpdate(collectionId, { $pull: { discs: discId } });
     res.status(200).json({ message: "it worked" });
 }));
 
 // reference dvd logic
 app.get("/api/v1/referencedvds", TryCatchAsync(async (req, res, next) =>
 {
-    const listOfAllReferenceDVDs = await ReferenceDVD.find({})
+    const listOfAllReferenceDVDs = await ReferenceDVDModel.find({})
     const returnString = JSON.stringify(listOfAllReferenceDVDs);
     res.status(200).send(returnString);
 
@@ -187,7 +204,7 @@ app.post("/api/v1/referencedvds", TryCatchAsync(async (req, res, next) =>
     const { title, barcode } = req.body
     console.log("Someone tried to use API to post a DVD");
     console.log(req.body)
-    const newDisc = new ReferenceDVD({
+    const newDisc = new ReferenceDVDModel({
         title,
         barcode
     });
