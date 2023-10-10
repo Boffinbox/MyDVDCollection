@@ -21,6 +21,7 @@ import
 
 // start up mongoose
 import mongoose from "mongoose"
+import e from "express";
 const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017/myDVDCollectionDB"
 // break glass to manually override
 // const dbUrl = "mongodb://127.0.0.1:27017/myDVDCollectionDB"
@@ -121,18 +122,26 @@ app.post("/api/v1/disccollections/:collectionId/dvds/:barcode", TryCatchAsync(as
         }
     )
     const referenceDVD = await ReferenceDVD.findOne({ barcode });
-    console.log("Found a referencedvd: ", referenceDVD.title);
-    const newDVD = new DVD({
-        referenceDVD: referenceDVD._id,
-        rating: 5,
-        watched: false
-    })
-    await newDVD.populate<{ referenceDVD: IReferenceDVDSchema }>("referenceDVD");
-    collectionToModify.discs.push(newDVD._id);
-    await newDVD.save();
-    await collectionToModify.save();
-    console.log(`DVD "${referenceDVD.title}" was added to Collection "${collectionToModify.title}"`);
-    res.status(200).json({ message: "it worked" });
+    if (!referenceDVD || !collectionToModify)
+    {
+        console.log("Couldn't find DVD or collection, aborting...");
+        res.status(400).json({ message: "couldn't find dvd with this barcode" });
+    }
+    else
+    {
+        console.log("Found a referencedvd: ", referenceDVD.title);
+        const newDVD = new DVD({
+            referenceDVD: referenceDVD._id,
+            rating: 5,
+            watched: false
+        })
+        await newDVD.populate<{ referenceDVD: IReferenceDVDSchema }>("referenceDVD");
+        collectionToModify.discs.push(newDVD._id);
+        await newDVD.save();
+        await collectionToModify.save();
+        console.log(`DVD "${referenceDVD.title}" was added to Collection "${collectionToModify.title}"`);
+        res.status(200).json({ message: "it worked" });
+    }
 }));
 
 // update a dvd in a collection by discId
@@ -144,23 +153,34 @@ app.patch("/api/v1/disccollections/:collectionId/dvds/:discId", TryCatchAsync(as
     console.log(`using the collId ${collectionId} and discId ${discId}`)
     const collectionToModify = await DiscCollection.findById(collectionId)
         .populate<{ discs: { _id: string }[] }>("discs");
-    console.log(collectionToModify.discs)
     const discToModify = await DVD.findById(discId);
-    const discInCollection = collectionToModify.discs.find((disc) =>
+    if (!discToModify || !collectionToModify)
     {
-        if (disc._id.toString() === discId)
-        {
-            return disc
-        }
-    });
-    if (discToModify._id.toString() == discInCollection._id)
-    {
-        console.log("found disc: ", discToModify)
-        discToModify.rating = rating;
-        discToModify.watched = watched;
-        await discToModify.save();
+        console.log("Couldn't find DVD or collection, aborting...");
+        res.status(400).json({ message: "couldn't find dvd with this barcode" });
     }
-    res.status(200).json({ message: "it worked" });
+    else
+    {
+        const discInCollection = collectionToModify.discs.find((disc) =>
+        {
+            if (disc._id.toString() === discId)
+            {
+                return disc
+            }
+        });
+        if (discInCollection && discToModify._id.toString() == discInCollection._id)
+        {
+            console.log("found disc: ", discToModify)
+            discToModify.rating = rating;
+            discToModify.watched = watched;
+            await discToModify.save();
+            res.status(200).json({ message: "it worked" });
+        }
+        else
+        {
+            res.status(400).json({ message: "database error: couldn't find disc in collection" });
+        }
+    }
 }));
 
 // remove a dvd from an existing collection by discId
