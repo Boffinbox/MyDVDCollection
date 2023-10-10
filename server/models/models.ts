@@ -9,7 +9,7 @@ setGlobalOptions(
     }
 )
 
-export class ReferenceDVDClass
+export class ReferenceDVD
 {
     @prop({ required: true })
     title!: string;
@@ -18,10 +18,10 @@ export class ReferenceDVDClass
     barcode!: string;
 }
 
-export class DVDClass
+export class DVD
 {
-    @prop({ ref: () => ReferenceDVDClass })
-    referenceDVD!: Ref<ReferenceDVDClass>;
+    @prop({ ref: () => ReferenceDVD })
+    referenceDVD!: Ref<ReferenceDVD>;
 
     @prop({ required: true, default: 0 })
     rating!: number;
@@ -30,15 +30,15 @@ export class DVDClass
     watched!: boolean
 }
 
-export class DiscCollectionClass
+export class DiscCollection
 {
     @prop({ required: true })
     title!: string
 
-    @prop({ required: true, default: [], ref: () => DVDClass })
-    discs!: Ref<DVDClass>[];
+    @prop({ required: true, default: [], ref: () => DVD })
+    discs!: Ref<DVD>[];
 }
 
-export const ReferenceDVD = getModelForClass(ReferenceDVDClass);
-export const DVD = getModelForClass(DVDClass);
-export const DiscCollection = getModelForClass(DiscCollectionClass)
+export const ReferenceDVDModel = getModelForClass(ReferenceDVD);
+export const DVDModel = getModelForClass(DVD);
+export const DiscCollectionModel = getModelForClass(DiscCollection)
