@@ -146,34 +146,37 @@ app.patch("/api/v1/disccollections/:collectionId/dvds/:discId", TryCatchAsync(as
     console.log("Someone tried to use API to update a dvd in a disc collection");
     console.log(`using the collId ${collectionId} and discId ${discId}`)
     const collectionToModify = await DiscCollectionModel.findById(collectionId)
-        .populate<{ discs: { _id: string }[] }>("discs");
-    const discToModify = await DVDModel.findById(discId);
-    if (!discToModify || !collectionToModify)
+        .populate("discs");
+    if (!collectionToModify)
     {
-        console.log("Couldn't find DVD or collection, aborting...");
+        return res.status(400).json({ message: "couldn't find collection" });
+    }
+    const discInCollection = collectionToModify.discs.find((disc) =>
+    {
+        if (disc._id.toString() === discId)
+        {
+            console.log("we found the disc, proceed");
+            return disc
+        }
+    })
+    if (!discInCollection)
+    {
+        console.log("we couldn't find the disc, rip");
+        return res.status(400).json({ message: "couldn't find dvd with this barcode" });
+    }
+    const discToModify = await DVDModel.findById(discInCollection._id);
+    if (!discToModify)
+    {
+        console.log("Couldn't find disc despite having disc??, aborting...");
         res.status(400).json({ message: "couldn't find dvd with this barcode" });
     }
     else
     {
-        const discInCollection = collectionToModify.discs.find((disc) =>
-        {
-            if (disc._id.toString() === discId)
-            {
-                return disc
-            }
-        });
-        if (discInCollection && discToModify._id.toString() == discInCollection._id)
-        {
-            console.log("found disc: ", discToModify)
-            discToModify.rating = rating;
-            discToModify.watched = watched;
-            await discToModify.save();
-            res.status(200).json({ message: "it worked" });
-        }
-        else
-        {
-            res.status(400).json({ message: "database error: couldn't find disc in collection" });
-        }
+        console.log("found disc: ", discToModify)
+        discToModify.rating = rating;
+        discToModify.watched = watched;
+        await discToModify.save();
+        res.status(200).json({ message: "it worked" });
     }
 }));
 
