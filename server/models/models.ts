@@ -1,4 +1,13 @@
-import { prop, getModelForClass, Ref } from "@typegoose/typegoose"
+import { prop, getModelForClass, Ref, setGlobalOptions, Severity } from "@typegoose/typegoose"
+
+setGlobalOptions(
+    {
+        options:
+        {
+            allowMixed: Severity.ERROR,
+        }
+    }
+)
 
 export class ReferenceDVDClass
 {
@@ -26,10 +35,10 @@ export class DiscCollectionClass
     @prop({ required: true })
     title!: string
 
-    @prop({ required: true, default: [] })
-    discs: Ref<DVDClass>[];
+    @prop({ required: true, default: [], ref: () => DVDClass })
+    discs!: Ref<DVDClass>[];
 }
 
 export const ReferenceDVD = getModelForClass(ReferenceDVDClass);
 export const DVD = getModelForClass(DVDClass);
-export const DiscCollection = getModelForClass(DiscCollectionClass);
+export const DiscCollection = getModelForClass(DiscCollectionClass)
