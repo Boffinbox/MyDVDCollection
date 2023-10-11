@@ -1,5 +1,5 @@
 const express = require("express")
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 import { TryCatchAsync } from "../helpers/TryCatchAsync"
 import
@@ -14,6 +14,7 @@ import
 router.post("/:barcode", TryCatchAsync(async (req, res, next) =>
 {
     const { collectionId, barcode } = req.params
+    console.log(req.params);
     console.log("Someone tried to use API to add a dvd to a disc collection");
     console.log(`using the collId ${collectionId} and barcode ${barcode}`)
     const collectionToModify = await DiscCollectionModel.findOne(
