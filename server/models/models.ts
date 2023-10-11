@@ -1,4 +1,4 @@
-import { prop, getModelForClass, Ref, setGlobalOptions, Severity } from "@typegoose/typegoose"
+import { prop, getModelForClass, Ref, setGlobalOptions, Severity, post } from "@typegoose/typegoose"
 
 setGlobalOptions(
     {
@@ -30,6 +30,17 @@ export class DVD
     watched!: boolean
 }
 
+@post<DiscCollection>("findOneAndDelete", async function (doc)
+{
+    if (doc)
+    {
+        await DVDModel.deleteMany({
+            _id: {
+                $in: doc.discs
+            }
+        })
+    }
+})
 export class DiscCollection
 {
     @prop({ required: true })
@@ -38,6 +49,7 @@ export class DiscCollection
     @prop({ required: true, default: [], ref: () => DVD })
     discs!: Ref<DVD>[];
 }
+
 
 export const ReferenceDVDModel = getModelForClass(ReferenceDVD);
 export const DVDModel = getModelForClass(DVD);
