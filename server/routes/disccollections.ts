@@ -2,12 +2,7 @@ const express = require("express")
 const router = express.Router();
 
 import { TryCatchAsync } from "../helpers/TryCatchAsync"
-import
-{
-    ReferenceDVDModel,
-    DVDModel,
-    DiscCollectionModel
-} from "../models/models"
+import { DiscCollectionModel } from "../models/models"
 
 // disc collection restful routing
 // index a list of all disc collections (in future: only DCs that user is authorized to see)
