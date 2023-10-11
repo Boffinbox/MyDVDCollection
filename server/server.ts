@@ -11,10 +11,12 @@ import { ExpressError } from "./helpers/ExpressError"
 import { TryCatchAsync } from "./helpers/TryCatchAsync"
 import
 {
-    ReferenceDVDModel, ReferenceDVD,
-    DVDModel, DVD,
-    DiscCollectionModel, DiscCollection
+    ReferenceDVDModel,
+    DVDModel,
+    DiscCollectionModel
 } from "./models/models"
+
+const referencedvdRoutes = require("./routes/referencedvds");
 
 // start up mongoose
 import mongoose from "mongoose"
@@ -37,6 +39,9 @@ mongoose.connect(dbUrl)
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
+
+// routers
+app.use("/api/v1/referencedvds", referencedvdRoutes)
 
 // disc collection restful routing
 
@@ -189,28 +194,6 @@ app.delete("/api/v1/disccollections/:collectionId/dvds/:discId", TryCatchAsync(a
     await DVDModel.findByIdAndDelete(discId);
     await DiscCollectionModel.findByIdAndUpdate(collectionId, { $pull: { discs: discId } });
     res.status(200).json({ message: "it worked" });
-}));
-
-// reference dvd logic
-app.get("/api/v1/referencedvds", TryCatchAsync(async (req, res, next) =>
-{
-    const listOfAllReferenceDVDs = await ReferenceDVDModel.find({})
-    const returnString = JSON.stringify(listOfAllReferenceDVDs);
-    res.status(200).send(returnString);
-
-}))
-app.post("/api/v1/referencedvds", TryCatchAsync(async (req, res, next) =>
-{
-    const { title, barcode } = req.body
-    console.log("Someone tried to use API to post a DVD");
-    console.log(req.body)
-    const newDisc = new ReferenceDVDModel({
-        title,
-        barcode
-    });
-    await newDisc.save();
-    console.log(newDisc);
-    res.status(201).json(req.body);
 }));
 
 app.use((req, res, next) =>
