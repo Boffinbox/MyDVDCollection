@@ -5,16 +5,10 @@ if (process.env.NODE_ENV !== "production")
 
 const express = require("express");
 const logger = require("morgan");
+const cookieParser = require("cookie-parser");
 const app = express();
 
 import { ExpressError } from "./helpers/ExpressError"
-import { TryCatchAsync } from "./helpers/TryCatchAsync"
-import
-{
-    ReferenceDVDModel,
-    DVDModel,
-    DiscCollectionModel
-} from "./models/models"
 
 const disccollectionRoutes = require("./routes/disccollections");
 const referencedvdRoutes = require("./routes/referencedvds");
@@ -41,6 +35,7 @@ mongoose.connect(dbUrl)
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // routers
 app.use("/api/v1/referencedvds", referencedvdRoutes)
