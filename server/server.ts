@@ -16,6 +16,7 @@ const dvdRoutes = require("./routes/dvds");
 
 require("./helpers/ConnectDB");
 
+// start middlewares
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
@@ -26,6 +27,7 @@ app.use("/api/v1/referencedvds", referencedvdRoutes)
 app.use("/api/v1/disccollections", disccollectionRoutes)
 app.use("/api/v1/disccollections/:collectionId/dvds", dvdRoutes)
 
+// error handling
 app.use((req, res, next) =>
 {
     next(new ExpressError(404, "Page not found :("));
