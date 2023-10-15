@@ -6,7 +6,8 @@ import
     setGlobalOptions,
     Severity,
     post,
-    plugin
+    plugin,
+    modelOptions
 } from "@typegoose/typegoose"
 
 const passportLocalMongoose = require("passport-local-mongoose");
@@ -70,6 +71,17 @@ export class Session
 const emailRegExpLiteral =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
+@modelOptions({
+    schemaOptions: {
+        toJSON: {
+            transform: function (doc, ret, options)
+            {
+                delete ret.refreshToken;
+                return ret;
+            }
+        }
+    }
+})
 @plugin(passportLocalMongoose)
 export class User
 {
