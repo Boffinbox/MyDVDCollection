@@ -82,7 +82,10 @@ const emailRegExpLiteral =
         }
     }
 })
-@plugin(passportLocalMongoose)
+@plugin(passportLocalMongoose,
+    {
+        usernameField: "email"
+    })
 export class User
 {
     @prop({ required: true, default: "" })
