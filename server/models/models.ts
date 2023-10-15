@@ -99,3 +99,5 @@ export class User
 export const ReferenceDVDModel = getModelForClass(ReferenceDVD);
 export const DVDModel = getModelForClass(DVD);
 export const DiscCollectionModel = getModelForClass(DiscCollection)
+export const SessionModel = getModelForClass(Session);
+export const UserModel = getModelForClass(User);
