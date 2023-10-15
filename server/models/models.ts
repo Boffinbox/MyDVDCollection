@@ -10,7 +10,7 @@ import
     modelOptions
 } from "@typegoose/typegoose"
 
-const passportLocalMongoose = require("passport-local-mongoose");
+const passportLocalMongoose = require("passport-local-mongoose")
 
 setGlobalOptions(
     {

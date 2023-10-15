@@ -1,6 +1,6 @@
-const passport = require("passport");
-const LocalStrategy = require("passport-local")
-const { UserModel } = require("../models/models")
+import passport from "passport"
+const UserModel = require("../models/models")
+const LocalStrategy = require("passport-local").Strategy
 
 // Called during login and signup
 passport.use(new LocalStrategy(UserModel.authenticate()));
