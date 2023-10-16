@@ -96,7 +96,8 @@ const emailRegExpLiteral =
 @plugin(passportLocalMongoose,
     {
         usernameField: "email",
-        usernameLowerCase: true
+        usernameLowerCase: true,
+        usernameUnique: true
     })
 export class User
 {
