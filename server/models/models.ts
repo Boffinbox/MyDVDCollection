@@ -12,6 +12,17 @@ import
 
 const passportLocalMongoose = require("passport-local-mongoose")
 
+// the following are added because
+// passport local mongoose functions
+// dont seem to have correct typing?
+import { Document } from "mongoose";
+interface T extends Document { };
+interface INewUser
+{
+    username: string;
+    email: string;
+}
+
 setGlobalOptions(
     {
         options:
@@ -84,7 +95,8 @@ const emailRegExpLiteral =
 })
 @plugin(passportLocalMongoose,
     {
-        usernameField: "email"
+        usernameField: "email",
+        usernameLowerCase: true
     })
 export class User
 {
@@ -93,6 +105,7 @@ export class User
 
     @prop({
         required: true,
+        unique: true,
         default: "",
         validate: {
             validator: function (v: string): boolean
@@ -109,6 +122,13 @@ export class User
 
     @prop({ required: true, default: [], type: () => [Session] })
     refreshToken!: Session[]
+
+    // this is disgusting usage of any, but i have no other options at this point in time
+    // the user inside the function is supposed to be of type "UserModel", but that
+    // cannot be set until after this user class is, so... ???
+    //
+    // i am not yet a smart enough typescript user to understand what to do.
+    static register: (user: INewUser, password: string, fn: (err: any, user: any) => void) => Promise<T>
 }
 
 export const ReferenceDVDModel = getModelForClass(ReferenceDVD);
