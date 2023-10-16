@@ -105,7 +105,6 @@ export class User
 
     @prop({
         required: true,
-        unique: true,
         default: "",
         validate: {
             validator: function (v: string): boolean
@@ -123,12 +122,12 @@ export class User
     @prop({ required: true, default: [], type: () => [Session] })
     refreshToken!: Session[]
 
-    // this is disgusting usage of any, but i have no other options at this point in time
-    // the user inside the function is supposed to be of type "UserModel", but that
-    // cannot be set until after this user class is, so... ???
-    //
-    // i am not yet a smart enough typescript user to understand what to do.
-    static register: (user: INewUser, password: string, fn: (err: any, user: any) => void) => Promise<T>
+    // i have to list these here or else typescript doesn't recognize
+    // the passport-local-mongoose methods :(
+    static createStrategy
+    static serializeUser
+    static deserializeUser
+    static register
 }
 
 export const ReferenceDVDModel = getModelForClass(ReferenceDVD);

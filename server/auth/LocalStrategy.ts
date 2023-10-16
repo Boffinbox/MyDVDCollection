@@ -1,5 +1,5 @@
 import passport from "passport"
-const UserModel = require("../models/models")
+import { UserModel } from "../models/models"
 
 // Called during login and signup
 passport.use(UserModel.createStrategy());
