@@ -121,7 +121,7 @@ export class User
     authStrategy!: string
 
     @prop({ required: true, default: [], type: () => [Session] })
-    refreshToken!: Session[]
+    refreshTokens!: Session[]
 
     // i have to list these here or else typescript doesn't recognize
     // the passport-local-mongoose methods :(
