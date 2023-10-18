@@ -3,17 +3,17 @@ const router = express.Router()
 const passport = require("passport")
 const jwt = require("jsonwebtoken")
 
-const { getToken, getRefreshToken, COOKIE_OPTIONS } = require("../auth/authenticate");
+const { getToken, getRefreshToken, COOKIE_OPTIONS, verifyUser } = require("../auth/authenticate");
 
 import { TryCatchAsync } from "../helpers/TryCatchAsync"
 import { UserModel } from "../models/models"
 
-router.get("/signup", TryCatchAsync(async (req, res, next) =>
+router.get("/register", TryCatchAsync(async (req, res, next) =>
 {
     return res.status(200).json({ message: "it worked" });
 }));
 
-router.post("/signup", TryCatchAsync(async (req, res, next) =>
+router.post("/register", TryCatchAsync(async (req, res, next) =>
 {
     const { username, email, password }: { username: string, email: string, password: string } = req.body;
     const newUser = await UserModel.register(new UserModel({ username, email }), password)
