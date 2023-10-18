@@ -1,6 +1,6 @@
 import passport from "passport"
+import { UserModel } from "../models/models"
 
-const UserModel = require("../models/models")
 const JwtStrategy = require("passport-jwt").Strategy
 const ExtractJwt = require("passport-jwt").ExtractJwt
 const opts = {
@@ -15,21 +15,17 @@ passport.use(
     {
         // Check against the DB only if necessary.
         // This can be avoided if you don't want to fetch user details in each request.
-        UserModel.findOne({ _id: jwt_payload._id }, function (err, user)
+        UserModel.findOne({ _id: jwt_payload._id }).then((user) =>
         {
-            if (err)
-            {
-                return done(err, false)
-            }
-            if (user)
-            {
-                return done(null, user)
-            }
-            else
+            if (!user)
             {
                 return done(null, false)
-                // or you could create a new account
             }
+            // or you could create a new account
+            return done(null, user)
+        }).catch((err) =>
+        {
+            return done(err, false)
         })
     })
 )
