@@ -92,5 +92,10 @@ router.post("/refreshToken", TryCatchAsync(async (req, res, next) =>
     })
 }));
 
+router.get("/me", verifyUser, TryCatchAsync(async (req, res, next) =>
+{
+    res.send(req.user);
+}));
+
 
 module.exports = router;
