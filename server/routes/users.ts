@@ -92,6 +92,36 @@ router.post("/refreshToken", TryCatchAsync(async (req, res, next) =>
     })
 }));
 
+router.post("/logout", verifyUser, TryCatchAsync(async (req, res, next) =>
+{
+    const { signedCookies = {} } = req;
+    const { refreshToken } = signedCookies;
+
+    if (!refreshToken)
+    {
+        return res.status(401).send("Unauthorized");
+    }
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId });
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized");
+    }
+    const filteredTokenList = user.refreshTokens.filter((rt) =>
+    {
+        rt !== refreshToken
+    })
+    user.refreshTokens = filteredTokenList;
+    user.save().then((user) =>
+    {
+        return res.clearCookie("refreshToken", COOKIE_OPTIONS).send({ success: true })
+    }
+    ).catch((err) =>
+    {
+        return res.status(401).send("Unauthorized");
+    })
+}));
+
 router.get("/me", verifyUser, TryCatchAsync(async (req, res, next) =>
 {
     res.send(req.user);
