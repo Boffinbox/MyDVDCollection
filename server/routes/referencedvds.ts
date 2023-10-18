@@ -9,7 +9,7 @@ router.get("/", TryCatchAsync(async (req, res, next) =>
 {
     const listOfAllReferenceDVDs = await ReferenceDVDModel.find({})
     const returnString = JSON.stringify(listOfAllReferenceDVDs);
-    res.status(200).send(returnString);
+    res.status(200).json(listOfAllReferenceDVDs);
 }))
 router.post("/", TryCatchAsync(async (req, res, next) =>
 {

@@ -17,8 +17,7 @@ router.get("/", TryCatchAsync(async (req, res, next) =>
             }
         })
         .exec();
-    const returnString = JSON.stringify(allCollections);
-    res.status(200).send(returnString);
+    res.status(200).json(allCollections);
 }))
 
 // show individual disc collection
@@ -34,8 +33,7 @@ router.get("/:collectionId", TryCatchAsync(async (req, res, next) =>
             }
         })
         .exec();
-    const returnString = JSON.stringify(collectionOfConcern);
-    res.status(200).send(returnString);
+    res.status(200).json(collectionOfConcern);
 }))
 
 // create new disc collection
