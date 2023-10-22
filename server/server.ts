@@ -55,8 +55,8 @@ app.use((err, req, res, next) =>
 // Lastly, serve the app
 const port = 5000;
 const options = {
-    key: fs.readFileSync(path.join(__dirname, "localhost-key.pem")),
-    cert: fs.readFileSync(path.join(__dirname, "localhost.pem"))
+    key: fs.readFileSync(path.join(__dirname, "certs/localhost-key.pem")),
+    cert: fs.readFileSync(path.join(__dirname, "certs/localhost.pem"))
 }
 
 const server = https.createServer(options, app);
