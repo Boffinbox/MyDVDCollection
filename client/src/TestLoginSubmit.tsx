@@ -4,6 +4,7 @@ import { useState } from "react";
 export function TestLoginSubmit()
 {
     const [formData, setFormData] = useState({ email: "", password: "" })
+    const [tokenData, setTokenData] = useState({ token: "" })
 
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
     {
@@ -29,6 +30,10 @@ export function TestLoginSubmit()
         axios.post(`/api/v1/users/login`, userData).then((response) =>
         {
             console.log("Login post request received.");
+            setTokenData((oldToken) =>
+            {
+                return { ...oldToken, token: response.data.token }
+            })
         }).catch((e) =>
         {
             console.log(e);
@@ -51,6 +56,7 @@ export function TestLoginSubmit()
                     <button>Submit!</button>
                 </form>
             </div>
+            <div>our token data is: {tokenData.token}</div>
         </div>
     )
 }
