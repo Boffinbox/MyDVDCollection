@@ -32,8 +32,8 @@ router.post("/register", TryCatchAsync(async (req, res, next) =>
 
 router.post("/login", passport.authenticate("local", { session: false }), TryCatchAsync(async (req, res, next) =>
 {
-    const { _id } = req.user
-    const token = await getToken({ _id })
+    const { _id, username } = req.user
+    const token = await getToken({ _id, username })
     const refreshToken = await getRefreshToken({ _id })
     const user = await UserModel.findById({ _id });
     if (!user)
