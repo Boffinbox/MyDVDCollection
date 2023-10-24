@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios"
+import { UserContext } from "./TestUserContext";
 
 interface IDiscCollectionData
 {
@@ -22,6 +23,7 @@ interface IDiscCollectionData
 export function TestCollectionRender()
 {
     const [data, setData] = useState<IDiscCollectionData[]>([]);
+    const user = useContext(UserContext);
 
     function getCurrentData()
     {
@@ -41,7 +43,8 @@ export function TestCollectionRender()
 
     return (
         <div>
-            All Collections:
+            All Collections for user:
+            user token is: {user.token}
             <br />
             <br />
             {data.map((coll, idx) =>
