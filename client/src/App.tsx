@@ -7,6 +7,7 @@ import { TestLoginSubmit } from "./TestLoginSubmit"
 
 import { useState } from "react"
 import { UserContext } from "./TestUserContext"
+import { TestLoginRefresh } from "./TestLoginRefresh"
 
 function App()
 {
@@ -14,6 +15,7 @@ function App()
     return (
         <UserContext.Provider value={{ token, setToken }}>
             <div>
+                <TestLoginRefresh />
                 <TestDVDSubmit />
                 <TestLoginSubmit />
                 <TestCollectionSubmit />
