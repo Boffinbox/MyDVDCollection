@@ -112,6 +112,9 @@ export class User
     @prop({ required: true, default: [], type: () => [Session] })
     refreshTokens!: Session[]
 
+    @prop({ required: true, default: [], ref: () => DiscCollection })
+    collections!: Ref<DiscCollection>[];
+
     // i have to list these here or else typescript doesn't recognize
     // the passport-local-mongoose methods :(
     static createStrategy
