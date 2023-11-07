@@ -41,7 +41,7 @@ router.post("/:barcode", TryCatchAsync(async (req, res, next) =>
         await newDVD.save();
         await collectionToModify.save();
         console.log(`DVD "${referenceDVD.title}" was added to Collection "${collectionToModify.title}"`);
-        res.status(200).json({ message: "it worked" });
+        res.status(200).json({ dvd: newDVD });
     }
 }));
 

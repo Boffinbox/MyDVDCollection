@@ -23,6 +23,7 @@ interface IDiscCollectionData
 export function TestCollectionRender()
 {
     const [data, setData] = useState<IDiscCollectionData[]>([]);
+    const [formData, setFormData] = useState({ id: "", barcode: "" })
     const user = useContext(UserContext);
 
     function getCurrentData()
@@ -31,7 +32,7 @@ export function TestCollectionRender()
             .then((response) =>
             {
                 console.log("our data is: ", response.data);
-                setData((prevData) => response.data);
+                setData(() => response.data);
             })
     }
 
@@ -40,12 +41,51 @@ export function TestCollectionRender()
         getCurrentData();
     }, [])
 
+    function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
+    {
+        setFormData(currentData =>
+        {
+            return {
+                ...currentData,
+                [evt.target.name]: evt.target.value
+            }
+        })
+    }
+
+    function handleSubmit(evt: React.FormEvent<HTMLFormElement>)
+    {
+        evt.preventDefault();
+        console.log("Form submitted!");
+        console.log("Coll ID to modify is: ", formData.id);
+        console.log("Barcode to add: ", formData.barcode);
+        axios.post(`/api/v1/disccollections/${formData.id}/dvds/${formData.barcode}`).then(() =>
+        {
+            console.log("Post request received.");
+            getCurrentData();
+        }).catch((e) =>
+        {
+            console.log(e);
+        })
+    }
 
     return (
         <div>
+            <div style={{ backgroundColor: "darkblue" }}>
+                <form action="" onSubmit={handleSubmit}>
+                    <p>basic form to add dvd to collection</p>
+                    <div>
+                        <label htmlFor="id">id of collection to modify</label>
+                        <input type="text" id="id" name="id" onChange={handleChange} value={formData.id} />
+                    </div>
+                    <div>
+                        <label htmlFor="barcode">barcode to modify</label>
+                        <input type="text" id="barcode" name="barcode" onChange={handleChange} value={formData.barcode} />
+                    </div>
+                    <button>Submit!</button>
+                </form>
+            </div>
             All Collections for user:
             user token is: {user.token}
-            <br />
             <br />
             {data.map((coll, idx) =>
             {
@@ -54,7 +94,7 @@ export function TestCollectionRender()
                         <form action="" onSubmit={function (evt)
                         {
                             evt.preventDefault();
-                            axios.delete(`/api/v1/disccollections/${coll._id}`).then((response) =>
+                            axios.delete(`/api/v1/disccollections/${coll._id}`).then(() =>
                             {
                                 console.log("Delete request received.");
                             }).catch((e) =>
@@ -79,7 +119,7 @@ export function TestCollectionRender()
                                         rating: disc.rating + 1,
                                         watched: !disc.watched
                                     }
-                                    axios.patch(`/api/v1/disccollections/${coll._id}/dvds/${disc._id}`, userData).then((response) =>
+                                    axios.patch(`/api/v1/disccollections/${coll._id}/dvds/${disc._id}`, userData).then(() =>
                                     {
                                         console.log("Delete request received.");
                                     }).catch((e) =>
@@ -93,7 +133,7 @@ export function TestCollectionRender()
                                 <form action="" onSubmit={function (evt)
                                 {
                                     evt.preventDefault();
-                                    axios.delete(`/api/v1/disccollections/${coll._id}/dvds/${disc._id}`).then((response) =>
+                                    axios.delete(`/api/v1/disccollections/${coll._id}/dvds/${disc._id}`).then(() =>
                                     {
                                         console.log("Delete request received.");
                                     }).catch((e) =>
