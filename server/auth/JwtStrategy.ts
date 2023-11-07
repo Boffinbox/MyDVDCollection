@@ -1,5 +1,5 @@
 import passport from "passport"
-import { UserModel } from "../models/models"
+import { UserModel } from "../models"
 
 const JwtStrategy = require("passport-jwt").Strategy
 const ExtractJwt = require("passport-jwt").ExtractJwt

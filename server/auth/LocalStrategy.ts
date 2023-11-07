@@ -1,5 +1,5 @@
 import passport from "passport"
-import { UserModel } from "../models/models"
+import { UserModel } from "../models"
 
 // Called during login and signup
 passport.use(UserModel.createStrategy());

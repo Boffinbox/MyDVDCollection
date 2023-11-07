@@ -12,17 +12,6 @@ import
 
 const passportLocalMongoose = require("passport-local-mongoose")
 
-// the following are added because
-// passport local mongoose functions
-// dont seem to have correct typing?
-import { Document } from "mongoose";
-interface T extends Document { };
-interface INewUser
-{
-    username: string;
-    email: string;
-}
-
 setGlobalOptions(
     {
         options:

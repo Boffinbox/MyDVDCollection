@@ -7,7 +7,7 @@ import
     ReferenceDVDModel,
     DVDModel,
     DiscCollectionModel
-} from "../models/models"
+} from "../models"
 
 // dvd logic
 // add a dvd to an existing collection by dvd barcode

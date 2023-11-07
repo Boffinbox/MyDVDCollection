@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken")
 const { getToken, getRefreshToken, COOKIE_OPTIONS, verifyUser } = require("../auth/authenticate");
 
 import { TryCatchAsync } from "../helpers/TryCatchAsync"
-import { UserModel } from "../models/models"
+import { UserModel } from "../models"
 
 router.get("/register", TryCatchAsync(async (req, res, next) =>
 {

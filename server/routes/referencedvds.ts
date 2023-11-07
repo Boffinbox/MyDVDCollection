@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router();
 
 import { TryCatchAsync } from "../helpers/TryCatchAsync"
-import { ReferenceDVDModel } from "../models/models"
+import { ReferenceDVDModel } from "../models"
 
 // reference dvd logic
 router.get("/", TryCatchAsync(async (req, res, next) =>
