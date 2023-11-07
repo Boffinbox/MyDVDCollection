@@ -1,8 +1,10 @@
 const express = require("express")
 const router = express.Router();
 
+const { verifyUser } = require("../auth/authenticate");
+
 import { TryCatchAsync } from "../helpers/TryCatchAsync"
-import { DiscCollectionModel } from "../models"
+import { DiscCollectionModel, UserModel } from "../models"
 
 // disc collection restful routing
 // index a list of all disc collections (in future: only DCs that user is authorized to see)
@@ -37,8 +39,14 @@ router.get("/:collectionId", TryCatchAsync(async (req, res, next) =>
 }))
 
 // create new disc collection
-router.post("/", TryCatchAsync(async (req, res, next) =>
+router.post("/", verifyUser, TryCatchAsync(async (req, res, next) =>
 {
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId });
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized");
+    }
     const { title } = req.body
     console.log("Someone tried to use API to post a disc collection");
     console.log("with the title of: ", req.body)
@@ -46,7 +54,9 @@ router.post("/", TryCatchAsync(async (req, res, next) =>
         title,
         discs: []
     });
+    user.collections.push(newDiscCollection._id);
     await newDiscCollection.save();
+    await user.save();
     console.log("New disccollection added to db");
     res.status(201).json(newDiscCollection);
 }));

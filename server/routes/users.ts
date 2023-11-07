@@ -3,7 +3,7 @@ const router = express.Router()
 const passport = require("passport")
 const jwt = require("jsonwebtoken")
 
-const { getToken, getRefreshToken, COOKIE_OPTIONS, verifyUser } = require("../auth/authenticate");
+const { getToken, getRefreshToken, verifyUser, COOKIE_OPTIONS } = require("../auth/authenticate");
 
 import { TryCatchAsync } from "../helpers/TryCatchAsync"
 import { UserModel } from "../models"
