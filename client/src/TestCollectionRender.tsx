@@ -61,11 +61,11 @@ export function TestCollectionRender()
         axios.post(`/api/v1/disccollections/${formData.id}/dvds/${formData.barcode}`).then(() =>
         {
             console.log("Post request received.");
-            getCurrentData();
         }).catch((e) =>
         {
             console.log(e);
-        })
+        }).finally(() => getCurrentData())
+
     }
 
     return (
