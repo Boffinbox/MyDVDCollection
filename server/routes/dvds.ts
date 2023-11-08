@@ -111,9 +111,28 @@ router.patch("/:discId", verifyUser, TryCatchAsync(async (req, res, next) =>
 }));
 
 // remove a dvd from an existing collection by discId
-router.delete("/:discId", TryCatchAsync(async (req, res, next) =>
+router.delete("/:discId", verifyUser, TryCatchAsync(async (req, res, next) =>
 {
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId })
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized - no user found");
+    }
+    if (!user.collections.includes(req.params.collectionId))
+    {
+        return res.status(401).send("Unauthorized - not a match");
+    }
     const { collectionId, discId } = req.params
+    const collectionToModify = await DiscCollectionModel.findById(collectionId)
+    if (!collectionToModify)
+    {
+        return res.status(400).json({ message: "couldn't find collection" });
+    }
+    if (!collectionToModify.discs.includes(req.params.discId))
+    {
+        return res.status(401).json({ message: "wrong collection, disc mismatch" });
+    }
     console.log("Someone tried to use API to remove a dvd from a disc collection");
     console.log(`using the collId ${collectionId} and disc id ${discId}`)
     await DVDModel.findByIdAndDelete(discId);
