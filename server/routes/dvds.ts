@@ -59,8 +59,18 @@ router.post("/:barcode", verifyUser, TryCatchAsync(async (req, res, next) =>
 }));
 
 // update a dvd in a collection by discId
-router.patch("/:discId", TryCatchAsync(async (req, res, next) =>
+router.patch("/:discId", verifyUser, TryCatchAsync(async (req, res, next) =>
 {
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId })
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized - no user found");
+    }
+    if (!user.collections.includes(req.params.collectionId))
+    {
+        return res.status(401).send("Unauthorized - not a match");
+    }
     const { collectionId, discId }: { collectionId: string, discId: string } = req.params
     const { rating = 0, watched = false }: { rating: number, watched: boolean } = req.body;
     console.log("Someone tried to use API to update a dvd in a disc collection");
@@ -88,7 +98,7 @@ router.patch("/:discId", TryCatchAsync(async (req, res, next) =>
     if (!discToModify)
     {
         console.log("Couldn't find disc despite having disc??, aborting...");
-        res.status(400).json({ message: "stop trying to modify dvds that aren't yours!" });
+        res.status(401).json({ message: "stop trying to modify dvds that aren't yours!" });
     }
     else
     {
