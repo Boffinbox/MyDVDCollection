@@ -141,3 +141,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# SSL certiciates
+
+*.pem
