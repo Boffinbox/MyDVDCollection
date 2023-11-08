@@ -1,13 +1,11 @@
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-// if "not in production", then dev = true
-const dev: boolean = process.env.NODE_ENV !== "production"
 
 exports.COOKIE_OPTIONS = {
     httpOnly: true,
-    // Since localhost is not having https protocol,
-    // secure cookies do not work correctly (in postman)
-    secure: !dev,
+    // setting cookies to "secure true" means that
+    // we're gonna need a https dev environment...
+    secure: true,
     signed: true,
     maxAge: eval(process.env.REFRESH_TOKEN_EXPIRY ? process.env.REFRESH_TOKEN_EXPIRY : "60 * 60 * 24 * 5") * 1000,
     sameSite: "none",

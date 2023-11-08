@@ -1,18 +1,31 @@
 const express = require("express")
 const router = express.Router({ mergeParams: true });
 
+const { verifyUser } = require("../auth/authenticate");
+
 import { TryCatchAsync } from "../helpers/TryCatchAsync"
 import
 {
     ReferenceDVDModel,
     DVDModel,
-    DiscCollectionModel
-} from "../models/models"
+    DiscCollectionModel,
+    UserModel
+} from "../models"
 
 // dvd logic
 // add a dvd to an existing collection by dvd barcode
-router.post("/:barcode", TryCatchAsync(async (req, res, next) =>
+router.post("/:barcode", verifyUser, TryCatchAsync(async (req, res, next) =>
 {
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId })
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized");
+    }
+    if (!user.collections.includes(req.params.collectionId))
+    {
+        return res.status(401).send("Unauthorized");
+    }
     const { collectionId, barcode } = req.params
     console.log(req.params);
     console.log("Someone tried to use API to add a dvd to a disc collection");
@@ -41,13 +54,23 @@ router.post("/:barcode", TryCatchAsync(async (req, res, next) =>
         await newDVD.save();
         await collectionToModify.save();
         console.log(`DVD "${referenceDVD.title}" was added to Collection "${collectionToModify.title}"`);
-        res.status(200).json({ message: "it worked" });
+        res.status(200).json({ dvd: newDVD });
     }
 }));
 
 // update a dvd in a collection by discId
-router.patch("/:discId", TryCatchAsync(async (req, res, next) =>
+router.patch("/:discId", verifyUser, TryCatchAsync(async (req, res, next) =>
 {
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId })
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized - no user found");
+    }
+    if (!user.collections.includes(req.params.collectionId))
+    {
+        return res.status(401).send("Unauthorized - not a match");
+    }
     const { collectionId, discId }: { collectionId: string, discId: string } = req.params
     const { rating = 0, watched = false }: { rating: number, watched: boolean } = req.body;
     console.log("Someone tried to use API to update a dvd in a disc collection");
@@ -75,7 +98,7 @@ router.patch("/:discId", TryCatchAsync(async (req, res, next) =>
     if (!discToModify)
     {
         console.log("Couldn't find disc despite having disc??, aborting...");
-        res.status(400).json({ message: "stop trying to modify dvds that aren't yours!" });
+        res.status(401).json({ message: "stop trying to modify dvds that aren't yours!" });
     }
     else
     {
@@ -88,9 +111,28 @@ router.patch("/:discId", TryCatchAsync(async (req, res, next) =>
 }));
 
 // remove a dvd from an existing collection by discId
-router.delete("/:discId", TryCatchAsync(async (req, res, next) =>
+router.delete("/:discId", verifyUser, TryCatchAsync(async (req, res, next) =>
 {
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId })
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized - no user found");
+    }
+    if (!user.collections.includes(req.params.collectionId))
+    {
+        return res.status(401).send("Unauthorized - not a match");
+    }
     const { collectionId, discId } = req.params
+    const collectionToModify = await DiscCollectionModel.findById(collectionId)
+    if (!collectionToModify)
+    {
+        return res.status(400).json({ message: "couldn't find collection" });
+    }
+    if (!collectionToModify.discs.includes(req.params.discId))
+    {
+        return res.status(401).json({ message: "wrong collection, disc mismatch" });
+    }
     console.log("Someone tried to use API to remove a dvd from a disc collection");
     console.log(`using the collId ${collectionId} and disc id ${discId}`)
     await DVDModel.findByIdAndDelete(discId);

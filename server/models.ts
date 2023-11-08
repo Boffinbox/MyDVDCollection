@@ -12,17 +12,6 @@ import
 
 const passportLocalMongoose = require("passport-local-mongoose")
 
-// the following are added because
-// passport local mongoose functions
-// dont seem to have correct typing?
-import { Document } from "mongoose";
-interface T extends Document { };
-interface INewUser
-{
-    username: string;
-    email: string;
-}
-
 setGlobalOptions(
     {
         options:
@@ -53,6 +42,7 @@ export class DVD
     watched!: boolean
 }
 
+// when a collection is deleted, also delete it's associated dvds
 @post<DiscCollection>("findOneAndDelete", async function (doc)
 {
     if (doc)
@@ -122,6 +112,9 @@ export class User
 
     @prop({ required: true, default: [], type: () => [Session] })
     refreshTokens!: Session[]
+
+    @prop({ required: true, default: [], ref: () => DiscCollection })
+    collections!: Ref<DiscCollection>[];
 
     // i have to list these here or else typescript doesn't recognize
     // the passport-local-mongoose methods :(

@@ -1,9 +1,11 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { UserContext } from "./TestUserContext";
 
 export function TestCollectionSubmit()
 {
     const [formData, setFormData] = useState({ title: "" })
+    const user = useContext(UserContext);
 
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
     {
@@ -24,7 +26,11 @@ export function TestCollectionSubmit()
         {
             title: formData.title
         }
-        axios.post("/api/v1/disccollections", userData).then((response) =>
+        const config =
+        {
+            headers: { Authorization: `Bearer ${user.token}` }
+        }
+        axios.post("/api/v1/disccollections", userData, config).then((response) =>
         {
             console.log("Post request sent.");
             console.log(response.data);

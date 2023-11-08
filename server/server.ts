@@ -4,9 +4,12 @@ if (process.env.NODE_ENV !== "production")
 }
 
 const express = require("express");
-const logger = require("morgan");
+const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const passport = require("passport")
+const https = require("https");
+const fs = require("fs");
+const path = require("path");
 const app = express();
 
 import { ExpressError } from "./helpers/ExpressError"
@@ -23,7 +26,7 @@ require("./auth/JwtStrategy");
 require("./auth/authenticate")
 
 // start middlewares
-app.use(logger("dev"));
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -51,7 +54,14 @@ app.use((err, req, res, next) =>
 
 // Lastly, serve the app
 const port = 5000;
-app.listen(port, () =>
+const options = {
+    key: fs.readFileSync(path.join(__dirname, "certs/localhost-key.pem")),
+    cert: fs.readFileSync(path.join(__dirname, "certs/localhost.pem"))
+}
+
+const server = https.createServer(options, app);
+
+server.listen(port, () =>
 {
     console.log(`Server started on port ${port}`)
 })

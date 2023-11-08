@@ -1,21 +1,26 @@
 import "./App.css"
-import { TestCollectionRemove } from "./TestCollectionRemove"
 import { TestCollectionRender } from "./TestCollectionRender"
-
 import { TestCollectionSubmit } from "./TestCollectionSubmit"
-import { TestCollectionAddDVD } from "./TestCollectionAddDVD"
 import { TestDVDSubmit } from "./TestDVDSubmit"
-import { TestCollectionRemoveDVD } from "./TestCollectionRemoveDVD"
+import { TestLoginSubmit } from "./TestLoginSubmit"
+
+import { useState } from "react"
+import { UserContext } from "./TestUserContext"
+import { TestLoginRefresh } from "./TestLoginRefresh"
 
 function App()
 {
+    const [token, setToken] = useState<string>("");
     return (
-        <div>
-            <TestDVDSubmit />
-            <TestCollectionSubmit />
-            <TestCollectionAddDVD />
-            <TestCollectionRender />
-        </div >
+        <UserContext.Provider value={{ token, setToken }}>
+            <div>
+                <TestLoginRefresh />
+                <TestDVDSubmit />
+                <TestLoginSubmit />
+                <TestCollectionSubmit />
+                <TestCollectionRender />
+            </div >
+        </UserContext.Provider>
     )
 }
 
