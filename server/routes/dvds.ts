@@ -1,18 +1,31 @@
 const express = require("express")
 const router = express.Router({ mergeParams: true });
 
+const { verifyUser } = require("../auth/authenticate");
+
 import { TryCatchAsync } from "../helpers/TryCatchAsync"
 import
 {
     ReferenceDVDModel,
     DVDModel,
-    DiscCollectionModel
+    DiscCollectionModel,
+    UserModel
 } from "../models"
 
 // dvd logic
 // add a dvd to an existing collection by dvd barcode
-router.post("/:barcode", TryCatchAsync(async (req, res, next) =>
+router.post("/:barcode", verifyUser, TryCatchAsync(async (req, res, next) =>
 {
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId })
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized");
+    }
+    if (!user.collections.includes(req.params.collectionId))
+    {
+        return res.status(401).send("Unauthorized");
+    }
     const { collectionId, barcode } = req.params
     console.log(req.params);
     console.log("Someone tried to use API to add a dvd to a disc collection");
