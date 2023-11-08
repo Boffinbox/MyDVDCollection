@@ -8,7 +8,7 @@ import { DiscCollectionModel, UserModel } from "../models"
 
 // disc collection restful routing
 // index a list of all disc collections (in future: only DCs that user is authorized to see)
-router.get("/", TryCatchAsync(async (req, res, next) =>
+router.get("/", verifyUser, TryCatchAsync(async (req, res, next) =>
 {
     const allCollections = await DiscCollectionModel
         .find({})

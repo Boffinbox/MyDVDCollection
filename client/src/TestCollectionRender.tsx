@@ -28,12 +28,15 @@ export function TestCollectionRender()
 
     function getCurrentData()
     {
-        axios.get("/api/v1/disccollections/")
-            .then((response) =>
-            {
-                console.log("our data is: ", response.data);
-                setData(() => response.data);
-            })
+        const config =
+        {
+            headers: { Authorization: `Bearer ${user.token}` }
+        }
+        axios.get("/api/v1/disccollections/", config).then((response) =>
+        {
+            console.log("our data is: ", response.data);
+            setData(() => response.data);
+        })
     }
 
     useEffect(() =>
