@@ -10,16 +10,22 @@ import { DiscCollectionModel, UserModel } from "../models"
 // index a list of all disc collections (in future: only DCs that user is authorized to see)
 router.get("/", verifyUser, TryCatchAsync(async (req, res, next) =>
 {
-    const allCollections = await DiscCollectionModel
-        .find({})
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId })
         .populate({
-            path: "discs",
+            path: "collections",
             populate: {
-                path: "referenceDVD"
+                path: "discs",
+                populate: {
+                    path: "referenceDVD"
+                }
             }
-        })
-        .exec();
-    res.status(200).json(allCollections);
+        }).exec();
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized");
+    }
+    res.status(200).json(user.collections);
 }))
 
 // show individual disc collection
