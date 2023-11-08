@@ -42,6 +42,7 @@ export class DVD
     watched!: boolean
 }
 
+// when a collection is deleted, also delete it's associated dvds
 @post<DiscCollection>("findOneAndDelete", async function (doc)
 {
     if (doc)

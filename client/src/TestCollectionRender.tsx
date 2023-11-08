@@ -94,7 +94,11 @@ export function TestCollectionRender()
                         <form action="" onSubmit={function (evt)
                         {
                             evt.preventDefault();
-                            axios.delete(`/api/v1/disccollections/${coll._id}`).then(() =>
+                            const config =
+                            {
+                                headers: { Authorization: `Bearer ${user.token}` }
+                            }
+                            axios.delete(`/api/v1/disccollections/${coll._id}`, config).then(() =>
                             {
                                 console.log("Delete request received.");
                             }).catch((e) =>

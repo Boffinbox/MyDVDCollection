@@ -62,8 +62,14 @@ router.post("/", verifyUser, TryCatchAsync(async (req, res, next) =>
 }));
 
 // delete route, to nuke a collection from orbit
-router.delete("/:collectionId", TryCatchAsync(async (req, res, next) =>
+router.delete("/:collectionId", verifyUser, TryCatchAsync(async (req, res, next) =>
 {
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId });
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized");
+    }
     const { collectionId } = req.params
     console.log("Someone tried to use API to post a disc collection");
     console.log(`using the param ${collectionId}`)
@@ -73,6 +79,7 @@ router.delete("/:collectionId", TryCatchAsync(async (req, res, next) =>
         }
     )
     console.log(`Collection ${collectionToDelete} is possibly removed from DB`);
+    await UserModel.findByIdAndUpdate(userId, { $pull: { collections: collectionId } });
     res.status(200).json(collectionToDelete);
 }));
 
