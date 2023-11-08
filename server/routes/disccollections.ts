@@ -29,19 +29,31 @@ router.get("/", verifyUser, TryCatchAsync(async (req, res, next) =>
 }))
 
 // show individual disc collection
-router.get("/:collectionId", TryCatchAsync(async (req, res, next) =>
+router.get("/:collectionId", verifyUser, TryCatchAsync(async (req, res, next) =>
 {
-    console.log(req.params.collectionId);
-    const collectionOfConcern = await DiscCollectionModel
-        .findOne({ _id: req.params.collectionId })
-        .populate({
-            path: "discs",
-            populate: {
-                path: "referenceDVD"
-            }
-        })
-        .exec();
-    res.status(200).json(collectionOfConcern);
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId })
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized");
+    }
+    if (user.collections.includes(req.params.collectionId))
+    {
+        const collectionOfConcern = await DiscCollectionModel
+            .findOne({ _id: req.params.collectionId })
+            .populate({
+                path: "discs",
+                populate: {
+                    path: "referenceDVD"
+                }
+            })
+            .exec();
+        return res.status(200).json(collectionOfConcern);
+    }
+    else
+    {
+        return res.status(401).send("Unauthorized");
+    }
 }))
 
 // create new disc collection
