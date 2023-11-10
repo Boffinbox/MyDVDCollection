@@ -22,7 +22,7 @@ router.post("/register", TryCatchAsync(async (req, res, next) =>
     await newUser.refreshTokens.push({ refreshToken })
     newUser.save().then((user) =>
     {
-        return res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS).send({ success: true, token })
+        return res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS).status(200).send({ success: true, token })
     }
     ).catch((err) =>
     {
