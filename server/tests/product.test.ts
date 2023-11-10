@@ -8,9 +8,9 @@ const jwt = require("jsonwebtoken")
 const api = "/api/v1"
 const dbUrl = process.env.DB_URL
 
-beforeAll(() =>
+beforeAll(async () =>
 {
-    mongoose.connect(dbUrl)
+    await mongoose.connect(dbUrl)
         .then(() =>
         {
             console.log(`MongoDB Connection Open :)`);
@@ -20,6 +20,7 @@ beforeAll(() =>
             console.log("Oh no! MongoDB Connection Error :(");
             console.log(err);
         });
+    await mongoose.connection.dropDatabase();
 });
 
 describe(`GET ${api}/referencedvds/testroute`, () =>
@@ -45,9 +46,25 @@ describe(`GET ${api}/referencedvds/`, () =>
     })
 });
 
-afterAll((done) =>
+describe(`POST ${api}/referencedvds/`, () =>
 {
-    mongoose.connection.close();
-    done()
+    it(`should add a referencedvd called "gremlins" with barcode "987654321"`, async () =>
+    {
+        const res = await request(app)
+            .post(`${api}/referencedvds/`)
+            .send(
+                {
+                    title: "gremlins",
+                    barcode: "987654321"
+                }
+            );
+        expect(res.status).toBe(201);
+        expect(res.body).toMatchObject({ title: "gremlins", barcode: "987654321" })
+    })
+});
+
+afterAll(async () =>
+{
+    await mongoose.connection.close();
 });
 

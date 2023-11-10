@@ -28,7 +28,7 @@ router.post("/", TryCatchAsync(async (req, res, next) =>
     });
     await newDisc.save();
     console.log(newDisc);
-    res.status(201).json(req.body);
+    res.status(201).json(newDisc);
 }));
 
 module.exports = router;
