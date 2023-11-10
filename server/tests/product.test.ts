@@ -22,6 +22,7 @@ describe(`GET ${api}/referencedvds/testroute`, () =>
         const res = await request(app)
             .get(`${api}/referencedvds/testroute`);
         expect(res.status).toBe(200);
+        expect(res.body.status).toBe("it worked");
     })
 });
 
