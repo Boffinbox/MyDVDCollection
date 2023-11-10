@@ -19,10 +19,9 @@ const dvdRoutes = require("./routes/dvds");
 const userRoutes = require("./routes/users");
 
 require("./helpers/ConnectDB");
-
-require("./auth/LocalStrategy")
+require("./auth/LocalStrategy");
 require("./auth/JwtStrategy");
-require("./auth/authenticate")
+require("./auth/authenticate");
 
 // start middlewares
 app.use(morgan("dev"));
