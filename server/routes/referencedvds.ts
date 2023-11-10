@@ -4,6 +4,12 @@ const router = express.Router();
 import { TryCatchAsync } from "../helpers/TryCatchAsync"
 import { ReferenceDVDModel } from "../models"
 
+// debug route
+router.get("/testroute", TryCatchAsync(async (req, res, next) =>
+{
+    res.status(200).json({ status: "it worked" });
+}))
+
 // reference dvd logic
 router.get("/", TryCatchAsync(async (req, res, next) =>
 {
