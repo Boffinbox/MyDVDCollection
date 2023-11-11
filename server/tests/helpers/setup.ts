@@ -1,10 +1,9 @@
 export { }
 
+const { v4: uuid } = require("uuid");
 const mongoose = require("mongoose");
-const path = require("path");
-const fn = path.basename(__filename, ".test.ts");
-const fileString = fn.charAt(0).toUpperCase() + fn.slice(1);
-const dbUrl = `mongodb://127.0.0.1:27017/mDVDcBasicTestDB`
+const dbId = uuid();
+const dbUrl = `mongodb://127.0.0.1:27017/${dbId}`
 
 beforeAll(async () =>
 {
@@ -18,11 +17,14 @@ beforeAll(async () =>
             console.log("Oh no! MongoDB Test Connection Error :(");
             console.log(err);
         });
+    // if for some cosmic coincidence, that the db already exists...
     await mongoose.connection.dropDatabase();
 });
 
 afterAll(async () =>
 {
+    // if you don't put this line in, you will have a
+    // buildup of local test dbs.
     await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
 });
