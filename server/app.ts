@@ -11,7 +11,7 @@ const cookieParser = require("cookie-parser");
 const passport = require("passport")
 const app = express();
 
-const ExpressError = require("./helpers/ExpressError")
+const ExpressError = require("./helpers/ExpressError");
 
 const disccollectionRoutes = require("./routes/disccollections");
 const referencedvdRoutes = require("./routes/referencedvds");
@@ -51,7 +51,7 @@ app.use((err, req, res, next) =>
 {
     if (!err.status) err.status = 500;
     if (!err.message) err.message = "Something went wrong.";
-    res.status(err.status).send(`${err.status}: ${err.message}`);
+    return res.status(err.status).send(`${err.status}: ${err.message}`);
 });
 
 module.exports = app
