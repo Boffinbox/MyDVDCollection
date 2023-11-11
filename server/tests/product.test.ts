@@ -25,7 +25,7 @@ beforeAll(async () =>
 
 describe(`GET ${api}/referencedvds/testroute`, () =>
 {
-    it(`should return a json with the status message "it worked"`, async () =>
+    test(`should return a json with the status message "it worked"`, async () =>
     {
         const res = await request(app)
             .get(`${api}/referencedvds/testroute`);
@@ -36,7 +36,7 @@ describe(`GET ${api}/referencedvds/testroute`, () =>
 
 describe(`GET ${api}/referencedvds/`, () =>
 {
-    it(`should return a json with empty data from test db`, async () =>
+    test(`should return a json with empty data from test db`, async () =>
     {
         const res = await request(app)
             .get(`${api}/referencedvds/`);
@@ -48,7 +48,7 @@ describe(`GET ${api}/referencedvds/`, () =>
 
 describe(`POST ${api}/referencedvds/`, () =>
 {
-    it(`should add a referencedvd called "gremlins" with barcode "987654321"`, async () =>
+    test(`should add a referencedvd called "gremlins" with barcode "987654321"`, async () =>
     {
         const res = await request(app)
             .post(`${api}/referencedvds/`)
