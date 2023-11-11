@@ -1,12 +1,10 @@
 export { }
 
 const mongoose = require("mongoose");
-const request = require("supertest");
-const app = require("../app.ts");
-const jwt = require("jsonwebtoken")
-
-const api = "/api/v1"
-const dbUrl = `mongodb://127.0.0.1:27017/mDVDcTestBasicDB`
+const path = require("path");
+let fn = path.basename(__filename, ".test.ts");
+const fileString = fn.charAt(0).toUpperCase() + fn.slice(1);
+const dbUrl = `mongodb://127.0.0.1:27017/mDVDc${fileString}TestDB`
 
 beforeAll(async () =>
 {
@@ -22,6 +20,10 @@ beforeAll(async () =>
         });
     await mongoose.connection.dropDatabase();
 });
+
+const request = require("supertest");
+const app = require("../app.ts");
+const api = "/api/v1"
 
 describe(`GET ${api}/referencedvds/testroute`, () =>
 {
@@ -65,6 +67,7 @@ describe(`POST ${api}/referencedvds/`, () =>
 
 afterAll(async () =>
 {
+    await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
 });
 
