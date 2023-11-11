@@ -6,18 +6,18 @@ const app = require("../app.ts");
 const jwt = require("jsonwebtoken")
 
 const api = "/api/v1"
-const dbUrl = process.env.DB_URL
+const dbUrl = `mongodb://127.0.0.1:27017/mDVDcTestBasicDB`
 
 beforeAll(async () =>
 {
     await mongoose.connect(dbUrl)
         .then(() =>
         {
-            console.log(`MongoDB Connection Open :)`);
+            console.log(`MongoDB Test Connection Open :)`);
         })
         .catch((err) =>
         {
-            console.log("Oh no! MongoDB Connection Error :(");
+            console.log("Oh no! MongoDB Test Connection Error :(");
             console.log(err);
         });
     await mongoose.connection.dropDatabase();
