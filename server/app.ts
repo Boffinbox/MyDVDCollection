@@ -18,7 +18,11 @@ const referencedvdRoutes = require("./routes/referencedvds");
 const dvdRoutes = require("./routes/dvds");
 const userRoutes = require("./routes/users");
 
-require("./helpers/ConnectDB");
+if (process.env.NODE_ENV !== "test")
+{
+    require("./helpers/ConnectDB");
+}
+
 require("./auth/LocalStrategy");
 require("./auth/JwtStrategy");
 require("./auth/authenticate");
