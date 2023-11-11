@@ -17,12 +17,12 @@ router.post("/register", TryCatchAsync(async (req, res, next) =>
 {
     const { username, email, password }: { username: string, email: string, password: string } = req.body;
     const newUser = await UserModel.register(new UserModel({ username, email }), password)
-    const token = await getToken({ _id: newUser._id })
+    const token = await getToken({ _id: newUser._id, username })
     const refreshToken = await getRefreshToken({ _id: newUser._id })
     await newUser.refreshTokens.push({ refreshToken })
     newUser.save().then((user) =>
     {
-        return res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS).status(200).json({ success: true, token })
+        return res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS).status(201).json({ success: true, token })
     }
     ).catch((err) =>
     {
