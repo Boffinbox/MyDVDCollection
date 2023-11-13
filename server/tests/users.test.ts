@@ -6,6 +6,7 @@ const api = "/api/v1"
 
 // add defines here
 const jwt = require("jsonwebtoken")
+const cookieFunctions = require("./helpers/cookies.ts");
 
 // add functions here
 
@@ -46,7 +47,10 @@ test(`login using a registered user's details`, async () =>
         .post(`${api}/users/login`)
         .send(userDetails);
     const userResult = jwt.verify(res.body.token, process.env.JWT_SECRET);
+    const refreshToken = cookieFunctions.getRefreshTokenFromResponseHeader(res.headers["set-cookie"]);
+    const refreshResult = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     expect(res.status).toBe(200);
     expect(userResult.username).toBe(userDetails.username);
-    const cookies = res.headers["set-cookie"];
+    expect(refreshResult.username).toBe(userDetails.username);
+
 })

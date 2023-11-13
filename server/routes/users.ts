@@ -17,8 +17,8 @@ router.post("/register", TryCatchAsync(async (req, res, next) =>
 {
     const { username, email, password }: { username: string, email: string, password: string } = req.body;
     const newUser = await UserModel.register(new UserModel({ username, email }), password)
-    const token = await getToken({ _id: newUser._id, username })
-    const refreshToken = await getRefreshToken({ _id: newUser._id })
+    const token = await getToken({ _id: newUser._id, username: newUser.username })
+    const refreshToken = await getRefreshToken({ _id: newUser._id, username: newUser.username })
     await newUser.refreshTokens.push({ refreshToken })
     newUser.save().then((user) =>
     {
@@ -32,9 +32,7 @@ router.post("/register", TryCatchAsync(async (req, res, next) =>
 
 router.post("/login", passport.authenticate("local", { session: false }), TryCatchAsync(async (req, res, next) =>
 {
-    const { _id, username } = req.user
-    const token = await getToken({ _id, username })
-    const refreshToken = await getRefreshToken({ _id })
+    const { _id } = req.user
     const user = await UserModel.findById({ _id });
     if (!user)
     {
@@ -43,6 +41,8 @@ router.post("/login", passport.authenticate("local", { session: false }), TryCat
     }
     else
     {
+        const token = await getToken({ _id: user._id, username: user.username })
+        const refreshToken = await getRefreshToken({ _id: user._id, username: user.username })
         user.refreshTokens.push({ refreshToken })
         user.save().then((user) =>
         {
