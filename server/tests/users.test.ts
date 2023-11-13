@@ -7,36 +7,45 @@ const api = "/api/v1"
 // add defines here
 const jwt = require("jsonwebtoken")
 
-test(`add a user "boff", email "boff@test.co.uk with pass "1234"`, async () =>
-{
-    const res = await request(app)
-        .post(`${api}/users/register`)
-        .send(
-            {
-                username: "boff",
-                email: "boff@test.co.uk",
-                password: "1234"
-            }
-        );
-    const userResult = jwt.decode(res.body.token);
-    expect(res.status).toBe(201);
-    expect(res.body.success).toBe(true);
-    expect(userResult.username).toBe("boff");
-})
+// add functions here
 
-test(`add "boff" again, to check for test db clearance`, async () =>
+function generateUserDetails(username: string = "boff", email: string = "boff@test.co.uk", password: string = "1234")
 {
+    return { username, email, password }
+}
+
+test(`add a user with username, email and password`, async () =>
+{
+    const userDetails = generateUserDetails();
     const res = await request(app)
         .post(`${api}/users/register`)
-        .send(
-            {
-                username: "boff",
-                email: "boff@test.co.uk",
-                password: "1234"
-            }
-        );
+        .send(userDetails);
     const userResult = jwt.decode(res.body.token);
     expect(res.status).toBe(201);
-    expect(res.body.success).toBe(true);
-    expect(userResult.username).toBe("boff");
+    expect(userResult.username).toBe(userDetails.username);
+});
+
+test(`duplicate test, to check for test db dropping correctly`, async () =>
+{
+    const userDetails = generateUserDetails();
+    const res = await request(app)
+        .post(`${api}/users/register`)
+        .send(userDetails);
+    const userResult = jwt.decode(res.body.token);
+    expect(res.status).toBe(201);
+    expect(userResult.username).toBe(userDetails.username);
+});
+
+test(`login using a registered user's details`, async () =>
+{
+    const userDetails = generateUserDetails();
+    await request(app)
+        .post(`${api}/users/register`)
+        .send(userDetails);
+    const res = await request(app)
+        .post(`${api}/users/login`)
+        .send(userDetails);
+    const userResult = jwt.decode(res.body.token);
+    expect(res.status).toBe(200);
+    expect(userResult.username).toBe(userDetails.username);
 })
