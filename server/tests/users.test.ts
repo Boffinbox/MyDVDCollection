@@ -39,7 +39,7 @@ test(`add a user with username, email and password`, async () =>
     const res = await request(app)
         .post(`${api}/users/register`)
         .send(userDetails);
-    const userResult = jwt.decode(res.body.token);
+    const userResult = jwt.verify(res.body.token, process.env.JWT_SECRET);
     expect(res.status).toBe(201);
     expect(userResult.username).toBe(userDetails.username);
 });
@@ -50,7 +50,7 @@ test(`duplicate test, to check for test db dropping correctly`, async () =>
     const res = await request(app)
         .post(`${api}/users/register`)
         .send(userDetails);
-    const userResult = jwt.decode(res.body.token);
+    const userResult = jwt.verify(res.body.token, process.env.JWT_SECRET);
     expect(res.status).toBe(201);
     expect(userResult.username).toBe(userDetails.username);
 });
@@ -64,7 +64,7 @@ test(`login using a registered user's details`, async () =>
     const res = await request(app)
         .post(`${api}/users/login`)
         .send(userDetails);
-    const userResult = jwt.decode(res.body.token);
+    const userResult = jwt.verify(res.body.token, process.env.JWT_SECRET);
     expect(res.status).toBe(200);
     expect(userResult.username).toBe(userDetails.username);
 })
