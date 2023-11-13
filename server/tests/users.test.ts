@@ -14,6 +14,25 @@ function generateUserDetails(username: string = "boff", email: string = "boff@te
     return { username, email, password }
 }
 
+function convertCookieStringToObject(cookie: string)
+{
+    return cookie.split('; ').reduce((prev, current) =>
+    {
+        const [name, ...value] = current.split('=');
+        prev[name] = value.join('=');
+        return prev;
+    }, {});
+}
+
+function getRefreshTokenFromRefreshCookieObject(cookie)
+{
+    const stringWeCareAbout = cookie.refreshToken;
+    const fourSliced = stringWeCareAbout.slice(4);
+    const splitString = fourSliced.split(".")
+    const theFirstThreeParts = splitString[0] + "." + splitString[1] + "." + splitString[2];
+    return theFirstThreeParts;
+}
+
 test(`add a user with username, email and password`, async () =>
 {
     const userDetails = generateUserDetails();
