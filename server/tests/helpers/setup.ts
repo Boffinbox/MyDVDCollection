@@ -21,6 +21,13 @@ beforeAll(async () =>
     await mongoose.connection.dropDatabase();
 });
 
+afterEach(async () =>
+{
+    // if you don't put this line in, you will have a
+    // buildup of local test dbs.
+    await mongoose.connection.dropDatabase();
+});
+
 afterAll(async () =>
 {
     // if you don't put this line in, you will have a
