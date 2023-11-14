@@ -41,7 +41,41 @@ test(`retrieve a known collection for a known user`, async () =>
         .get(`${api}/disccollections/${resOne.body._id}`)
         .set(`Authorization`, `Bearer ${userToken}`)
         .send();
+    expect(resTwo.status).toBe(200);
     expect(resOne.body._id).toEqual(resTwo.body._id);
     expect(resOne.body.title).toEqual(resTwo.body.title);
     expect(resTwo.body.discs).toEqual([]);
+})
+
+test(`delete a known collection for a known user`, async () =>
+{
+    const userDetails = userFunctions.generateUserDetails();
+    const registerRes = await userFunctions.registerAUser(userDetails);
+    const userToken = registerRes.body.token
+    expect(registerRes.status).toBe(201);
+
+    const resOne = await request(app)
+        .post(`${api}/disccollections`)
+        .set(`Authorization`, `Bearer ${userToken}`)
+        .send({ title: "My Test Collection" });
+    expect(resOne.status).toBe(201);
+    expect(resOne.body.title).toEqual("My Test Collection");
+
+    const getResOne = await request(app)
+        .get(`${api}/disccollections/${resOne.body._id}`)
+        .set(`Authorization`, `Bearer ${userToken}`)
+        .send();
+    expect(getResOne.status).toBe(200);
+
+    const resTwo = await request(app)
+        .delete(`${api}/disccollections/${resOne.body._id}`)
+        .set(`Authorization`, `Bearer ${userToken}`)
+        .send();
+    expect(resTwo.status).toBe(200);
+
+    const getResTwo = await request(app)
+        .get(`${api}/disccollections/${resOne.body._id}`)
+        .set(`Authorization`, `Bearer ${userToken}`)
+        .send();
+    expect(getResTwo.status).toBe(401);
 })
