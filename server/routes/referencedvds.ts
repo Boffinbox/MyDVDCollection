@@ -1,7 +1,8 @@
 const express = require("express")
 const router = express.Router();
 
-import { TryCatchAsync } from "../helpers/TryCatchAsync"
+const TryCatchAsync = require("../helpers/TryCatchAsync")
+
 import { ReferenceDVDModel } from "../models"
 
 // debug route

@@ -2,8 +2,8 @@ const express = require("express")
 const router = express.Router();
 
 const { verifyUser } = require("../auth/authenticate");
+const TryCatchAsync = require("../helpers/TryCatchAsync")
 
-import { TryCatchAsync } from "../helpers/TryCatchAsync"
 import { DiscCollectionModel, UserModel } from "../models"
 
 // disc collection restful routing

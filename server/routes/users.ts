@@ -3,8 +3,7 @@ const router = express.Router()
 const passport = require("passport")
 
 const { verifyUser } = require("../auth/authenticate");
-
-import { TryCatchAsync } from "../helpers/TryCatchAsync"
+const TryCatchAsync = require("../helpers/TryCatchAsync")
 
 const users = require("../controllers/users");
 
