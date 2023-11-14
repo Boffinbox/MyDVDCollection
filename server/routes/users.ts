@@ -43,7 +43,7 @@ router.post("/login", passport.authenticate("local", { session: false }), TryCat
     {
         const token = await getToken({ _id: user._id, username: user.username })
         const refreshToken = await getRefreshToken({ _id: user._id, username: user.username })
-        user.refreshTokens.push({ refreshToken })
+        user.refreshTokens.push({ refreshToken, refreshCount: 0 })
         user.save().then((user) =>
         {
             return res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS).send({ success: true, token })
@@ -80,21 +80,8 @@ router.post("/refreshToken", TryCatchAsync(async (req, res, next) =>
         return res.status(401).send("Unauthorized");
     }
     const token = getToken({ _id: userId });
-    // times refreshed routine
-    // this ensures a completely new token is sent back with a request
-    // even if two refreshes are called in the same second.
-    let timesRefreshed = 0;
-    if (!payload.refreshCount)
-    {
-        timesRefreshed = 0;
-    }
-    else
-    {
-        timesRefreshed = payload.refreshCount
-    }
-    timesRefreshed = timesRefreshed + 1;
-    const newRefreshToken = getRefreshToken({ _id: userId, username: user.username, refreshCount: timesRefreshed });
-    user.refreshTokens[tokenIndex] = { refreshToken: newRefreshToken }
+    const newRefreshToken = getRefreshToken({ _id: userId, username: user.username });
+    user.refreshTokens[tokenIndex] = { refreshToken: newRefreshToken, refreshCount: user.refreshTokens[tokenIndex].refreshCount + 1 }
     user.save().then((user) =>
     {
         return res.cookie("refreshToken", newRefreshToken, COOKIE_OPTIONS).send({ success: true, token })

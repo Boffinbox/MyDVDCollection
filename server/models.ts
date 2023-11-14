@@ -67,6 +67,9 @@ export class Session
 {
     @prop({ required: true, default: "" })
     refreshToken!: string
+
+    @prop({ required: true, default: 1 })
+    refreshCount!: number;
 }
 
 const emailRegExpLiteral =
