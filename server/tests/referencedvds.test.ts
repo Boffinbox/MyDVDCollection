@@ -6,12 +6,12 @@ const api = "/api/v1"
 
 // add defines here
 const jwt = require("jsonwebtoken")
-const referencedvdFunctions = require("./helpers/referencedvds")
+const referenceDVDFunctions = require("./helpers/referencedvds")
 
 test(`add a reference dvd`, async () =>
 {
-    const dvdDetails = referencedvdFunctions.generateReferenceDVDDetails();
-    const res = await referencedvdFunctions.addAReferenceDVD(dvdDetails);
+    const dvdDetails = referenceDVDFunctions.generateReferenceDVDDetails();
+    const res = await referenceDVDFunctions.addAReferenceDVD(dvdDetails);
     expect(res.status).toBe(201);
     expect(res.body).toMatchObject(dvdDetails)
 })
