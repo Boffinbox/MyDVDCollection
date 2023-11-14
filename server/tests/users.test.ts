@@ -8,17 +8,34 @@ const api = "/api/v1"
 const jwt = require("jsonwebtoken")
 const cookieFunctions = require("./helpers/cookies.ts");
 
-// add functions here
-
-function generateUserDetails(username: string = "boff", email: string = "boff@test.co.uk", password: string = "1234")
+// interfaces
+interface IUserDetails
 {
-    return { username, email, password }
+    username: string;
+    email: string;
+    password: string;
 }
 
-async function registerAUser(userDetails)
+// add functions here
+// generate user details, if none provided, returns a "boff" user details
+function generateUserDetails(username = "boff", email = "boff@test.co.uk", password = "1234")
+{
+    const userDetails: IUserDetails = { username, email, password }
+    return userDetails
+}
+
+async function registerAUser(userDetails: IUserDetails)
 {
     const res = await request(app)
         .post(`${api}/users/register`)
+        .send(userDetails);
+    return res;
+}
+
+async function loginAUser(userDetails: IUserDetails)
+{
+    const res = await request(app)
+        .post(`${api}/users/login`)
         .send(userDetails);
     return res;
 }
@@ -32,7 +49,7 @@ test(`add a user with username, email and password`, async () =>
     expect(userResult.username).toBe(userDetails.username);
 });
 
-test(`duplicate test, to check for test db dropping correctly`, async () =>
+test(`duplicate test, to check for correct test cleaning`, async () =>
 {
     const userDetails = generateUserDetails();
     const res = await registerAUser(userDetails);
@@ -45,9 +62,7 @@ test(`login using a registered user's details`, async () =>
 {
     const userDetails = generateUserDetails();
     await registerAUser(userDetails);
-    const res = await request(app)
-        .post(`${api}/users/login`)
-        .send(userDetails);
+    const res = await loginAUser(userDetails);
     const userResult = jwt.verify(res.body.token, process.env.JWT_SECRET);
     const refreshToken = cookieFunctions.getRefreshTokenFromResponseHeader(res.headers["set-cookie"]);
     const refreshResult = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
@@ -60,9 +75,7 @@ test(`refresh a refresh token and check refresh count has increased`, async () =
 {
     const userDetails = generateUserDetails();
     await registerAUser(userDetails);
-    const reqOne = await request(app)
-        .post(`${api}/users/login`)
-        .send(userDetails);
+    const reqOne = await loginAUser(userDetails);
     const refreshTokenOne = cookieFunctions.getRefreshTokenFromResponseHeader(reqOne.headers["set-cookie"]);
     const refreshTokenOneDecoded = jwt.verify(refreshTokenOne, process.env.REFRESH_TOKEN_SECRET);
     const refreshTokenOneRawCookie = cookieFunctions.getRefreshTokenCookieFromArray(reqOne.headers["set-cookie"])
