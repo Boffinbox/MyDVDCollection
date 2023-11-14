@@ -1,16 +1,18 @@
+export { };
+
 const express = require("express")
 const router = express.Router({ mergeParams: true });
 
 const { verifyUser } = require("../auth/authenticate");
 const TryCatchAsync = require("../helpers/TryCatchAsync")
 
-import
-{
-    ReferenceDVDModel,
-    DVDModel,
-    DiscCollectionModel,
-    UserModel
-} from "../models"
+const
+    {
+        ReferenceDVDModel,
+        DVDModel,
+        DiscCollectionModel,
+        UserModel
+    } = require("../models")
 
 // dvd logic
 // add a dvd to an existing collection by dvd barcode

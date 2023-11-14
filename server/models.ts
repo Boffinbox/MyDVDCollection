@@ -21,7 +21,7 @@ setGlobalOptions(
     }
 )
 
-export class ReferenceDVD
+class ReferenceDVD
 {
     @prop({ required: true })
     title!: string;
@@ -30,7 +30,7 @@ export class ReferenceDVD
     barcode!: string;
 }
 
-export class DVD
+class DVD
 {
     @prop({ ref: () => ReferenceDVD })
     referenceDVD!: Ref<ReferenceDVD>;
@@ -54,7 +54,7 @@ export class DVD
         })
     }
 })
-export class DiscCollection
+class DiscCollection
 {
     @prop({ required: true })
     title!: string
@@ -63,7 +63,7 @@ export class DiscCollection
     discs!: Ref<DVD>[];
 }
 
-export class Session
+class Session
 {
     @prop({ required: true, default: "" })
     refreshToken!: string
@@ -92,7 +92,7 @@ const emailRegExpLiteral =
         usernameLowerCase: true,
         usernameUnique: true
     })
-export class User
+class User
 {
     @prop({ required: true, default: "" })
     username!: string

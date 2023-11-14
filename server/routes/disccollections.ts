@@ -1,10 +1,12 @@
+export { };
+
 const express = require("express")
 const router = express.Router();
 
 const { verifyUser } = require("../auth/authenticate");
 const TryCatchAsync = require("../helpers/TryCatchAsync")
 
-import { DiscCollectionModel, UserModel } from "../models"
+const { DiscCollectionModel, UserModel } = require("../models")
 
 // disc collection restful routing
 // index a list of all disc collections (in future: only DCs that user is authorized to see)

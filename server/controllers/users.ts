@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken")
 const { getToken, getRefreshToken, COOKIE_OPTIONS } = require("../auth/authenticate");
 
-import { UserModel } from "../models"
+const { UserModel } = require("../models")
 
 export async function register(req, res)
 {
