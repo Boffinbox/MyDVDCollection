@@ -80,7 +80,20 @@ router.post("/refreshToken", TryCatchAsync(async (req, res, next) =>
         return res.status(401).send("Unauthorized");
     }
     const token = getToken({ _id: userId });
-    const newRefreshToken = getRefreshToken({ _id: userId });
+    // times refreshed routine
+    // this ensures a completely new token is sent back with a request
+    // even if two refreshes are called in the same second.
+    let timesRefreshed = 0;
+    if (!payload.refreshCount)
+    {
+        timesRefreshed = 0;
+    }
+    else
+    {
+        timesRefreshed = payload.refreshCount
+    }
+    timesRefreshed = timesRefreshed + 1;
+    const newRefreshToken = getRefreshToken({ _id: userId, username: user.username, refreshCount: timesRefreshed });
     user.refreshTokens[tokenIndex] = { refreshToken: newRefreshToken }
     user.save().then((user) =>
     {

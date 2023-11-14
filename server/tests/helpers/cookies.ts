@@ -1,6 +1,6 @@
 export { };
 
-function selectCookieStringFromArray(cookies: string[])
+export function getRefreshTokenCookieFromArray(cookies: string[])
 {
     return cookies[cookies.findIndex((cookie) => cookie.includes("refreshToken"))];
 }
@@ -24,9 +24,9 @@ function getRefreshTokenFromCookieObject(cookie): string
     return theFirstThreeParts;
 }
 
-exports.getRefreshTokenFromResponseHeader = function (cookies: string[]): string
+export function getRefreshTokenFromResponseHeader(cookies: string[]): string
 {
-    const cookieOfInterest = selectCookieStringFromArray(cookies);
+    const cookieOfInterest = getRefreshTokenCookieFromArray(cookies);
     const cookieOfInterestObject = convertCookieStringToObject(cookieOfInterest);
     const actualRefreshToken = getRefreshTokenFromCookieObject(cookieOfInterestObject);
     return actualRefreshToken;

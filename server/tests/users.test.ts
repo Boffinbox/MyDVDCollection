@@ -52,5 +52,33 @@ test(`login using a registered user's details`, async () =>
     expect(res.status).toBe(200);
     expect(userResult.username).toBe(userDetails.username);
     expect(refreshResult.username).toBe(userDetails.username);
+})
 
+test(`refresh a refresh token and check refresh count has increased`, async () =>
+{
+    const userDetails = generateUserDetails();
+    await request(app)
+        .post(`${api}/users/register`)
+        .send(userDetails);
+    const reqOne = await request(app)
+        .post(`${api}/users/login`)
+        .send(userDetails);
+    const refreshTokenOne = cookieFunctions.getRefreshTokenFromResponseHeader(reqOne.headers["set-cookie"]);
+    const refreshTokenOneDecoded = jwt.verify(refreshTokenOne, process.env.REFRESH_TOKEN_SECRET);
+    const refreshTokenOneRawCookie = cookieFunctions.getRefreshTokenCookieFromArray(reqOne.headers["set-cookie"])
+    const reqTwo = await request(app)
+        .post(`${api}/users/refreshToken`)
+        .set(`Cookie`, [refreshTokenOneRawCookie])
+        .send();
+    const refreshTokenTwo = cookieFunctions.getRefreshTokenFromResponseHeader(reqTwo.headers["set-cookie"]);
+    const refreshTokenTwoDecoded = jwt.verify(refreshTokenTwo, process.env.REFRESH_TOKEN_SECRET);
+    const refreshTokenTwoRawCookie = cookieFunctions.getRefreshTokenCookieFromArray(reqTwo.headers["set-cookie"])
+    expect(refreshTokenOneDecoded._id).toEqual(refreshTokenTwoDecoded._id);
+    const reqThree = await request(app)
+        .post(`${api}/users/refreshToken`)
+        .set(`Cookie`, [refreshTokenTwoRawCookie])
+        .send();
+    const refreshTokenThree = cookieFunctions.getRefreshTokenFromResponseHeader(reqThree.headers["set-cookie"]);
+    const refreshTokenThreeDecoded = jwt.verify(refreshTokenThree, process.env.REFRESH_TOKEN_SECRET);
+    expect(refreshTokenTwoDecoded.refreshCount).toBeLessThan(refreshTokenThreeDecoded.refreshCount);
 })
