@@ -44,18 +44,18 @@ test(`add a user with username, email and password`, async () =>
 {
     const userDetails = generateUserDetails();
     const res = await registerAUser(userDetails);
-    const userResult = jwt.verify(res.body.token, process.env.JWT_SECRET);
+    const userTokenPayload = jwt.verify(res.body.token, process.env.JWT_SECRET);
     expect(res.status).toBe(201);
-    expect(userResult.username).toBe(userDetails.username);
+    expect(userTokenPayload.username).toEqual(userDetails.username);
 });
 
 test(`duplicate test, to check for correct test cleaning`, async () =>
 {
     const userDetails = generateUserDetails();
     const res = await registerAUser(userDetails);
-    const userResult = jwt.verify(res.body.token, process.env.JWT_SECRET);
+    const userTokenPayload = jwt.verify(res.body.token, process.env.JWT_SECRET);
     expect(res.status).toBe(201);
-    expect(userResult.username).toBe(userDetails.username);
+    expect(userTokenPayload.username).toEqual(userDetails.username);
 });
 
 test(`login using a registered user's details`, async () =>
@@ -63,9 +63,9 @@ test(`login using a registered user's details`, async () =>
     const userDetails = generateUserDetails();
     await registerAUser(userDetails);
     const res = await loginAUser(userDetails);
+    const userTokenPayload = jwt.verify(res.body.token, process.env.JWT_SECRET);
     const refreshToken = cookieFunctions.getRefreshTokenFromResponseHeader(res.headers["set-cookie"]);
     const refreshTokenPayload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    const userTokenPayload = jwt.verify(res.body.token, process.env.JWT_SECRET);
     expect(res.status).toBe(200);
     expect(userTokenPayload.username).toEqual(userDetails.username);
     expect(refreshTokenPayload.username).toEqual(userDetails.username);
@@ -76,22 +76,15 @@ test(`refresh a refresh token and check refresh count has increased`, async () =
     const userDetails = generateUserDetails();
     await registerAUser(userDetails);
     const reqOne = await loginAUser(userDetails);
+    const refreshTokenOneCookie = cookieFunctions.getRefreshTokenCookieFromResponseHeader(reqOne.headers["set-cookie"])
     const refreshTokenOne = cookieFunctions.getRefreshTokenFromResponseHeader(reqOne.headers["set-cookie"]);
     const refreshTokenOneDecoded = jwt.verify(refreshTokenOne, process.env.REFRESH_TOKEN_SECRET);
-    const refreshTokenOneRawCookie = cookieFunctions.getRefreshTokenCookieFromArray(reqOne.headers["set-cookie"])
     const reqTwo = await request(app)
         .post(`${api}/users/refreshToken`)
-        .set(`Cookie`, [refreshTokenOneRawCookie])
+        .set(`Cookie`, [refreshTokenOneCookie])
         .send();
     const refreshTokenTwo = cookieFunctions.getRefreshTokenFromResponseHeader(reqTwo.headers["set-cookie"]);
     const refreshTokenTwoDecoded = jwt.verify(refreshTokenTwo, process.env.REFRESH_TOKEN_SECRET);
-    const refreshTokenTwoRawCookie = cookieFunctions.getRefreshTokenCookieFromArray(reqTwo.headers["set-cookie"])
-    expect(refreshTokenOneDecoded._id).toEqual(refreshTokenTwoDecoded._id);
-    const reqThree = await request(app)
-        .post(`${api}/users/refreshToken`)
-        .set(`Cookie`, [refreshTokenTwoRawCookie])
-        .send();
-    const refreshTokenThree = cookieFunctions.getRefreshTokenFromResponseHeader(reqThree.headers["set-cookie"]);
-    const refreshTokenThreeDecoded = jwt.verify(refreshTokenThree, process.env.REFRESH_TOKEN_SECRET);
-    expect(refreshTokenTwoDecoded.refreshCount).toBeLessThan(refreshTokenThreeDecoded.refreshCount);
+    expect(refreshTokenTwoDecoded._id).toEqual(refreshTokenOneDecoded._id);
+    expect(refreshTokenTwoDecoded.refreshCount).toBeGreaterThan(refreshTokenOneDecoded.refreshCount);
 })
