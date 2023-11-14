@@ -91,23 +91,20 @@ router.delete("/:collectionId", verifyUser, TryCatchAsync(async (req, res, next)
         return res.status(401).send("Unauthorized");
     }
     const { collectionId } = req.params
-    if (user.collections.includes(collectionId))
-    {
-        console.log("Someone tried to use API to post a disc collection");
-        console.log(`using the param ${collectionId}`)
-        const collectionToDelete = await DiscCollectionModel.findOneAndDelete(
-            {
-                _id: collectionId
-            }
-        )
-        console.log(`Collection ${collectionToDelete} is possibly removed from DB`);
-        await UserModel.findByIdAndUpdate(userId, { $pull: { collections: collectionId } });
-        res.status(200).json(collectionToDelete);
-    }
-    else
+    if (!user.collections.includes(collectionId))
     {
         return res.status(401).send("Unauthorized");
     }
+    console.log("Someone tried to use API to post a disc collection");
+    console.log(`using the param ${collectionId}`)
+    const collectionToDelete = await DiscCollectionModel.findOneAndDelete(
+        {
+            _id: collectionId
+        }
+    )
+    console.log(`Collection ${collectionToDelete} is possibly removed from DB`);
+    await UserModel.findByIdAndUpdate(userId, { $pull: { collections: collectionId } });
+    res.status(200).json(collectionToDelete);
 }));
 
 module.exports = router;
