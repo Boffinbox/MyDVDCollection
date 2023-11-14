@@ -18,8 +18,8 @@ router.post("/register", TryCatchAsync(async (req, res, next) =>
     const { username, email, password }: { username: string, email: string, password: string } = req.body;
     const newUser = await UserModel.register(new UserModel({ username, email }), password)
     const token = await getToken({ _id: newUser._id, username: newUser.username })
-    const refreshToken = await getRefreshToken({ _id: newUser._id, username: newUser.username })
-    await newUser.refreshTokens.push({ refreshToken })
+    const refreshToken = await getRefreshToken({ _id: newUser._id, username: newUser.username, refreshCount: 0 })
+    await newUser.refreshTokens.push({ refreshToken, refreshCount: 0 })
     newUser.save().then((user) =>
     {
         return res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS).status(201).json({ success: true, token })
@@ -102,9 +102,14 @@ router.post("/logout", verifyUser, TryCatchAsync(async (req, res, next) =>
     {
         return res.status(401).send("Unauthorized");
     }
+    const refreshPayload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
     const userId = req.user._id
     const user = await UserModel.findById({ _id: userId });
     if (!user)
+    {
+        return res.status(401).send("Unauthorized");
+    }
+    if (user.username != refreshPayload.username)
     {
         return res.status(401).send("Unauthorized");
     }
@@ -115,7 +120,7 @@ router.post("/logout", verifyUser, TryCatchAsync(async (req, res, next) =>
     user.refreshTokens = filteredTokenList;
     user.save().then((user) =>
     {
-        return res.clearCookie("refreshToken", COOKIE_OPTIONS).send({ success: true })
+        return res.clearCookie("refreshToken", COOKIE_OPTIONS).status(200).send({ success: true })
     }
     ).catch((err) =>
     {

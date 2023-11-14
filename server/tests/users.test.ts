@@ -88,3 +88,22 @@ test(`refresh a refresh token and check refresh count has increased`, async () =
     expect(refreshTokenTwoDecoded._id).toEqual(refreshTokenOneDecoded._id);
     expect(refreshTokenTwoDecoded.refreshCount).toBeGreaterThan(refreshTokenOneDecoded.refreshCount);
 })
+
+test(`make a user, login, then logout, then try to misuse the invalid refresh token`, async () =>
+{
+    const userDetails = generateUserDetails();
+    await registerAUser(userDetails);
+    const reqOne = await loginAUser(userDetails);
+    const refreshTokenCookie = cookieFunctions.getRefreshTokenCookieFromResponseHeader(reqOne.headers["set-cookie"])
+    const logout = await request(app)
+        .post(`${api}/users/logout`)
+        .set(`Cookie`, [refreshTokenCookie])
+        .set(`Authorization`, `Bearer ${reqOne.body.token}`)
+        .send();
+    expect(logout.status).toBe(200);
+    const reqTwo = await request(app)
+        .post(`${api}/users/refreshToken`)
+        .set(`Cookie`, [refreshTokenCookie])
+        .send();
+    expect(reqTwo.status).toBe(401);
+})
