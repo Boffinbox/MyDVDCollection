@@ -63,12 +63,12 @@ test(`login using a registered user's details`, async () =>
     const userDetails = generateUserDetails();
     await registerAUser(userDetails);
     const res = await loginAUser(userDetails);
-    const userResult = jwt.verify(res.body.token, process.env.JWT_SECRET);
     const refreshToken = cookieFunctions.getRefreshTokenFromResponseHeader(res.headers["set-cookie"]);
-    const refreshResult = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const refreshTokenPayload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const userTokenPayload = jwt.verify(res.body.token, process.env.JWT_SECRET);
     expect(res.status).toBe(200);
-    expect(userResult.username).toBe(userDetails.username);
-    expect(refreshResult.username).toBe(userDetails.username);
+    expect(userTokenPayload.username).toEqual(userDetails.username);
+    expect(refreshTokenPayload.username).toEqual(userDetails.username);
 })
 
 test(`refresh a refresh token and check refresh count has increased`, async () =>

@@ -42,7 +42,7 @@ router.post("/login", passport.authenticate("local", { session: false }), TryCat
     else
     {
         const token = await getToken({ _id: user._id, username: user.username })
-        const refreshToken = await getRefreshToken({ _id: user._id, username: user.username })
+        const refreshToken = await getRefreshToken({ _id: user._id, username: user.username, refreshCount: 0 })
         user.refreshTokens.push({ refreshToken, refreshCount: 0 })
         user.save().then((user) =>
         {
@@ -79,9 +79,10 @@ router.post("/refreshToken", TryCatchAsync(async (req, res, next) =>
     {
         return res.status(401).send("Unauthorized");
     }
+    const newRefreshCount = user.refreshTokens[tokenIndex].refreshCount + 1
     const token = getToken({ _id: userId });
-    const newRefreshToken = getRefreshToken({ _id: userId, username: user.username });
-    user.refreshTokens[tokenIndex] = { refreshToken: newRefreshToken, refreshCount: user.refreshTokens[tokenIndex].refreshCount + 1 }
+    const newRefreshToken = getRefreshToken({ _id: userId, username: user.username, refreshCount: newRefreshCount });
+    user.refreshTokens[tokenIndex] = { refreshToken: newRefreshToken, refreshCount: newRefreshCount }
     user.save().then((user) =>
     {
         return res.cookie("refreshToken", newRefreshToken, COOKIE_OPTIONS).send({ success: true, token })
