@@ -15,12 +15,18 @@ function generateUserDetails(username: string = "boff", email: string = "boff@te
     return { username, email, password }
 }
 
-test(`add a user with username, email and password`, async () =>
+async function registerAUser(userDetails)
 {
-    const userDetails = generateUserDetails();
     const res = await request(app)
         .post(`${api}/users/register`)
         .send(userDetails);
+    return res;
+}
+
+test(`add a user with username, email and password`, async () =>
+{
+    const userDetails = generateUserDetails();
+    const res = await registerAUser(userDetails);
     const userResult = jwt.verify(res.body.token, process.env.JWT_SECRET);
     expect(res.status).toBe(201);
     expect(userResult.username).toBe(userDetails.username);
@@ -29,9 +35,7 @@ test(`add a user with username, email and password`, async () =>
 test(`duplicate test, to check for test db dropping correctly`, async () =>
 {
     const userDetails = generateUserDetails();
-    const res = await request(app)
-        .post(`${api}/users/register`)
-        .send(userDetails);
+    const res = await registerAUser(userDetails);
     const userResult = jwt.verify(res.body.token, process.env.JWT_SECRET);
     expect(res.status).toBe(201);
     expect(userResult.username).toBe(userDetails.username);
@@ -40,9 +44,7 @@ test(`duplicate test, to check for test db dropping correctly`, async () =>
 test(`login using a registered user's details`, async () =>
 {
     const userDetails = generateUserDetails();
-    await request(app)
-        .post(`${api}/users/register`)
-        .send(userDetails);
+    await registerAUser(userDetails);
     const res = await request(app)
         .post(`${api}/users/login`)
         .send(userDetails);
@@ -57,9 +59,7 @@ test(`login using a registered user's details`, async () =>
 test(`refresh a refresh token and check refresh count has increased`, async () =>
 {
     const userDetails = generateUserDetails();
-    await request(app)
-        .post(`${api}/users/register`)
-        .send(userDetails);
+    await registerAUser(userDetails);
     const reqOne = await request(app)
         .post(`${api}/users/login`)
         .send(userDetails);
