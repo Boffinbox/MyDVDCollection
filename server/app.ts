@@ -40,6 +40,12 @@ app.use("/api/v1/referencedvds", referencedvdRoutes)
 app.use("/api/v1/disccollections", disccollectionRoutes)
 app.use("/api/v1/disccollections/:collectionId/dvds", dvdRoutes)
 
+// heartbeat route
+app.get("/heartbeat", async (req, res) =>
+{
+    res.status(200).json({ message: "i am alive" });
+})
+
 // error handling
 app.use((req, res, next) =>
 {

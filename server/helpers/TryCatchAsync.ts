@@ -11,3 +11,5 @@ export function TryCatchAsync(fn)
         fn(req, res, next).catch((e) => next(e));
     }
 }
+
+module.exports = TryCatchAsync;

@@ -6,51 +6,73 @@ const api = "/api/v1"
 
 // add defines here
 const jwt = require("jsonwebtoken")
-const cookieFunctions = require("./helpers/cookies.ts");
-
-// add functions here
-
-function generateUserDetails(username: string = "boff", email: string = "boff@test.co.uk", password: string = "1234")
-{
-    return { username, email, password }
-}
+const cookieFunctions = require("./helpers/cookies");
+const userFunctions = require("./helpers/users")
 
 test(`add a user with username, email and password`, async () =>
 {
-    const userDetails = generateUserDetails();
-    const res = await request(app)
-        .post(`${api}/users/register`)
-        .send(userDetails);
-    const userResult = jwt.verify(res.body.token, process.env.JWT_SECRET);
+    const userDetails = userFunctions.generateUserDetails();
+    const res = await userFunctions.registerAUser(userDetails);
+    const userTokenPayload = jwt.verify(res.body.token, process.env.JWT_SECRET);
     expect(res.status).toBe(201);
-    expect(userResult.username).toBe(userDetails.username);
+    expect(userTokenPayload.username).toEqual(userDetails.username);
 });
 
-test(`duplicate test, to check for test db dropping correctly`, async () =>
+test(`duplicate test, to check for correct test cleaning`, async () =>
 {
-    const userDetails = generateUserDetails();
-    const res = await request(app)
-        .post(`${api}/users/register`)
-        .send(userDetails);
-    const userResult = jwt.verify(res.body.token, process.env.JWT_SECRET);
+    const userDetails = userFunctions.generateUserDetails();
+    const res = await userFunctions.registerAUser(userDetails);
+    const userTokenPayload = jwt.verify(res.body.token, process.env.JWT_SECRET);
     expect(res.status).toBe(201);
-    expect(userResult.username).toBe(userDetails.username);
+    expect(userTokenPayload.username).toEqual(userDetails.username);
 });
 
 test(`login using a registered user's details`, async () =>
 {
-    const userDetails = generateUserDetails();
-    await request(app)
-        .post(`${api}/users/register`)
-        .send(userDetails);
-    const res = await request(app)
-        .post(`${api}/users/login`)
-        .send(userDetails);
-    const userResult = jwt.verify(res.body.token, process.env.JWT_SECRET);
+    const userDetails = userFunctions.generateUserDetails();
+    await userFunctions.registerAUser(userDetails);
+    const res = await userFunctions.loginAUser(userDetails);
+    const userTokenPayload = jwt.verify(res.body.token, process.env.JWT_SECRET);
     const refreshToken = cookieFunctions.getRefreshTokenFromResponseHeader(res.headers["set-cookie"]);
-    const refreshResult = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const refreshTokenPayload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     expect(res.status).toBe(200);
-    expect(userResult.username).toBe(userDetails.username);
-    expect(refreshResult.username).toBe(userDetails.username);
+    expect(userTokenPayload.username).toEqual(userDetails.username);
+    expect(refreshTokenPayload.username).toEqual(userDetails.username);
+})
 
+test(`refresh a refresh token and check refresh count has increased`, async () =>
+{
+    const userDetails = userFunctions.generateUserDetails();
+    await userFunctions.registerAUser(userDetails);
+    const resOne = await userFunctions.loginAUser(userDetails);
+    const refreshTokenOneCookie = cookieFunctions.getRefreshTokenCookieFromResponseHeader(resOne.headers["set-cookie"])
+    const refreshTokenOne = cookieFunctions.getRefreshTokenFromResponseHeader(resOne.headers["set-cookie"]);
+    const refreshTokenOneDecoded = jwt.verify(refreshTokenOne, process.env.REFRESH_TOKEN_SECRET);
+    const resTwo = await request(app)
+        .post(`${api}/users/refreshToken`)
+        .set(`Cookie`, [refreshTokenOneCookie])
+        .send();
+    const refreshTokenTwo = cookieFunctions.getRefreshTokenFromResponseHeader(resTwo.headers["set-cookie"]);
+    const refreshTokenTwoDecoded = jwt.verify(refreshTokenTwo, process.env.REFRESH_TOKEN_SECRET);
+    expect(refreshTokenTwoDecoded._id).toEqual(refreshTokenOneDecoded._id);
+    expect(refreshTokenTwoDecoded.refreshCount).toBeGreaterThan(refreshTokenOneDecoded.refreshCount);
+})
+
+test(`make a user, login, then logout, then try to misuse the invalid refresh token`, async () =>
+{
+    const userDetails = userFunctions.generateUserDetails();
+    await userFunctions.registerAUser(userDetails);
+    const resOne = await userFunctions.loginAUser(userDetails);
+    const refreshTokenCookie = cookieFunctions.getRefreshTokenCookieFromResponseHeader(resOne.headers["set-cookie"])
+    const logout = await request(app)
+        .post(`${api}/users/logout`)
+        .set(`Cookie`, [refreshTokenCookie])
+        .set(`Authorization`, `Bearer ${resOne.body.token}`)
+        .send();
+    expect(logout.status).toBe(200);
+    const resTwo = await request(app)
+        .post(`${api}/users/refreshToken`)
+        .set(`Cookie`, [refreshTokenCookie])
+        .send();
+    expect(resTwo.status).toBe(401);
 })
