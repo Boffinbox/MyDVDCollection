@@ -4,15 +4,15 @@ const request = require("supertest");
 const app = require("../app.ts");
 const api = "/api/v1"
 
-test(`should return a json with the status message "it worked"`, async () =>
+test(`should return a heartbeat json with the status message "i am alive"`, async () =>
 {
     const res = await request(app)
-        .get(`${api}/referencedvds/testroute`);
+        .get(`/heartbeat`);
     expect(res.status).toBe(200);
-    expect(res.body.status).toBe("it worked");
+    expect(res.body.message).toBe("i am alive");
 })
 
-test(`should return a json with empty data from test db`, async () =>
+test(`should return a json with empty refdvd data from test db`, async () =>
 {
     const res = await request(app)
         .get(`${api}/referencedvds/`);
