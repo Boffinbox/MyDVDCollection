@@ -30,23 +30,20 @@ export async function showCollection(req, res)
     {
         return res.status(401).send("Unauthorized");
     }
-    if (user.collections.includes(req.params.collectionId))
-    {
-        const collectionOfConcern = await DiscCollectionModel
-            .findOne({ _id: req.params.collectionId })
-            .populate({
-                path: "discs",
-                populate: {
-                    path: "referenceDVD"
-                }
-            })
-            .exec();
-        return res.status(200).json(collectionOfConcern);
-    }
-    else
+    if (!user.collections.includes(req.params.collectionId))
     {
         return res.status(401).send("Unauthorized");
     }
+    const collectionOfConcern = await DiscCollectionModel
+        .findOne({ _id: req.params.collectionId })
+        .populate({
+            path: "discs",
+            populate: {
+                path: "referenceDVD"
+            }
+        })
+        .exec();
+    return res.status(200).json(collectionOfConcern);
 }
 
 export async function newCollection(req, res)

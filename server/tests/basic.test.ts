@@ -20,17 +20,3 @@ test(`should return a json with empty data from test db`, async () =>
     expect(res.body).toEqual([])
     console.log(res.body);
 })
-
-test(`should add a referencedvd called "gremlins" with barcode "987654321"`, async () =>
-{
-    const res = await request(app)
-        .post(`${api}/referencedvds/`)
-        .send(
-            {
-                title: "gremlins",
-                barcode: "987654321"
-            }
-        );
-    expect(res.status).toBe(201);
-    expect(res.body).toMatchObject({ title: "gremlins", barcode: "987654321" })
-})

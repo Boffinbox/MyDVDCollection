@@ -5,8 +5,8 @@ const app = require("../app.ts");
 const api = "/api/v1"
 
 // add defines here
-const jwt = require("jsonwebtoken")
 const userFunctions = require("./helpers/users")
+const discCollectionFunctions = require("./helpers/disccollections");
 
 test(`add a collection to a known user`, async () =>
 {
@@ -15,12 +15,10 @@ test(`add a collection to a known user`, async () =>
     const userToken = registerRes.body.token
     expect(registerRes.status).toBe(201);
 
-    const res = await request(app)
-        .post(`${api}/disccollections`)
-        .set(`Authorization`, `Bearer ${userToken}`)
-        .send({ title: "My Test Collection" });
+    const title = "My Test Collection"
+    const res = await discCollectionFunctions.newCollection(userToken, title);
     expect(res.status).toBe(201);
-    expect(res.body.title).toEqual("My Test Collection");
+    expect(res.body.title).toEqual(title);
 })
 
 test(`retrieve a known collection for a known user`, async () =>
@@ -30,20 +28,16 @@ test(`retrieve a known collection for a known user`, async () =>
     const userToken = registerRes.body.token
     expect(registerRes.status).toBe(201);
 
-    const resOne = await request(app)
-        .post(`${api}/disccollections`)
-        .set(`Authorization`, `Bearer ${userToken}`)
-        .send({ title: "My Test Collection" });
+    const title = "My Test Collection"
+    const resOne = await discCollectionFunctions.newCollection(userToken, title);
     expect(resOne.status).toBe(201);
-    expect(resOne.body.title).toEqual("My Test Collection");
+    expect(resOne.body.title).toEqual(title);
 
-    const resTwo = await request(app)
-        .get(`${api}/disccollections/${resOne.body._id}`)
-        .set(`Authorization`, `Bearer ${userToken}`)
-        .send();
+    const collId = resOne.body._id
+    const resTwo = await discCollectionFunctions.getCollection(userToken, collId)
     expect(resTwo.status).toBe(200);
-    expect(resOne.body._id).toEqual(resTwo.body._id);
-    expect(resOne.body.title).toEqual(resTwo.body.title);
+    expect(resTwo.body._id).toEqual(collId);
+    expect(resTwo.body.title).toEqual(title);
     expect(resTwo.body.discs).toEqual([]);
 })
 
@@ -54,17 +48,13 @@ test(`delete a known collection for a known user`, async () =>
     const userToken = registerRes.body.token
     expect(registerRes.status).toBe(201);
 
-    const resOne = await request(app)
-        .post(`${api}/disccollections`)
-        .set(`Authorization`, `Bearer ${userToken}`)
-        .send({ title: "My Test Collection" });
+    const title = "My Test Collection"
+    const resOne = await discCollectionFunctions.newCollection(userToken, title);
     expect(resOne.status).toBe(201);
-    expect(resOne.body.title).toEqual("My Test Collection");
+    expect(resOne.body.title).toEqual(title);
 
-    const getResOne = await request(app)
-        .get(`${api}/disccollections/${resOne.body._id}`)
-        .set(`Authorization`, `Bearer ${userToken}`)
-        .send();
+    const collId = resOne.body._id
+    const getResOne = await discCollectionFunctions.getCollection(userToken, collId)
     expect(getResOne.status).toBe(200);
 
     const resTwo = await request(app)
@@ -73,10 +63,7 @@ test(`delete a known collection for a known user`, async () =>
         .send();
     expect(resTwo.status).toBe(200);
 
-    const getResTwo = await request(app)
-        .get(`${api}/disccollections/${resOne.body._id}`)
-        .set(`Authorization`, `Bearer ${userToken}`)
-        .send();
+    const getResTwo = await discCollectionFunctions.getCollection(userToken, collId)
     expect(getResTwo.status).toBe(401);
 })
 
@@ -87,33 +74,26 @@ test(`retrieve all collections for a known user`, async () =>
     const userToken = registerRes.body.token
     expect(registerRes.status).toBe(201);
 
-    const collOne = await request(app)
-        .post(`${api}/disccollections`)
-        .set(`Authorization`, `Bearer ${userToken}`)
-        .send({ title: "My First Collection" });
-    expect(collOne.status).toBe(201);
-    expect(collOne.body.title).toEqual("My First Collection");
-
-    const collTwo = await request(app)
-        .post(`${api}/disccollections`)
-        .set(`Authorization`, `Bearer ${userToken}`)
-        .send({ title: "My Second Collection" });
-    expect(collTwo.status).toBe(201);
-    expect(collTwo.body.title).toEqual("My Second Collection");
-
-    const collThree = await request(app)
-        .post(`${api}/disccollections`)
-        .set(`Authorization`, `Bearer ${userToken}`)
-        .send({ title: "My Third Collection" });
-    expect(collThree.status).toBe(201);
-    expect(collThree.body.title).toEqual("My Third Collection");
+    // don't use duplicate titles here, we're checking for string match.
+    const titles = ["My Zeroth Collection", "My First Collection", "My Second Collection"]
+    for (let i = 0; i < titles.length; i++)
+    {
+        await discCollectionFunctions.newCollection(userToken, titles[i]);
+    }
 
     const res = await request(app)
         .get(`${api}/disccollections`)
         .set(`Authorization`, `Bearer ${userToken}`)
         .send();
-    expect(res.body.length).toEqual(3);
-    expect(res.body[0].title).toEqual("My First Collection");
-    expect(res.body[1].title).toEqual("My Second Collection");
-    expect(res.body[2].title).toEqual("My Third Collection");
+    expect(res.body.length).toEqual(titles.length);
+
+    for (let i = 0; i < titles.length; i++)
+    {
+        // we have to do it like this because mongodb could return
+        // the collections in the ""wrong"" order,
+        // so it's safer to assume collection array arrives unsorted.
+        const coll = res.body.findIndex((coll) => coll.title.includes(titles[i]))
+        // console.log("found: " + res.body[coll].title + ", expected: " + titles[i])
+        expect(res.body[coll].title).toEqual(titles[i]);
+    }
 })
