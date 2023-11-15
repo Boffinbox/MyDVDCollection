@@ -4,7 +4,7 @@ const request = require("supertest");
 const app = require("../../app.ts");
 const api = "/api/v1"
 
-export async function newCollection(userToken: string, title: string)
+export async function newCollection(userToken: string, title: string = "My Test Collection")
 {
     const res = await request(app)
         .post(`${api}/disccollections`)
