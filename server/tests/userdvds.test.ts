@@ -28,7 +28,7 @@ async function testDVDSetup(
     const collId = newColl.body._id;
 
     const dvdRes = await request(app)
-        .post(`${api}/disccollections/${collId}/dvds/${refDVDDetails.barcode}`)
+        .post(`${api}/disccollections/${collId}/userdvds/${refDVDDetails.barcode}`)
         .set(`Authorization`, `Bearer ${userToken}`)
         .send();
 
@@ -64,7 +64,7 @@ test(`update a dvd in a user's collection, setting rating to 200 and watched to 
     expect(testSetup.dvdRes.status).toBe(201);
 
     const patchRes = await request(app)
-        .patch(`${api}/disccollections/${testSetup.collId}/dvds/${testSetup.dvd._id}`)
+        .patch(`${api}/disccollections/${testSetup.collId}/userdvds/${testSetup.dvd._id}`)
         .set(`Authorization`, `Bearer ${testSetup.userToken}`)
         .send({ rating: 200, watched: true });
     expect(patchRes.status).toBe(200);
@@ -83,7 +83,7 @@ test(`delete an existing dvd`, async () =>
     expect(testSetup.dvdRes.status).toBe(201);
 
     const deleteRes = await request(app)
-        .delete(`${api}/disccollections/${testSetup.collId}/dvds/${testSetup.dvd._id}`)
+        .delete(`${api}/disccollections/${testSetup.collId}/userdvds/${testSetup.dvd._id}`)
         .set(`Authorization`, `Bearer ${testSetup.userToken}`)
         .send();
     expect(deleteRes.status).toBe(200);

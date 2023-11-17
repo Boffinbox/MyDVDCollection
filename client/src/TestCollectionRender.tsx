@@ -61,7 +61,11 @@ export function TestCollectionRender()
         console.log("Form submitted!");
         console.log("Coll ID to modify is: ", formData.id);
         console.log("Barcode to add: ", formData.barcode);
-        axios.post(`/api/v1/disccollections/${formData.id}/dvds/${formData.barcode}`).then(() =>
+        const config =
+        {
+            headers: { Authorization: `Bearer ${user.token}` }
+        }
+        axios.post(`/api/v1/disccollections/${formData.id}/userdvds/${formData.barcode}`, {}, config).then(() =>
         {
             console.log("Post request received.");
         }).catch((e) =>
@@ -126,7 +130,7 @@ export function TestCollectionRender()
                                         rating: disc.rating + 1,
                                         watched: !disc.watched
                                     }
-                                    axios.patch(`/api/v1/disccollections/${coll._id}/dvds/${disc._id}`, userData).then(() =>
+                                    axios.patch(`/api/v1/disccollections/${coll._id}/userdvds/${disc._id}`, userData).then(() =>
                                     {
                                         console.log("Delete request received.");
                                     }).catch((e) =>
@@ -140,7 +144,7 @@ export function TestCollectionRender()
                                 <form action="" onSubmit={function (evt)
                                 {
                                     evt.preventDefault();
-                                    axios.delete(`/api/v1/disccollections/${coll._id}/dvds/${disc._id}`).then(() =>
+                                    axios.delete(`/api/v1/disccollections/${coll._id}/userdvds/${disc._id}`).then(() =>
                                     {
                                         console.log("Delete request received.");
                                     }).catch((e) =>

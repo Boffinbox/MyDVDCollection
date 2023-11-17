@@ -38,7 +38,7 @@ app.use(passport.initialize());
 app.use("/api/v1/users", userRoutes)
 app.use("/api/v1/referencedvds", referenceDVDRoutes)
 app.use("/api/v1/disccollections", disccollectionRoutes)
-app.use("/api/v1/disccollections/:collectionId/dvds", userDVDRoutes)
+app.use("/api/v1/disccollections/:collectionId/userdvds", userDVDRoutes)
 
 // heartbeat route
 app.get("/heartbeat", async (req, res) =>
