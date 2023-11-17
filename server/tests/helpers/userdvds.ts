@@ -8,6 +8,16 @@ const userFunctions = require("./users")
 const collectionFunctions = require("./disccollections")
 const referenceDVDFunctions = require("./referencedvds")
 
+export async function newDVD(userToken: string, collId: string, barcode: string)
+{
+    const dvdRes = await request(app)
+        .post(`${api}/disccollections/${collId}/userdvds/${barcode}`)
+        .set(`Authorization`, `Bearer ${userToken}`)
+        .send();
+    expect(dvdRes.status).toBe(201);
+    return dvdRes;
+}
+
 // setup to make a user, make a refdvd, make a collection for that user, then add dvd to user collection
 export async function testDVDSetup(
     username: string = "boff",
@@ -26,10 +36,7 @@ export async function testDVDSetup(
     const newColl = await collectionFunctions.newCollection(userToken);
     const collId = newColl.body._id;
 
-    const dvdRes = await request(app)
-        .post(`${api}/disccollections/${collId}/userdvds/${refDVDDetails.barcode}`)
-        .set(`Authorization`, `Bearer ${userToken}`)
-        .send();
+    const dvdRes = await newDVD(userToken, collId, barcode)
     expect(dvdRes.status).toBe(201);
     expect(dvdRes.body.dvd.referenceDVD.title).toEqual(refDVDDetails.title)
     const dvd = dvdRes.body.dvd
