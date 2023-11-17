@@ -30,7 +30,7 @@ class ReferenceDVD
     barcode!: string;
 }
 
-class DVD
+class UserDVD
 {
     @prop({ ref: () => ReferenceDVD })
     referenceDVD!: Ref<ReferenceDVD>;
@@ -47,7 +47,7 @@ class DVD
 {
     if (doc)
     {
-        await DVDModel.deleteMany({
+        await UserDVDModel.deleteMany({
             _id: {
                 $in: doc.discs
             }
@@ -59,8 +59,8 @@ class DiscCollection
     @prop({ required: true })
     title!: string
 
-    @prop({ required: true, default: [], ref: () => DVD })
-    discs!: Ref<DVD>[];
+    @prop({ required: true, default: [], ref: () => UserDVD })
+    discs!: Ref<UserDVD>[];
 }
 
 class Session
@@ -128,7 +128,7 @@ class User
 }
 
 export const ReferenceDVDModel = getModelForClass(ReferenceDVD);
-export const DVDModel = getModelForClass(DVD);
+export const UserDVDModel = getModelForClass(UserDVD);
 export const DiscCollectionModel = getModelForClass(DiscCollection)
 export const SessionModel = getModelForClass(Session);
 export const UserModel = getModelForClass(User);

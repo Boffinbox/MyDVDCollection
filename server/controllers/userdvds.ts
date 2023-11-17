@@ -3,7 +3,7 @@ export { };
 const
     {
         ReferenceDVDModel,
-        DVDModel,
+        UserDVDModel,
         DiscCollectionModel,
         UserModel
     } = require("../models")
@@ -38,7 +38,7 @@ export async function addDVD(req, res)
     else
     {
         console.log("Found a referencedvd: ", referenceDVD.title);
-        const newDVD = new DVDModel({
+        const newDVD = new UserDVDModel({
             referenceDVD: referenceDVD._id,
             rating: 5,
             watched: false
@@ -87,7 +87,7 @@ export async function updateDVD(req, res)
         console.log("we couldn't find the disc, rip");
         return res.status(400).json({ message: "couldn't find dvd with this discId" });
     }
-    const discToModify = await DVDModel.findById(discInCollection._id);
+    const discToModify = await UserDVDModel.findById(discInCollection._id);
     if (!discToModify)
     {
         console.log("Couldn't find disc despite having disc??, aborting...");
@@ -127,7 +127,7 @@ export async function deleteDVD(req, res)
     }
     console.log("Someone tried to use API to remove a dvd from a disc collection");
     console.log(`using the collId ${collectionId} and disc id ${discId}`)
-    await DVDModel.findByIdAndDelete(discId);
+    await UserDVDModel.findByIdAndDelete(discId);
     await DiscCollectionModel.findByIdAndUpdate(collectionId, { $pull: { discs: discId } });
     res.status(200).json({ message: "it worked" });
 }
