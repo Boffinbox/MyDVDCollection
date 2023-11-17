@@ -30,7 +30,8 @@ export async function testDVDSetup(
         .post(`${api}/disccollections/${collId}/userdvds/${refDVDDetails.barcode}`)
         .set(`Authorization`, `Bearer ${userToken}`)
         .send();
-
+    expect(dvdRes.status).toBe(201);
+    expect(dvdRes.body.dvd.referenceDVD.title).toEqual(refDVDDetails.title)
     const dvd = dvdRes.body.dvd
 
     return {
