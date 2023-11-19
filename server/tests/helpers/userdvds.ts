@@ -11,9 +11,9 @@ const referenceDVDFunctions = require("./referencedvds")
 export async function newDVD(userToken: string, collId: string, barcode: string)
 {
     const dvdRes = await request(app)
-        .post(`${api}/disccollections/${collId}/userdvds/${barcode}`)
+        .post(`${api}/disccollections/${collId}/userdvds/`)
         .set(`Authorization`, `Bearer ${userToken}`)
-        .send();
+        .send({ barcode });
     expect(dvdRes.status).toBe(201);
     return dvdRes;
 }

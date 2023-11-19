@@ -16,10 +16,8 @@ export async function addDVD(req, res)
     {
         return res.status(401).send("Unauthorized");
     }
-    const { collectionId, barcode } = req.params
-    console.log(req.params);
-    console.log("Someone tried to use API to add a dvd to a disc collection");
-    console.log(`using the collId ${collectionId} and barcode ${barcode}`)
+    const { collectionId } = req.params
+    const { barcode } = req.body
     const collectionToModify = await DiscCollectionModel.findOne(
         {
             _id: collectionId

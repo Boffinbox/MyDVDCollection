@@ -10,7 +10,7 @@ const userdvds = require("../controllers/userdvds");
 
 // dvd logic
 // add a dvd to an existing collection by dvd barcode
-router.post("/:barcode", verifyUser, TryCatchAsync(userdvds.addDVD));
+router.post("/", verifyUser, TryCatchAsync(userdvds.addDVD));
 
 // update a dvd in a collection by discId
 router.patch("/:discId", verifyUser, TryCatchAsync(userdvds.updateDVD));
