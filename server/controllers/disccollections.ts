@@ -1,6 +1,7 @@
 export { };
 
 const { DiscCollectionModel, UserModel } = require("../models")
+const getUserDocument = require("../helpers/GetUserDocument");
 
 export async function index(req, res)
 {
@@ -24,12 +25,7 @@ export async function index(req, res)
 
 export async function showCollection(req, res)
 {
-    const userId = req.user._id
-    const user = await UserModel.findById({ _id: userId })
-    if (!user)
-    {
-        return res.status(401).send("Unauthorized");
-    }
+    const user = await getUserDocument(req, res);
     if (!user.collections.includes(req.params.collectionId))
     {
         return res.status(401).send("Unauthorized");
@@ -48,12 +44,7 @@ export async function showCollection(req, res)
 
 export async function newCollection(req, res)
 {
-    const userId = req.user._id
-    const user = await UserModel.findById({ _id: userId });
-    if (!user)
-    {
-        return res.status(401).send("Unauthorized");
-    }
+    const user = await getUserDocument(req, res);
     const { title } = req.body
     console.log("Someone tried to use API to post a disc collection");
     console.log("with the title of: ", req.body)
@@ -70,12 +61,7 @@ export async function newCollection(req, res)
 
 export async function deleteCollection(req, res)
 {
-    const userId = req.user._id
-    const user = await UserModel.findById({ _id: userId });
-    if (!user)
-    {
-        return res.status(401).send("Unauthorized");
-    }
+    const user = await getUserDocument(req, res);
     const { collectionId } = req.params
     if (!user.collections.includes(collectionId))
     {
@@ -89,6 +75,6 @@ export async function deleteCollection(req, res)
         }
     )
     console.log(`Collection ${collectionToDelete} is possibly removed from DB`);
-    await UserModel.findByIdAndUpdate(userId, { $pull: { collections: collectionId } });
+    await UserModel.findByIdAndUpdate(user._id, { $pull: { collections: collectionId } });
     res.status(200).json(collectionToDelete);
 }
