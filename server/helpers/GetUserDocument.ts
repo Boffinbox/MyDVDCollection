@@ -2,9 +2,9 @@ export { };
 
 const { UserModel } = require("../models")
 
-export async function getUserDocument(req, res)
+export async function getUserDocument(req, res, payloadId = undefined)
 {
-    const userId = req.user._id
+    const userId = payloadId ? payloadId : req.user._id
     const user = await UserModel.findById({ _id: userId })
     if (!user)
     {
