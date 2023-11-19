@@ -3,6 +3,8 @@ const { getToken, getRefreshToken, COOKIE_OPTIONS } = require("../auth/authentic
 
 const { UserModel } = require("../models")
 
+const getUserDocument = require("../helpers/GetUserDocument");
+
 export async function register(req, res)
 {
     const { username, email, password }: { username: string, email: string, password: string } = req.body;
@@ -22,28 +24,19 @@ export async function register(req, res)
 
 export async function login(req, res)
 {
-    const { _id } = req.user
-    const user = await UserModel.findById({ _id });
-    if (!user)
+    const user = await getUserDocument(req, res);
+    const token = await getToken({ _id: user._id, username: user.username })
+    const refreshToken = await getRefreshToken({ _id: user._id, username: user.username, refreshCount: 0 })
+    user.refreshTokens.push({ refreshToken, refreshCount: 0 })
+    user.save().then((user) =>
+    {
+        return res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS).send({ success: true, token })
+    }
+    ).catch((err) =>
     {
         console.log("hit failure route");
-        return res.status(500).json("couldn't find user with that id");
-    }
-    else
-    {
-        const token = await getToken({ _id: user._id, username: user.username })
-        const refreshToken = await getRefreshToken({ _id: user._id, username: user.username, refreshCount: 0 })
-        user.refreshTokens.push({ refreshToken, refreshCount: 0 })
-        user.save().then((user) =>
-        {
-            return res.cookie("refreshToken", refreshToken, COOKIE_OPTIONS).send({ success: true, token })
-        }
-        ).catch((err) =>
-        {
-            console.log("hit failure route");
-            return res.status(500).json(err);
-        })
-    }
+        return res.status(500).json(err);
+    })
 }
 
 export async function refreshToken(req, res)
@@ -85,20 +78,15 @@ export async function refreshToken(req, res)
 
 export async function logout(req, res)
 {
+    const user = await getUserDocument(req, res);
+
     const { signedCookies = {} } = req;
     const { refreshToken } = signedCookies;
-
     if (!refreshToken)
     {
         return res.status(401).send("Unauthorized");
     }
     const refreshPayload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
-    const userId = req.user._id
-    const user = await UserModel.findById({ _id: userId });
-    if (!user)
-    {
-        return res.status(401).send("Unauthorized");
-    }
     if (user.username != refreshPayload.username)
     {
         return res.status(401).send("Unauthorized");

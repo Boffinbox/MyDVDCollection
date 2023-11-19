@@ -5,17 +5,13 @@ const
         ReferenceDVDModel,
         UserDVDModel,
         DiscCollectionModel,
-        UserModel
     } = require("../models")
+
+const getUserDocument = require("../helpers/GetUserDocument");
 
 export async function addDVD(req, res)
 {
-    const userId = req.user._id
-    const user = await UserModel.findById({ _id: userId })
-    if (!user)
-    {
-        return res.status(401).send("Unauthorized");
-    }
+    const user = await getUserDocument(req, res);
     if (!user.collections.includes(req.params.collectionId))
     {
         return res.status(401).send("Unauthorized");
@@ -54,12 +50,7 @@ export async function addDVD(req, res)
 
 export async function updateDVD(req, res)
 {
-    const userId = req.user._id
-    const user = await UserModel.findById({ _id: userId })
-    if (!user)
-    {
-        return res.status(401).send("Unauthorized - no user found");
-    }
+    const user = await getUserDocument(req, res);
     if (!user.collections.includes(req.params.collectionId))
     {
         return res.status(401).send("Unauthorized - not a match");
@@ -105,15 +96,10 @@ export async function updateDVD(req, res)
 
 export async function deleteDVD(req, res)
 {
-    const userId = req.user._id
-    const user = await UserModel.findById({ _id: userId })
-    if (!user)
-    {
-        return res.status(401).send("Unauthorized - no user found");
-    }
+    const user = await getUserDocument(req, res);
     if (!user.collections.includes(req.params.collectionId))
     {
-        return res.status(401).send("Unauthorized - not a match");
+        return res.status(401).send("Unauthorized");
     }
     const { collectionId, discId } = req.params
     const collectionToModify = await DiscCollectionModel.findById(collectionId)
