@@ -1,3 +1,5 @@
+import { StringMap } from "ts-jest";
+
 export { };
 
 const request = require("supertest");
@@ -6,14 +8,13 @@ const api = "/api/v1"
 
 const userFunctions = require("./users")
 const collectionFunctions = require("./disccollections")
-const referenceDVDFunctions = require("./referencedvds")
 
-export async function newDVD(userToken: string, collId: string, barcode: string)
+export async function newDVD(userToken: string, collId: string, barcode: string, title: string)
 {
     const dvdRes = await request(app)
         .post(`${api}/disccollections/${collId}/userdvds/`)
         .set(`Authorization`, `Bearer ${userToken}`)
-        .send({ barcode });
+        .send({ barcode, title });
     expect(dvdRes.status).toBe(201);
     return dvdRes;
 }
@@ -23,30 +24,38 @@ export async function testDVDSetup(
     username: string = "boff",
     email: string = "boff@test.co.uk",
     password: string = "1234",
-    title: string = "My Test DVD",
-    barcode: string = "5678")
+    barcode: string = "7321905737437",
+    title: string = "gremlins")
 {
     const userDetails = userFunctions.generateUserDetails(username, email, password);
     const registerRes = await userFunctions.registerAUser(userDetails);
     const userToken = registerRes.body.token;
 
-    const refDVDDetails = referenceDVDFunctions.generateReferenceDVDDetails(title, barcode);
-    await referenceDVDFunctions.addAReferenceDVD(refDVDDetails)
-
     const newColl = await collectionFunctions.newCollection(userToken);
     const collId = newColl.body._id;
 
-    const dvdRes = await newDVD(userToken, collId, barcode)
+    const dvdRes = await newDVD(userToken, collId, barcode, title)
     expect(dvdRes.status).toBe(201);
-    expect(dvdRes.body.dvd.referenceDVD.title).toEqual(refDVDDetails.title)
+    expect(dvdRes.body.dvd.referenceDVD.barcode).toEqual(barcode)
     const dvd = dvdRes.body.dvd
 
-    return {
-        refDVDDetails,
+    const returnObject: {
+        userDetails: string,
+        userToken: string,
+        collId: string,
+        title: string,
+        barcode: string,
+        dvd: any,
+        dvdRes: any
+    } = {
         userDetails,
         userToken,
         collId,
+        title,
+        barcode,
         dvd,
         dvdRes
     }
+
+    return returnObject
 }

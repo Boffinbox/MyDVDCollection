@@ -36,7 +36,7 @@ test(`try to use the wrong token for a user`, async () =>
 {
     // first, setup alice, our honest user, with
     // a new collection, and a copy of gremlins
-    const alice = await testDVDSetup("alice", "alice@test.co.uk", "1234", "gremlins", "5678")
+    const alice = await testDVDSetup("alice", "alice@test.co.uk", "1234", "5678", "gremlins")
 
     // next, setup trudy the intruder
     const trudyDetails = userFunctions.generateUserDetails("trudy", "mal@icio.us", "hahaha")
@@ -62,12 +62,12 @@ test(`add two dvds to two collections, then try to delete dvd 1 from collection 
 {
     // first, setup bob, our honest user, with
     // a new collection, and a copy of gremlins
-    const bob = await testDVDSetup("bob", "bob@test.co.uk", "1234", "gremlins", "5678")
+    const bob = await testDVDSetup("bob", "bob@test.co.uk", "1234", "5678", "gremlins")
 
     // next, make a second collection and add a dvd to that too
     const secondColl = await discCollectionFunctions.newCollection(bob.userToken, "second collection")
     expect(secondColl.status).toBe(201);
-    await userDVDFunctions.newDVD(bob.userToken, secondColl.body._id, "5678");
+    await userDVDFunctions.newDVD(bob.userToken, secondColl.body._id, "5678", "gremlins");
 
     // should be 1 user, two collections, each with 1 dvd, both called gremlins, same refId, different dvdId.
     const collRes = await request(app)

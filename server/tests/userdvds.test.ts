@@ -11,14 +11,26 @@ test(`check the basic test dvd setup works correctly`, async () =>
 {
     const testSetup = await userDVDFunctions.testDVDSetup();
     expect(testSetup.dvdRes.status).toBe(201);
-    expect(testSetup.dvd.referenceDVD.title).toEqual(testSetup.refDVDDetails.title);
-    expect(testSetup.dvd.referenceDVD.barcode).toEqual(testSetup.refDVDDetails.barcode);
+    expect(testSetup.dvd.referenceDVD.title).toEqual(testSetup.title);
+    expect(testSetup.dvd.referenceDVD.barcode).toEqual(testSetup.barcode);
 
     const collRes = await request(app)
         .get(`${api}/disccollections/${testSetup.collId}`)
         .set(`Authorization`, `Bearer ${testSetup.userToken}`)
         .send();
     expect(collRes.body.discs[0]).toEqual(testSetup.dvdRes.body.dvd);
+})
+
+test(`add a dvd without adding a corresponding reference dvd`, async () =>
+{
+    const testSetup = await userDVDFunctions.testDVDSetup();
+    expect(testSetup.dvdRes.status).toBe(201);
+
+    const newDvdRes = await request(app)
+        .post(`${api}/disccollections/${testSetup.collId}/userdvds/`)
+        .set(`Authorization`, `Bearer ${testSetup.userToken}`)
+        .send({ barcode: "7321905737437" });
+    expect(newDvdRes.status).toBe(201);
 })
 
 test(`update a dvd in a user's collection, setting rating to 200 and watched to true`, async () =>

@@ -24,10 +24,10 @@ setGlobalOptions(
 class ReferenceDVD
 {
     @prop({ required: true })
-    title!: string;
+    barcode!: string;
 
     @prop({ required: true })
-    barcode!: string;
+    title!: string;
 }
 
 class UserDVD
