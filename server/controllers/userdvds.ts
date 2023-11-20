@@ -3,42 +3,39 @@ export { };
 const
     {
         ReferenceDVDModel,
-        DVDModel,
+        UserDVDModel,
         DiscCollectionModel,
-        UserModel
     } = require("../models")
+
+const getUserDocument = require("../helpers/GetUserDocument");
+const { getReferenceDVD } = require("./referencedvds.ts");
 
 export async function addDVD(req, res)
 {
-    const userId = req.user._id
-    const user = await UserModel.findById({ _id: userId })
-    if (!user)
-    {
-        return res.status(401).send("Unauthorized");
-    }
+    const user = await getUserDocument(req, res);
     if (!user.collections.includes(req.params.collectionId))
     {
         return res.status(401).send("Unauthorized");
     }
-    const { collectionId, barcode } = req.params
-    console.log(req.params);
-    console.log("Someone tried to use API to add a dvd to a disc collection");
-    console.log(`using the collId ${collectionId} and barcode ${barcode}`)
+    const { collectionId } = req.params
+    const { barcode, title } = req.body
     const collectionToModify = await DiscCollectionModel.findOne(
         {
             _id: collectionId
         }
     )
-    const referenceDVD = await ReferenceDVDModel.findOne({ barcode });
-    if (!referenceDVD || !collectionToModify)
+    if (!collectionToModify)
     {
-        console.log("Couldn't find DVD or collection, aborting...");
-        res.status(400).json({ message: "couldn't find dvd with this barcode" });
+        return res.status(503).send("Unavailable");
+    }
+    const referenceDVD = await getReferenceDVD(barcode, title);
+    if (!referenceDVD)
+    {
+        res.status(503).json({ message: "couldn't find dvd with this barcode" });
     }
     else
     {
-        console.log("Found a referencedvd: ", referenceDVD.title);
-        const newDVD = new DVDModel({
+        const newDVD = new UserDVDModel({
             referenceDVD: referenceDVD._id,
             rating: 5,
             watched: false
@@ -47,55 +44,43 @@ export async function addDVD(req, res)
         collectionToModify.discs.push(newDVD._id);
         await newDVD.save();
         await collectionToModify.save();
-        console.log(`DVD "${referenceDVD.title}" was added to Collection "${collectionToModify.title}"`);
         res.status(201).json({ dvd: newDVD });
     }
 }
 
 export async function updateDVD(req, res)
 {
-    const userId = req.user._id
-    const user = await UserModel.findById({ _id: userId })
-    if (!user)
-    {
-        return res.status(401).send("Unauthorized - no user found");
-    }
+    const user = await getUserDocument(req, res);
     if (!user.collections.includes(req.params.collectionId))
     {
         return res.status(401).send("Unauthorized - not a match");
     }
     const { collectionId, discId }: { collectionId: string, discId: string } = req.params
     const { rating = 0, watched = false }: { rating: number, watched: boolean } = req.body;
-    console.log("Someone tried to use API to update a dvd in a disc collection");
-    console.log(`using the collId ${collectionId} and discId ${discId}`)
     const collectionToModify = await DiscCollectionModel.findById(collectionId)
         .populate("discs");
     if (!collectionToModify)
     {
-        return res.status(400).json({ message: "couldn't find collection" });
+        return res.status(503).json({ message: "couldn't find collection" });
     }
     const discInCollection = collectionToModify.discs.find((disc) =>
     {
         if (disc._id.toString() === discId)
         {
-            console.log("we found the disc, proceed");
             return disc
         }
     })
     if (!discInCollection)
     {
-        console.log("we couldn't find the disc, rip");
-        return res.status(400).json({ message: "couldn't find dvd with this discId" });
+        return res.status(503).json({ message: "couldn't find dvd with this discId" });
     }
-    const discToModify = await DVDModel.findById(discInCollection._id);
+    const discToModify = await UserDVDModel.findById(discInCollection._id);
     if (!discToModify)
     {
-        console.log("Couldn't find disc despite having disc??, aborting...");
         res.status(401).json({ message: "stop trying to modify dvds that aren't yours!" });
     }
     else
     {
-        console.log("found disc: ", discToModify)
         discToModify.rating = rating;
         discToModify.watched = watched;
         await discToModify.save();
@@ -105,29 +90,22 @@ export async function updateDVD(req, res)
 
 export async function deleteDVD(req, res)
 {
-    const userId = req.user._id
-    const user = await UserModel.findById({ _id: userId })
-    if (!user)
-    {
-        return res.status(401).send("Unauthorized - no user found");
-    }
+    const user = await getUserDocument(req, res);
     if (!user.collections.includes(req.params.collectionId))
     {
-        return res.status(401).send("Unauthorized - not a match");
+        return res.status(401).send("Unauthorized");
     }
     const { collectionId, discId } = req.params
     const collectionToModify = await DiscCollectionModel.findById(collectionId)
     if (!collectionToModify)
     {
-        return res.status(400).json({ message: "couldn't find collection" });
+        return res.status(503).json({ message: "couldn't find collection" });
     }
     if (!collectionToModify.discs.includes(req.params.discId))
     {
         return res.status(401).json({ message: "wrong collection, disc mismatch" });
     }
-    console.log("Someone tried to use API to remove a dvd from a disc collection");
-    console.log(`using the collId ${collectionId} and disc id ${discId}`)
-    await DVDModel.findByIdAndDelete(discId);
+    await UserDVDModel.findByIdAndDelete(discId);
     await DiscCollectionModel.findByIdAndUpdate(collectionId, { $pull: { discs: discId } });
     res.status(200).json({ message: "it worked" });
 }

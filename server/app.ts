@@ -14,8 +14,8 @@ const app = express();
 const ExpressError = require("./helpers/ExpressError");
 
 const disccollectionRoutes = require("./routes/disccollections");
-const referencedvdRoutes = require("./routes/referencedvds");
-const dvdRoutes = require("./routes/dvds");
+const referenceDVDRoutes = require("./routes/referencedvds");
+const userDVDRoutes = require("./routes/userdvds");
 const userRoutes = require("./routes/users");
 
 if (process.env.NODE_ENV !== "test")
@@ -36,9 +36,9 @@ app.use(passport.initialize());
 
 // routers
 app.use("/api/v1/users", userRoutes)
-app.use("/api/v1/referencedvds", referencedvdRoutes)
+app.use("/api/v1/referencedvds", referenceDVDRoutes)
 app.use("/api/v1/disccollections", disccollectionRoutes)
-app.use("/api/v1/disccollections/:collectionId/dvds", dvdRoutes)
+app.use("/api/v1/disccollections/:collectionId/userdvds", userDVDRoutes)
 
 // heartbeat route
 app.get("/heartbeat", async (req, res) =>

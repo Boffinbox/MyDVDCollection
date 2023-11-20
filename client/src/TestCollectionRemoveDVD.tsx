@@ -22,7 +22,7 @@ export function TestCollectionRemoveDVD()
         console.log("Form submitted!");
         console.log("Coll ID to modify is: ", formData.id);
         console.log("Barcode to add: ", formData.barcode);
-        axios.delete(`/api/v1/disccollections/${formData.id}/dvds/${formData.barcode}`).then((response) =>
+        axios.delete(`/api/v1/disccollections/${formData.id}/userdvds/${formData.barcode}`).then((response) =>
         {
             console.log("Delete request received.");
         }).catch((e) =>
