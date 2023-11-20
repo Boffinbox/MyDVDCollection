@@ -61,11 +61,15 @@ export function TestCollectionRender()
         console.log("Form submitted!");
         console.log("Coll ID to modify is: ", formData.id);
         console.log("Barcode to add: ", formData.barcode);
+        const userData =
+        {
+            barcode: formData.barcode
+        }
         const config =
         {
             headers: { Authorization: `Bearer ${user.token}` }
         }
-        axios.post(`/api/v1/disccollections/${formData.id}/userdvds/${formData.barcode}`, {}, config).then(() =>
+        axios.post(`/api/v1/disccollections/${formData.id}/userdvds/`, userData, config).then(() =>
         {
             console.log("Post request received.");
         }).catch((e) =>
