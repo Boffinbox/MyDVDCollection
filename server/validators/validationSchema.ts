@@ -1,3 +1,5 @@
+export { };
+
 const baseJoi = require("joi");
 const sanitizeHtml = require('sanitize-html');
 
@@ -34,7 +36,7 @@ const htmlSanitizeExtension = (baseJoi) => ({
 
 const Joi = baseJoi.extend(htmlSanitizeExtension);
 
-const userSchema = Joi.object(
+const registrationSchema = Joi.object(
     {
         username: Joi.string().required().escapeHTML(),
         email: Joi.string().required().escapeHTML(),
@@ -42,7 +44,16 @@ const userSchema = Joi.object(
     }
 ).required()
 
-module.exports.userSchema = userSchema;
+module.exports.registrationSchema = registrationSchema;
+
+const loginSchema = Joi.object(
+    {
+        email: Joi.string().required().escapeHTML(),
+        password: Joi.string().required().escapeHTML()
+    }
+).required()
+
+module.exports.loginSchema = loginSchema;
 
 const collectionSchema = Joi.object(
     {
