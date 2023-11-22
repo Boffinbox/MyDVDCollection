@@ -12,6 +12,16 @@ const discCollectionFunctions = require("./helpers/disccollections")
 const userFunctions = require("./helpers/users")
 const userDVDFunctions = require("./helpers/userdvds")
 
+test(`try to login with wrong user fields`, async () =>
+{
+    // login using some absolute garbage values
+    // it should be a {email, password, username} where username is optional.
+    const login = await userFunctions.loginAUser({ tane: 1234, plape: "5678", clun: false });
+    // this should be a 400 - bad request, because the validation should fail
+    // we are checking for a validator failure, not a login failure
+    expect(login.status).toBe(400);
+})
+
 test(`try to login with wrong email`, async () =>
 {
     // make one user, alice
