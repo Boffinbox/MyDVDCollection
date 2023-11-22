@@ -48,6 +48,7 @@ module.exports.registrationSchema = registrationSchema;
 
 const loginSchema = Joi.object(
     {
+        username: Joi.string().escapeHTML(),
         email: Joi.string().required().escapeHTML(),
         password: Joi.string().required().escapeHTML()
     }
