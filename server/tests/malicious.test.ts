@@ -67,7 +67,7 @@ test(`make a user, then make a disccollection with no title`, async () =>
     const trudyToken = await userFunctions.registerAUser(trudyDetails).then((res) => res.body.token)
 
     // now, lets try to make a new disc collection with a blank title
-    // to try and break the database, muhahaha
+    // so that maybe a blank title breaks the database? >:)
     const trudyRes = await request(app)
         .post(`${api}/disccollections/`)
         .set(`Authorization`, `Bearer ${trudyToken}`)
@@ -83,11 +83,32 @@ test(`make a user, then make a disccollection with HTML in it's title`, async ()
     const trudyToken = await userFunctions.registerAUser(trudyDetails).then((res) => res.body.token)
 
     // now, lets try to make a new disc collection with HTML in the title
-    // if i can do this, then i can inject <script> tags, muhahaha!
+    // if trudy can do this, then she can inject <script> tags into the db. muhahaha!
     const trudyRes = await request(app)
         .post(`${api}/disccollections/`)
         .set(`Authorization`, `Bearer ${trudyToken}`)
         .send({ title: "<script>alert(‘ha! 'tis i, trudy!’)</script>" });
+    expect(trudyRes.status).toBe(400);
+})
+
+test(`make a user, then make a disccollection with a really really long title`, async () =>
+{
+    // make one user, trudy
+    const trudyDetails = userFunctions.generateUserDetails("trudy", "mal@icio.us", "hahaha");
+    // trudy saves her access token while registering, to use for evil deeds later
+    const trudyToken = await userFunctions.registerAUser(trudyDetails).then((res) => res.body.token)
+
+    // now, lets get a classic greentext
+    const greentext = `The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues. The 20 meter pacer test will begin in 30 seconds. Line up at the start. The running speed starts slowly, but gets faster each minute after you hear this signal. [beep] A single lap should be completed each time you hear this sound. [ding] Remember to run in a straight line, and run as long as possible. The second time you fail to complete a lap before the sound, your test is over. The test will begin on the word start. On your mark, get ready, start.`
+
+    // now, trudy is going to try and make a new disc collection
+    // using this greentext as the title. if trudy can do this,
+    // then she can perhaps overflow and get data back?
+    const trudyRes = await request(app)
+        .post(`${api}/disccollections/`)
+        .set(`Authorization`, `Bearer ${trudyToken}`)
+        .send({ title: greentext });
+    // we are expecting the title to max out at 64 characters.
     expect(trudyRes.status).toBe(400);
 })
 
