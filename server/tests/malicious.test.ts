@@ -7,10 +7,19 @@ const request = require("supertest");
 const app = require("../app.ts");
 const api = "/api/v1"
 
-const cookieFunctions = require("./helpers/cookies")
 const discCollectionFunctions = require("./helpers/disccollections")
 const userFunctions = require("./helpers/users")
 const userDVDFunctions = require("./helpers/userdvds")
+
+test(`try to register with wrong fields`, async () =>
+{
+    // register using some absolute garbage values
+    // it should be a {email, password, username}.
+    const register = await userFunctions.registerAUser({ tane: 1234, plape: "5678", clun: false });
+    // this should be a 400 - bad request, because the validation should fail
+    // we are checking for a validator failure, not a registration failure
+    expect(register.status).toBe(400);
+})
 
 test(`try to login with wrong user fields`, async () =>
 {
