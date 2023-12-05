@@ -1,5 +1,4 @@
 import { testDVDSetup } from "./helpers/userdvds";
-import { loginAUser } from "./helpers/users";
 
 export { }
 
@@ -18,6 +17,15 @@ test(`try to register with wrong fields`, async () =>
     const register = await userFunctions.registerAUser({ tane: 1234, plape: "5678", clun: false });
     // this should be a 400 - bad request, because the validation should fail
     // we are checking for a validator failure, not a registration failure
+    expect(register.status).toBe(400);
+})
+
+test(`try to register with a missing username`, async () =>
+{
+    // it should be a {email, password, username}.
+    // but we're going to skip providing a username
+    const register = await userFunctions.registerAUser({ email: "alice@test.co.uk", password: "1234" });
+    // this should be a 400 - bad request, because the validation should fail
     expect(register.status).toBe(400);
 })
 
