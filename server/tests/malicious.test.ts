@@ -59,6 +59,38 @@ test(`try to login with wrong password`, async () =>
     expect(login.status).toBe(401);
 })
 
+test(`make a user, then make a disccollection with no title`, async () =>
+{
+    // make one user, trudy
+    const trudyDetails = userFunctions.generateUserDetails("trudy", "mal@icio.us", "hahaha");
+    // trudy saves her access token while registering, to use for evil deeds later
+    const trudyToken = await userFunctions.registerAUser(trudyDetails).then((res) => res.body.token)
+
+    // now, lets try to make a new disc collection with a blank title
+    // to try and break the database, muhahaha
+    const trudyRes = await request(app)
+        .post(`${api}/disccollections/`)
+        .set(`Authorization`, `Bearer ${trudyToken}`)
+        .send({});
+    expect(trudyRes.status).toBe(400);
+})
+
+test(`make a user, then make a disccollection with HTML in it's title`, async () =>
+{
+    // make one user, trudy
+    const trudyDetails = userFunctions.generateUserDetails("trudy", "mal@icio.us", "hahaha");
+    // trudy saves her access token while registering, to use for evil deeds later
+    const trudyToken = await userFunctions.registerAUser(trudyDetails).then((res) => res.body.token)
+
+    // now, lets try to make a new disc collection with HTML in the title
+    // if i can do this, then i can inject <script> tags, muhahaha!
+    const trudyRes = await request(app)
+        .post(`${api}/disccollections/`)
+        .set(`Authorization`, `Bearer ${trudyToken}`)
+        .send({ title: "<script>alert(‘ha! 'tis i, trudy!’)</script>" });
+    expect(trudyRes.status).toBe(400);
+})
+
 test(`try to use the wrong token for a user`, async () =>
 {
     // first, setup alice, our honest user, with

@@ -54,7 +54,7 @@ const loginSchema = Joi.object(
 
 const newCollectionSchema = Joi.object(
     {
-        title: Joi.string().min(3).max(64).escapeHTML().required(),
+        title: Joi.string().max(64).escapeHTML().required(),
     }
 ).required()
 
