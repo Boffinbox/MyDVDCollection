@@ -10,7 +10,7 @@ const validateNewCollection = (req, res, next) =>
     if (error)
     {
         const msg = error.details.map(el => el.message).join(',');
-        console.log("New collection validation failed");
+        console.log(`New collection validation failed, with reason: ${msg}`);
         throw new ExpressError(400, msg);
     }
     else

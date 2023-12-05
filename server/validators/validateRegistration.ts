@@ -10,12 +10,12 @@ const validateRegistration = (req, res, next) =>
     if (error)
     {
         const msg = error.details.map(el => el.message).join(',');
-        console.log("User Registration validation failed");
+        console.log(`User registration validation failed, with reason: ${msg}`);
         throw new ExpressError(400, msg);
     }
     else
     {
-        console.log("User Registration validated successfully");
+        console.log("User registration validated successfully");
         next();
     }
 }
