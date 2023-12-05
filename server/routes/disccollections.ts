@@ -5,7 +5,7 @@ const router = express.Router();
 
 const { verifyUser } = require("../auth/authenticate");
 const TryCatchAsync = require("../helpers/TryCatchAsync")
-
+const validateNewCollection = require("../validators/validateNewCollection");
 const disccollections = require("../controllers/disccollections");
 
 // disc collection restful routing
@@ -16,7 +16,7 @@ router.get("/", verifyUser, TryCatchAsync(disccollections.index))
 router.get("/:collectionId", verifyUser, TryCatchAsync(disccollections.showCollection))
 
 // create new disc collection
-router.post("/", verifyUser, TryCatchAsync(disccollections.newCollection));
+router.post("/", verifyUser, validateNewCollection, TryCatchAsync(disccollections.newCollection));
 
 // delete route, to nuke a collection from orbit
 router.delete("/:collectionId", verifyUser, TryCatchAsync(disccollections.deleteCollection));

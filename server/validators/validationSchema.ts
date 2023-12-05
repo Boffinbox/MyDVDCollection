@@ -38,49 +38,53 @@ const Joi = baseJoi.extend(htmlSanitizeExtension);
 
 const registrationSchema = Joi.object(
     {
-        username: Joi.string().required().escapeHTML(),
-        email: Joi.string().required().escapeHTML(),
-        password: Joi.string().required().escapeHTML()
+        username: Joi.string().escapeHTML().required(),
+        email: Joi.string().escapeHTML().required(),
+        password: Joi.string().escapeHTML().required()
     }
 ).required()
-
-module.exports.registrationSchema = registrationSchema;
 
 const loginSchema = Joi.object(
     {
         username: Joi.string().escapeHTML(),
-        email: Joi.string().required().escapeHTML(),
-        password: Joi.string().required().escapeHTML()
+        email: Joi.string().escapeHTML().required(),
+        password: Joi.string().escapeHTML().required()
     }
 ).required()
 
-module.exports.loginSchema = loginSchema;
-
-const collectionSchema = Joi.object(
+const newCollectionSchema = Joi.object(
     {
-        title: Joi.string().required().escapeHTML(),
+        title: Joi.string().min(3).max(64).escapeHTML().required(),
     }
 ).required()
 
-module.exports.collectionSchema = collectionSchema;
+module.exports = { registrationSchema, loginSchema, newCollectionSchema };
 
-const userDVDSchema = Joi.object(
-    {
-        rating: Joi.number().min(1).max(5).required(),
-        watched: Joi.boolean().required()
-    }
-).required()
+// const collectionSchema = Joi.object(
+//     {
+//         title: Joi.string().required().escapeHTML(),
+//     }
+// ).required()
 
-module.exports.userDVDSchema = userDVDSchema;
+// module.exports.collectionSchema = collectionSchema;
 
-const referenceDVDSchema = Joi.object(
-    {
-        barcode: Joi.string().length(13).required().escapeHTML(),
-        title: Joi.string().escapeHTML()
-    }
-).required()
+// const userDVDSchema = Joi.object(
+//     {
+//         rating: Joi.number().min(1).max(5).required(),
+//         watched: Joi.boolean().required()
+//     }
+// ).required()
 
-module.exports.referenceDVDSchema = referenceDVDSchema;
+// module.exports.userDVDSchema = userDVDSchema;
+
+// const referenceDVDSchema = Joi.object(
+//     {
+//         barcode: Joi.string().length(13).required().escapeHTML(),
+//         title: Joi.string().escapeHTML()
+//     }
+// ).required()
+
+// module.exports.referenceDVDSchema = referenceDVDSchema;
 
 // const campgroundSchema = Joi.object({
 //     campground: Joi.object({
