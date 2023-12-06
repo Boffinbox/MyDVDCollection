@@ -5,7 +5,7 @@ const router = express.Router();
 
 const { verifyUser } = require("../auth/authenticate");
 const TryCatchAsync = require("../helpers/TryCatchAsync")
-const validateNewCollection = require("../validators/validateNewCollection");
+const validateNewCollection = require("../validators/newCollection");
 const disccollections = require("../controllers/disccollections");
 
 // disc collection restful routing

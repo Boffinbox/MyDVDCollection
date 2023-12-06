@@ -6,8 +6,8 @@ const passport = require("passport")
 
 const { verifyUser } = require("../auth/authenticate");
 const TryCatchAsync = require("../helpers/TryCatchAsync")
-const validateLogin = require("../validators/validateLogin");
-const validateRegistration = require("../validators/validateRegistration");
+const validateLogin = require("../validators/login");
+const validateRegistration = require("../validators/registration");
 
 const users = require("../controllers/users");
 
