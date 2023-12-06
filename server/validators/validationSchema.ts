@@ -65,10 +65,25 @@ const newDVDSchema = Joi.object(
     }
 ).required()
 
+const patchDVDSchema = Joi.object(
+    {
+        rating: Joi.number().min(1).max(5),
+        watched: Joi.boolean()
+    }
+).required()
+
 const collectionIdSchema = Joi.string().length(24).escapeHTML().required()
 const discIdSchema = Joi.string().length(24).escapeHTML().required()
 
-module.exports = { registrationSchema, loginSchema, newCollectionSchema, newDVDSchema, collectionIdSchema, discIdSchema };
+module.exports = {
+    registrationSchema,
+    loginSchema,
+    newCollectionSchema,
+    newDVDSchema,
+    patchDVDSchema,
+    collectionIdSchema,
+    discIdSchema
+};
 
 // const collectionSchema = Joi.object(
 //     {

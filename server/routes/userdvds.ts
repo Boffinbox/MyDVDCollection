@@ -8,6 +8,7 @@ const TryCatchAsync = require("../helpers/TryCatchAsync")
 
 const validateDiscId = require("../validators/discId");
 const validateNewDVD = require("../validators/newDVD");
+const validatePatchDVD = require("../validators/patchDVD");
 
 const userdvds = require("../controllers/userdvds");
 
@@ -16,7 +17,7 @@ const userdvds = require("../controllers/userdvds");
 router.post("/", verifyUser, validateNewDVD, TryCatchAsync(userdvds.addDVD));
 
 // update a dvd in a collection by discId
-router.patch("/:discId", verifyUser, validateDiscId, TryCatchAsync(userdvds.updateDVD));
+router.patch("/:discId", verifyUser, validateDiscId, validatePatchDVD, TryCatchAsync(userdvds.updateDVD));
 
 // remove a dvd from an existing collection by discId
 router.delete("/:discId", verifyUser, validateDiscId, TryCatchAsync(userdvds.deleteDVD));
