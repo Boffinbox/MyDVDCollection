@@ -112,7 +112,35 @@ test(`make a user, then make a disccollection with a really really long title`, 
     expect(trudyRes.status).toBe(400);
 })
 
-test(`try to use the wrong token for a user`, async () =>
+test(`make a user, then get a collection with wrong length`, async () =>
+{
+    // make one user, trudy
+    const trudyDetails = userFunctions.generateUserDetails("trudy", "mal@icio.us", "hahaha");
+    // trudy saves her access token while registering, to use for evil deeds later
+    const trudyToken = await userFunctions.registerAUser(trudyDetails).then((res) => res.body.token)
+
+    // set an obviously incorrect hex as our coll id
+    const randomHex =
+        `6fefd5247698608f482de122fe053391
+    4ddf08d8d07080b2cb61a3f47e245fe3
+    3b566dae05e223f1954351bcb921225f
+    ea9525d52838854f4c92cda4f74f170a
+    80a6d1083f80aca010649f8d883ef0d4`
+
+    // now try to get a collection using an Id of an obviously incorrect number
+    const collRes = await discCollectionFunctions.getCollection(trudyToken, randomHex)
+    // we are looking for a validator error of 400, not a 404
+    // the difference is that a 400 should be received
+    // when an invalid hex id is provided
+    // i.e, not 24 digits in length
+    expect(collRes.status).toBe(400);
+
+    // just to be sure, now try a correct length and expect a 401 ""unauthorised""
+    const collResTwo = await discCollectionFunctions.getCollection(trudyToken, `123412341234123412341234`)
+    expect(collResTwo.status).toBe(401);
+})
+
+test(`try to use the wrong jwt token for a user`, async () =>
 {
     // first, setup alice, our honest user, with
     // a new collection, and a copy of gremlins
