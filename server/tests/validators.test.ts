@@ -125,3 +125,26 @@ test(`try to use an obviously wrong collID when reading a dvd`, async () =>
         .send();
     expect(aliceRes.status).toBe(200);
 })
+
+test(`try to use an obviously wrong discID when reading a dvd`, async () =>
+{
+    // first, setup alice, our honest user, with
+    // a new collection, and a copy of gremlins
+    const alice = await testDVDSetup("alice", "alice@test.co.uk", "1234", "5678", "gremlins")
+
+    // now, lets try to actively access a wrong collection name and delete a dvd
+    const wrongRes = await request(app)
+        .delete(`${api}/disccollections/${alice.collId}/userdvds/tanetonite`)
+        .set(`Authorization`, `Bearer ${alice.userToken}`)
+        .send();
+    // we are expecting "tanetonite" to be invalid as is it 10 characers
+    // the validator is looking for 24 exactly
+    expect(wrongRes.status).toBe(400);
+
+    // and just to be sure, lets now honestly delete the dvd as alice
+    const aliceRes = await request(app)
+        .delete(`${api}/disccollections/${alice.collId}/userdvds/${alice.dvd._id}`)
+        .set(`Authorization`, `Bearer ${alice.userToken}`)
+        .send();
+    expect(aliceRes.status).toBe(200);
+})
