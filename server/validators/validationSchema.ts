@@ -58,10 +58,17 @@ const newCollectionSchema = Joi.object(
     }
 ).required()
 
+const newDVDSchema = Joi.object(
+    {
+        barcode: Joi.string().min(12).max(13).escapeHTML().required(),
+        title: Joi.string().max(64).escapeHTML()
+    }
+).required()
+
 const collectionIdSchema = Joi.string().length(24).escapeHTML().required()
 const discIdSchema = Joi.string().length(24).escapeHTML().required()
 
-module.exports = { registrationSchema, loginSchema, newCollectionSchema, collectionIdSchema, discIdSchema };
+module.exports = { registrationSchema, loginSchema, newCollectionSchema, newDVDSchema, collectionIdSchema, discIdSchema };
 
 // const collectionSchema = Joi.object(
 //     {

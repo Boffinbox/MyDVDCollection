@@ -7,12 +7,13 @@ const { verifyUser } = require("../auth/authenticate");
 const TryCatchAsync = require("../helpers/TryCatchAsync")
 
 const validateDiscId = require("../validators/discId");
+const validateNewDVD = require("../validators/newDVD");
 
 const userdvds = require("../controllers/userdvds");
 
 // dvd logic
 // add a dvd to an existing collection by dvd barcode
-router.post("/", verifyUser, TryCatchAsync(userdvds.addDVD));
+router.post("/", verifyUser, validateNewDVD, TryCatchAsync(userdvds.addDVD));
 
 // update a dvd in a collection by discId
 router.patch("/:discId", verifyUser, validateDiscId, TryCatchAsync(userdvds.updateDVD));

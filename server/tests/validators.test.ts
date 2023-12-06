@@ -107,7 +107,7 @@ test(`try to use an obviously wrong collID when reading a dvd`, async () =>
 {
     // first, setup alice, our honest user, with
     // a new collection, and a copy of gremlins
-    const alice = await testDVDSetup("alice", "alice@test.co.uk", "1234", "5678", "gremlins")
+    const alice = await testDVDSetup("alice", "alice@test.co.uk", "1234", "567856785678", "gremlins")
 
     // now, lets try to actively access a wrong collection name and delete a dvd
     const wrongRes = await request(app)
@@ -130,7 +130,7 @@ test(`try to use an obviously wrong discID when reading a dvd`, async () =>
 {
     // first, setup alice, our honest user, with
     // a new collection, and a copy of gremlins
-    const alice = await testDVDSetup("alice", "alice@test.co.uk", "1234", "5678", "gremlins")
+    const alice = await testDVDSetup("alice", "alice@test.co.uk", "1234", "567856785678", "gremlins")
 
     // now, lets try to actively access a wrong collection name and delete a dvd
     const wrongRes = await request(app)
