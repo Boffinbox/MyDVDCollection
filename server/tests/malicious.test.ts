@@ -1,5 +1,4 @@
 import { testDVDSetup } from "./helpers/userdvds";
-import { loginAUser } from "./helpers/users";
 
 export { }
 
@@ -7,7 +6,6 @@ const request = require("supertest");
 const app = require("../app.ts");
 const api = "/api/v1"
 
-const cookieFunctions = require("./helpers/cookies")
 const discCollectionFunctions = require("./helpers/disccollections")
 const userFunctions = require("./helpers/users")
 const userDVDFunctions = require("./helpers/userdvds")
@@ -32,11 +30,27 @@ test(`try to login with wrong password`, async () =>
     expect(login.status).toBe(401);
 })
 
-test(`try to use the wrong token for a user`, async () =>
+test(`make a user, then make a disccollection with HTML in it's title`, async () =>
+{
+    // make one user, trudy
+    const trudyDetails = userFunctions.generateUserDetails("trudy", "mal@icio.us", "hahaha");
+    // trudy saves her access token while registering, to use for evil deeds later
+    const trudyToken = await userFunctions.registerAUser(trudyDetails).then((res) => res.body.token)
+
+    // now, lets try to make a new disc collection with HTML in the title
+    // if trudy can do this, then she can inject <script> tags into the db. muhahaha!
+    const trudyRes = await request(app)
+        .post(`${api}/disccollections/`)
+        .set(`Authorization`, `Bearer ${trudyToken}`)
+        .send({ title: "<script>alert(‘ha! 'tis i, trudy!’)</script>" });
+    expect(trudyRes.status).toBe(400);
+})
+
+test(`try to use the wrong jwt token for a user`, async () =>
 {
     // first, setup alice, our honest user, with
     // a new collection, and a copy of gremlins
-    const alice = await testDVDSetup("alice", "alice@test.co.uk", "1234", "5678", "gremlins")
+    const alice = await testDVDSetup("alice", "alice@test.co.uk", "1234", "567856785678", "gremlins")
 
     // next, setup trudy the intruder
     const trudyDetails = userFunctions.generateUserDetails("trudy", "mal@icio.us", "hahaha")
@@ -62,12 +76,12 @@ test(`add two dvds to two collections, then try to delete dvd 1 from collection 
 {
     // first, setup bob, our honest user, with
     // a new collection, and a copy of gremlins
-    const bob = await testDVDSetup("bob", "bob@test.co.uk", "1234", "5678", "gremlins")
+    const bob = await testDVDSetup("bob", "bob@test.co.uk", "1234", "567856785678", "gremlins")
 
     // next, make a second collection and add a dvd to that too
     const secondColl = await discCollectionFunctions.newCollection(bob.userToken, "second collection")
     expect(secondColl.status).toBe(201);
-    await userDVDFunctions.newDVD(bob.userToken, secondColl.body._id, "5678", "gremlins");
+    await userDVDFunctions.newDVD(bob.userToken, secondColl.body._id, "567856785678", "gremlins");
 
     // should be 1 user, two collections, each with 1 dvd, both called gremlins, same refId, different dvdId.
     const collRes = await request(app)

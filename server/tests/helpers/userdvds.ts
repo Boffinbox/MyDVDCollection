@@ -15,7 +15,6 @@ export async function newDVD(userToken: string, collId: string, barcode: string,
         .post(`${api}/disccollections/${collId}/userdvds/`)
         .set(`Authorization`, `Bearer ${userToken}`)
         .send({ barcode, title });
-    expect(dvdRes.status).toBe(201);
     return dvdRes;
 }
 

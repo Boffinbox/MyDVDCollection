@@ -33,7 +33,7 @@ test(`add a dvd without adding a corresponding reference dvd`, async () =>
     expect(newDvdRes.status).toBe(201);
 })
 
-test(`update a dvd in a user's collection, setting rating to 200 and watched to true`, async () =>
+test(`update a dvd in a user's collection, setting rating to 2 and watched to true`, async () =>
 {
     const testSetup = await userDVDFunctions.testDVDSetup();
     expect(testSetup.dvdRes.status).toBe(201);
@@ -41,14 +41,14 @@ test(`update a dvd in a user's collection, setting rating to 200 and watched to 
     const patchRes = await request(app)
         .patch(`${api}/disccollections/${testSetup.collId}/userdvds/${testSetup.dvd._id}`)
         .set(`Authorization`, `Bearer ${testSetup.userToken}`)
-        .send({ rating: 200, watched: true });
+        .send({ rating: 2, watched: true });
     expect(patchRes.status).toBe(200);
 
     const collRes = await request(app)
         .get(`${api}/disccollections/${testSetup.collId}`)
         .set(`Authorization`, `Bearer ${testSetup.userToken}`)
         .send();
-    expect(collRes.body.discs[0].rating).toEqual(200);
+    expect(collRes.body.discs[0].rating).toEqual(2);
     expect(collRes.body.discs[0].watched).toEqual(true);
 })
 

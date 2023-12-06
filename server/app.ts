@@ -13,10 +13,7 @@ const app = express();
 
 const ExpressError = require("./helpers/ExpressError");
 
-const disccollectionRoutes = require("./routes/disccollections");
-const referenceDVDRoutes = require("./routes/referencedvds");
-const userDVDRoutes = require("./routes/userdvds");
-const userRoutes = require("./routes/users");
+const router = require("./routes/router.ts");
 
 if (process.env.NODE_ENV !== "test")
 {
@@ -34,11 +31,8 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(passport.initialize());
 
-// routers
-app.use("/api/v1/users", userRoutes)
-app.use("/api/v1/referencedvds", referenceDVDRoutes)
-app.use("/api/v1/disccollections", disccollectionRoutes)
-app.use("/api/v1/disccollections/:collectionId/userdvds", userDVDRoutes)
+// main router
+app.use("/api/v1", router)
 
 // heartbeat route
 app.get("/heartbeat", async (req, res) =>
