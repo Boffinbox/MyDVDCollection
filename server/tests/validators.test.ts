@@ -161,3 +161,15 @@ test(`try to create a dvd with obviously wrong barcode`, async () =>
     // also, the barcode is set to "tane", it's not even a number...
     expect(newDVDRes.status).toBe(400);
 })
+
+test(`attempt update of a dvd in a user's collection, setting rating to 20000`, async () =>
+{
+    const testSetup = await userDVDFunctions.testDVDSetup();
+    expect(testSetup.dvdRes.status).toBe(201);
+
+    const patchRes = await request(app)
+        .patch(`${api}/disccollections/${testSetup.collId}/userdvds/${testSetup.dvd._id}`)
+        .set(`Authorization`, `Bearer ${testSetup.userToken}`)
+        .send({ rating: 20000, watched: true });
+    expect(patchRes.status).toBe(400);
+})
