@@ -7,6 +7,7 @@ const app = require("../app.ts");
 const api = "/api/v1"
 
 const discCollectionFunctions = require("./helpers/disccollections")
+const userDVDFunctions = require("./helpers/userdvds")
 const userFunctions = require("./helpers/users")
 
 test(`try to register with wrong fields`, async () =>
@@ -147,4 +148,16 @@ test(`try to use an obviously wrong discID when reading a dvd`, async () =>
         .set(`Authorization`, `Bearer ${alice.userToken}`)
         .send();
     expect(aliceRes.status).toBe(200);
+})
+
+test(`try to create a dvd with obviously wrong barcode`, async () =>
+{
+    // make one user, bob
+    const bobDetails = userFunctions.generateUserDetails("bob", "bob@test.co.uk", "1234");
+    const bobToken = await userFunctions.registerAUser(bobDetails).then((res) => res.body.token)
+    const collRes = await discCollectionFunctions.newCollection(bobToken, "my coll");
+    const newDVDRes = await userDVDFunctions.newDVD(bobToken, collRes.body._id, "tane")
+    // expecting a 400 - barcode shorter than 12 digits
+    // also, the barcode is set to "tane", it's not even a number...
+    expect(newDVDRes.status).toBe(400);
 })
