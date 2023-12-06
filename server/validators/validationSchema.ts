@@ -59,8 +59,9 @@ const newCollectionSchema = Joi.object(
 ).required()
 
 const collectionIdSchema = Joi.string().length(24).escapeHTML().required()
+const discIdSchema = Joi.string().length(24).escapeHTML().required()
 
-module.exports = { registrationSchema, loginSchema, newCollectionSchema, collectionIdSchema };
+module.exports = { registrationSchema, loginSchema, newCollectionSchema, collectionIdSchema, discIdSchema };
 
 // const collectionSchema = Joi.object(
 //     {
