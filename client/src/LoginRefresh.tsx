@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useContext } from "react";
 import { UserContext } from "./UserContext";
 
-export function TestLoginRefresh()
+export function LoginRefresh()
 {
     const user = useContext(UserContext);
 
@@ -19,6 +19,6 @@ export function TestLoginRefresh()
     }, []);
 
     return (
-        <div>our token data is: {user.userToken}</div>
+        <div>Current token is: {user.userToken}</div>
     )
 }

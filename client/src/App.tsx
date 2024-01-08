@@ -1,12 +1,9 @@
 import "./App.css"
-import { TestCollectionRender } from "./TestCollectionRender"
-import { TestCollectionSubmit } from "./TestCollectionSubmit"
-import { TestDVDSubmit } from "./TestDVDSubmit"
-import { TestLoginSubmit } from "./TestLoginSubmit"
 
 import { useState } from "react"
 import { UserContext } from "./UserContext"
-import { TestLoginRefresh } from "./TestLoginRefresh"
+
+import { LoginRefresh } from "./LoginRefresh"
 
 function App()
 {
@@ -14,11 +11,7 @@ function App()
     return (
         <UserContext.Provider value={{ userToken, setUserToken }}>
             <div>
-                <TestLoginRefresh />
-                <TestDVDSubmit />
-                <TestLoginSubmit />
-                <TestCollectionSubmit />
-                <TestCollectionRender />
+                <LoginRefresh />
             </div >
         </UserContext.Provider>
     )
