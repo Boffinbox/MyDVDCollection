@@ -1,9 +1,9 @@
-export default function Collections()
+export default function Login()
 {
     return (
         <>
             <div>
-                Collections
+                Login
             </div>
         </>
     )
