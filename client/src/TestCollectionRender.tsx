@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios"
-import { UserContext } from "./TestUserContext";
+import { UserContext } from "./UserContext";
 
 interface IDiscCollectionData
 {
@@ -30,7 +30,7 @@ export function TestCollectionRender()
     {
         const config =
         {
-            headers: { Authorization: `Bearer ${user.token}` }
+            headers: { Authorization: `Bearer ${user.userToken}` }
         }
         axios.get("/api/v1/disccollections/", config).then((response) =>
         {
@@ -67,7 +67,7 @@ export function TestCollectionRender()
         }
         const config =
         {
-            headers: { Authorization: `Bearer ${user.token}` }
+            headers: { Authorization: `Bearer ${user.userToken}` }
         }
         axios.post(`/api/v1/disccollections/${formData.id}/userdvds/`, userData, config).then(() =>
         {
@@ -96,7 +96,7 @@ export function TestCollectionRender()
                 </form>
             </div>
             All Collections for user:
-            user token is: {user.token}
+            user token is: {user.userToken}
             <br />
             {data.map((coll, idx) =>
             {
@@ -107,7 +107,7 @@ export function TestCollectionRender()
                             evt.preventDefault();
                             const config =
                             {
-                                headers: { Authorization: `Bearer ${user.token}` }
+                                headers: { Authorization: `Bearer ${user.userToken}` }
                             }
                             axios.delete(`/api/v1/disccollections/${coll._id}`, config).then(() =>
                             {

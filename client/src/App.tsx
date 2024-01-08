@@ -5,14 +5,14 @@ import { TestDVDSubmit } from "./TestDVDSubmit"
 import { TestLoginSubmit } from "./TestLoginSubmit"
 
 import { useState } from "react"
-import { UserContext } from "./TestUserContext"
+import { UserContext } from "./UserContext"
 import { TestLoginRefresh } from "./TestLoginRefresh"
 
 function App()
 {
-    const [token, setToken] = useState<string>("");
+    const [userToken, setUserToken] = useState<string>("");
     return (
-        <UserContext.Provider value={{ token, setToken }}>
+        <UserContext.Provider value={{ userToken, setUserToken }}>
             <div>
                 <TestLoginRefresh />
                 <TestDVDSubmit />

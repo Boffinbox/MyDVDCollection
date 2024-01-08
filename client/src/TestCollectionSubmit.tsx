@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useContext } from "react";
-import { UserContext } from "./TestUserContext";
+import { UserContext } from "./UserContext";
 
 export function TestCollectionSubmit()
 {
@@ -28,7 +28,7 @@ export function TestCollectionSubmit()
         }
         const config =
         {
-            headers: { Authorization: `Bearer ${user.token}` }
+            headers: { Authorization: `Bearer ${user.userToken}` }
         }
         axios.post("/api/v1/disccollections", userData, config).then((response) =>
         {

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, useContext } from "react";
-import { UserContext } from "./TestUserContext";
+import { UserContext } from "./UserContext";
 
 export function TestLoginSubmit()
 {
@@ -31,7 +31,7 @@ export function TestLoginSubmit()
         axios.post(`/api/v1/users/login`, userData).then((response) =>
         {
             console.log("Login post request received.");
-            user.setToken(() => response.data.token)
+            user.setUserToken(() => response.data.token)
         }).catch((e) =>
         {
             console.log(e);
@@ -54,7 +54,7 @@ export function TestLoginSubmit()
                     <button>Submit!</button>
                 </form>
             </div>
-            <div>our token data is: {user.token}</div>
+            <div>our token data is: {user.userToken}</div>
         </div>
     )
 }

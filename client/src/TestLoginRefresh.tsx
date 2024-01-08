@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useContext } from "react";
-import { UserContext } from "./TestUserContext";
+import { UserContext } from "./UserContext";
 
 export function TestLoginRefresh()
 {
@@ -11,7 +11,7 @@ export function TestLoginRefresh()
         axios.post(`/api/v1/users/refreshToken`).then((response) =>
         {
             console.log("Refresh request received.");
-            user.setToken(() => response.data.token)
+            user.setUserToken(() => response.data.token)
         }).catch((e) =>
         {
             console.log(e);
@@ -19,6 +19,6 @@ export function TestLoginRefresh()
     }, []);
 
     return (
-        <div>our token data is: {user.token}</div>
+        <div>our token data is: {user.userToken}</div>
     )
 }
