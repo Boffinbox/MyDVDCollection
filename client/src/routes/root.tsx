@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { UserContext } from "../components/UserContext"
 import { LoginRefresh } from "../components/LoginRefresh"
-import { Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 
 export default function Root()
 {
@@ -31,13 +31,13 @@ export default function Root()
                     <nav>
                         <ul>
                             <li>
-                                <a href={`/`}>Root</a>
+                                <Link to={`/`}>Root</Link>
                             </li>
                             <li>
-                                <a href={`/login`}>Login</a>
+                                <Link to={`/login`}>Login</Link>
                             </li>
                             <li>
-                                <a href={`/collections`}>View Collections</a>
+                                <Link to={`/collections`}>Collections</Link>
                             </li>
                         </ul>
                     </nav>
