@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useContext } from "react";
 import { UserContext } from "./UserContext";
 
-export function LoginRefresh()
+export default function LoginRefresh()
 {
     const user = useContext(UserContext);
 
