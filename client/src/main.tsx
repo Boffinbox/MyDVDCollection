@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client';
 import { App } from './App';
 import ErrorPage from './components/ErrorPage';
+import { TanStackRouterDevtools } from "@tanstack/router-devtools"
 
 import
 {
@@ -18,7 +19,13 @@ import Collections from './routes/collections';
 import Collection from './routes/collection';
 
 // define routes
-const rootRoute = new RootRoute({ component: App });
+const rootRoute = new RootRoute({
+    component: () =>
+        <>
+            <App />
+            <TanStackRouterDevtools position="bottom-right" />
+        </>
+});
 
 const indexRoute = new Route({ getParentRoute: () => rootRoute, path: "/", component: Index })
 
