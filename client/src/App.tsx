@@ -1,7 +1,7 @@
 import { UserContext } from "./components/UserContext"
 import { useState } from "react";
 import LoginRefresh from "./components/LoginRefresh";
-import Login from "./routes/login";
+import { Link, Outlet } from "@tanstack/react-router";
 
 export function App()
 {
@@ -10,8 +10,12 @@ export function App()
     return <div>
         <UserContext.Provider value={{ userToken, setUserToken }}>
             <LoginRefresh />
-            Main page
-            <Login />
+            <nav>
+                <Link to="/">Index</Link>
+                <Link to="/login">Login</Link>
+                <Link to="/collections">Collections</Link>
+            </nav>
+            <Outlet />
         </UserContext.Provider>
     </div >
 }
