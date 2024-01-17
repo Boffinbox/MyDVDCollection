@@ -1,13 +1,11 @@
 import { FileRoute, lazyRouteComponent } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as CollectionsCollectionIdImport } from './routes/collections.$collectionId'
 
 const LoginComponentImport = new FileRoute('/login').createRoute()
 const CollectionsComponentImport = new FileRoute('/collections').createRoute()
 const IndexComponentImport = new FileRoute('/').createRoute()
-const CollectionsCollectionComponentImport = new FileRoute(
-  '/collections/collection',
-).createRoute()
 
 const LoginComponentRoute = LoginComponentImport.update({
   path: '/login',
@@ -39,16 +37,10 @@ const IndexComponentRoute = IndexComponentImport.update({
   ),
 })
 
-const CollectionsCollectionComponentRoute =
-  CollectionsCollectionComponentImport.update({
-    path: '/collection',
-    getParentRoute: () => CollectionsComponentRoute,
-  } as any).update({
-    component: lazyRouteComponent(
-      () => import('./routes/collections.collection.component'),
-      'component',
-    ),
-  })
+const CollectionsCollectionIdRoute = CollectionsCollectionIdImport.update({
+  path: '/$collectionId',
+  getParentRoute: () => CollectionsComponentRoute,
+} as any)
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
@@ -63,14 +55,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginComponentImport
       parentRoute: typeof rootRoute
     }
-    '/collections/collection': {
-      preLoaderRoute: typeof CollectionsCollectionComponentImport
+    '/collections/$collectionId': {
+      preLoaderRoute: typeof CollectionsCollectionIdImport
       parentRoute: typeof CollectionsComponentImport
     }
   }
 }
 export const routeTree = rootRoute.addChildren([
   IndexComponentRoute,
-  CollectionsComponentRoute.addChildren([CollectionsCollectionComponentRoute]),
+  CollectionsComponentRoute.addChildren([CollectionsCollectionIdRoute]),
   LoginComponentRoute,
 ])

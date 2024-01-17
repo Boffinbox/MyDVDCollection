@@ -6,7 +6,12 @@ export const component = function Collections()
         <>
             <div>
                 Collections {` `}
-                <Link to="/collections/collection">Click to load example collection.</Link>
+                <Link
+                    to="/collections/$collectionId"
+                    params={{
+                        collectionId: "6557a7fe22dd6bff7082b921"
+                    }}
+                >Click to load example collection.</Link>
                 <hr />
                 <Outlet />
             </div>
