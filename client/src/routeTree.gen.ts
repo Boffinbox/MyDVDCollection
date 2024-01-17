@@ -5,6 +5,9 @@ import { Route as rootRoute } from './routes/__root'
 const LoginComponentImport = new FileRoute('/login').createRoute()
 const CollectionsComponentImport = new FileRoute('/collections').createRoute()
 const IndexComponentImport = new FileRoute('/').createRoute()
+const CollectionsCollectionComponentImport = new FileRoute(
+  '/collections/collection',
+).createRoute()
 
 const LoginComponentRoute = LoginComponentImport.update({
   path: '/login',
@@ -35,6 +38,17 @@ const IndexComponentRoute = IndexComponentImport.update({
     'component',
   ),
 })
+
+const CollectionsCollectionComponentRoute =
+  CollectionsCollectionComponentImport.update({
+    path: '/collection',
+    getParentRoute: () => CollectionsComponentRoute,
+  } as any).update({
+    component: lazyRouteComponent(
+      () => import('./routes/collections.collection.component'),
+      'component',
+    ),
+  })
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
@@ -49,10 +63,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginComponentImport
       parentRoute: typeof rootRoute
     }
+    '/collections/collection': {
+      preLoaderRoute: typeof CollectionsCollectionComponentImport
+      parentRoute: typeof CollectionsComponentImport
+    }
   }
 }
 export const routeTree = rootRoute.addChildren([
   IndexComponentRoute,
-  CollectionsComponentRoute,
+  CollectionsComponentRoute.addChildren([CollectionsCollectionComponentRoute]),
   LoginComponentRoute,
 ])

@@ -31,7 +31,8 @@ export const component = function Login()
         axios.post(`/api/v1/users/login`, userData).then((response) =>
         {
             console.log("Login post request received.");
-            user.setUserToken(() => response.data.token)
+            user.setUserToken(() => response.data.token);
+            setFormData(() => { return { email: "", password: "" } })
         }).catch((e) =>
         {
             console.log(e);
