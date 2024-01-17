@@ -2,16 +2,26 @@ import { FileRoute, lazyRouteComponent } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 
-const AboutComponentImport = new FileRoute('/about').createRoute()
+const LoginComponentImport = new FileRoute('/login').createRoute()
+const CollectionsComponentImport = new FileRoute('/collections').createRoute()
 const IndexComponentImport = new FileRoute('/').createRoute()
-const AboutPostComponentImport = new FileRoute('/about/post').createRoute()
 
-const AboutComponentRoute = AboutComponentImport.update({
-  path: '/about',
+const LoginComponentRoute = LoginComponentImport.update({
+  path: '/login',
   getParentRoute: () => rootRoute,
 } as any).update({
   component: lazyRouteComponent(
-    () => import('./routes/about.component'),
+    () => import('./routes/login.component'),
+    'component',
+  ),
+})
+
+const CollectionsComponentRoute = CollectionsComponentImport.update({
+  path: '/collections',
+  getParentRoute: () => rootRoute,
+} as any).update({
+  component: lazyRouteComponent(
+    () => import('./routes/collections.component'),
     'component',
   ),
 })
@@ -25,33 +35,24 @@ const IndexComponentRoute = IndexComponentImport.update({
     'component',
   ),
 })
-
-const AboutPostComponentRoute = AboutPostComponentImport.update({
-  path: '/post',
-  getParentRoute: () => AboutComponentRoute,
-} as any).update({
-  component: lazyRouteComponent(
-    () => import('./routes/about.post.component'),
-    'component',
-  ),
-})
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
       preLoaderRoute: typeof IndexComponentImport
       parentRoute: typeof rootRoute
     }
-    '/about': {
-      preLoaderRoute: typeof AboutComponentImport
+    '/collections': {
+      preLoaderRoute: typeof CollectionsComponentImport
       parentRoute: typeof rootRoute
     }
-    '/about/post': {
-      preLoaderRoute: typeof AboutPostComponentImport
-      parentRoute: typeof AboutComponentImport
+    '/login': {
+      preLoaderRoute: typeof LoginComponentImport
+      parentRoute: typeof rootRoute
     }
   }
 }
 export const routeTree = rootRoute.addChildren([
   IndexComponentRoute,
-  AboutComponentRoute.addChildren([AboutPostComponentRoute]),
+  CollectionsComponentRoute,
+  LoginComponentRoute,
 ])

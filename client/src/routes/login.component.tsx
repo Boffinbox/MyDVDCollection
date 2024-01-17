@@ -1,8 +1,8 @@
+import { useContext, useState } from "react";
 import axios from "axios";
-import { useState, useContext } from "react";
-import { UserContext } from "../components/UserContext";
+import { UserContext } from "../utilities/UserContext";
 
-export default function Login()
+export const component = function Login()
 {
     const [formData, setFormData] = useState({ email: "", password: "" })
     const user = useContext(UserContext);

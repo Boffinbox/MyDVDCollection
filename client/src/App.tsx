@@ -1,6 +1,6 @@
-import { UserContext } from "./components/UserContext"
+import { UserContext } from "./utilities/UserContext"
 import { useState } from "react";
-import LoginRefresh from "./components/LoginRefresh";
+import LoginRefresh from "./utilities/LoginRefresh";
 
 import { Link, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
@@ -15,9 +15,12 @@ export function App()
             <div className="p-2 flex gap-2">
                 <Link to="/" className="[&.active]:font-bold">
                     Home
-                </Link>{' '}
-                <Link to="/about" className="[&.active]:font-bold">
-                    About
+                </Link>{` `}
+                <Link to="/login" className="[&.active]:font-bold">
+                    Login
+                </Link>{` `}
+                <Link to="/collections" className="[&.active]:font-bold">
+                    Collections
                 </Link>
             </div>
             <hr />
