@@ -27,11 +27,11 @@ const IndexComponentRoute = IndexComponentImport.update({
 })
 
 const AboutPostComponentRoute = AboutPostComponentImport.update({
-  path: '/about/post',
-  getParentRoute: () => rootRoute,
+  path: '/post',
+  getParentRoute: () => AboutComponentRoute,
 } as any).update({
   component: lazyRouteComponent(
-    () => import('./routes/about_.post.component'),
+    () => import('./routes/about.post.component'),
     'component',
   ),
 })
@@ -47,12 +47,11 @@ declare module '@tanstack/react-router' {
     }
     '/about/post': {
       preLoaderRoute: typeof AboutPostComponentImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AboutComponentImport
     }
   }
 }
 export const routeTree = rootRoute.addChildren([
   IndexComponentRoute,
-  AboutComponentRoute,
-  AboutPostComponentRoute,
+  AboutComponentRoute.addChildren([AboutPostComponentRoute]),
 ])
