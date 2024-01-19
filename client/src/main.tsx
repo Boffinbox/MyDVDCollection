@@ -1,12 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client';
 import { RouterProvider, Router } from '@tanstack/react-router'
+import { auth } from './utilities/Auth';
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen'
 
 // Create a new router instance
-const router = new Router({ routeTree })
+const router = new Router({
+    routeTree,
+    context: { auth }
+})
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {
@@ -18,6 +22,6 @@ declare module '@tanstack/react-router' {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <RouterProvider router={router} />
+        <RouterProvider router={router} context={{ auth }} />
     </React.StrictMode>,
 )
