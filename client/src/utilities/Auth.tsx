@@ -1,4 +1,5 @@
 import axios from "axios"
+import { useState } from "react";
 
 const login = async (email: string, password: string): Promise<string | undefined> =>
 {
@@ -18,7 +19,7 @@ const login = async (email: string, password: string): Promise<string | undefine
 export interface IAuth
 {
     status: "loggedOut" | "loggedIn";
-    token?: string | undefined;
+    token?: string | undefined
     login: (email: string, password: string) => void;
     logout: () => void;
 }

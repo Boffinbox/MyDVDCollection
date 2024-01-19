@@ -1,11 +1,15 @@
-import { useContext, useState } from "react";
-import axios from "axios";
-import { UserContext } from "../utilities/UserContext";
+import { useState } from "react";
+import { FileRoute } from "@tanstack/react-router";
 
-export const component = function Login()
+export const Route = new FileRoute('/login').createRoute({
+    component: LoginComponent
+})
+
+function LoginComponent()
 {
     const [formData, setFormData] = useState({ email: "", password: "" })
-    const user = useContext(UserContext);
+
+    const { auth } = Route.useRouteContext({ select: ({ auth }) => ({ auth }) })
 
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
     {
@@ -24,19 +28,29 @@ export const component = function Login()
         console.log("Form submitted!");
         console.log("Email is: ", formData.email);
         console.log("Password is: ", formData.password);
-        const userData = {
-            email: formData.email,
-            password: formData.password
-        }
-        axios.post(`/api/v1/users/login`, userData).then((response) =>
+        auth.login(formData.email, formData.password);
+        if (auth.status === "loggedIn")
         {
-            console.log("Login post request received.");
-            user.setUserToken(() => response.data.token);
             setFormData(() => { return { email: "", password: "" } })
-        }).catch((e) =>
+            console.log("My auth token is: " + auth.token);
+        }
+        else
         {
-            console.log(e);
-        })
+
+        }
+        // const userData = {
+        //     email: formData.email,
+        //     password: formData.password
+        // }
+        // axios.post(`/api/v1/users/login`, userData).then((response) =>
+        // {
+        //     console.log("Login post request received.");
+        //     user.setUserToken(() => response.data.token);
+        //     setFormData(() => { return { email: "", password: "" } })
+        // }).catch((e) =>
+        // {
+        //     console.log(e);
+        // })
     }
 
     return (
