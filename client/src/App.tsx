@@ -11,8 +11,8 @@ export function App()
     const { auth } = Route.useRouteContext({ select: ({ auth }) => ({ auth }) })
 
     return <div>
-        <p>Current token is: {auth.token}</p>
-        <p>Status: {auth.status}</p>
+        <p>Current token is: {auth.status.token}</p>
+        <p>Status: {auth.status.phase}</p>
         <div className="p-2 flex gap-2">
             <Link to="/" className="[&.active]:font-bold">
                 Home

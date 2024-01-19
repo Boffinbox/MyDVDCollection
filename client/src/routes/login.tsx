@@ -29,10 +29,10 @@ function LoginComponent()
         console.log("Email is: ", formData.email);
         console.log("Password is: ", formData.password);
         auth.login(formData.email, formData.password);
-        if (auth.status === "loggedIn")
+        if (auth.status.phase === "loggedIn")
         {
             setFormData(() => { return { email: "", password: "" } })
-            console.log("My auth token is: " + auth.token);
+            console.log("My auth token is: " + auth.status.token);
         }
         else
         {

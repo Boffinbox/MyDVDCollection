@@ -18,32 +18,38 @@ const login = async (email: string, password: string): Promise<string | undefine
 
 export interface IAuth
 {
-    status: "loggedOut" | "loggedIn";
-    token?: string | undefined
+    status:
+    {
+        phase: "loggedOut" | "loggedIn";
+        token?: string | undefined
+    };
     login: (email: string, password: string) => void;
     logout: () => void;
 }
 
 export const auth: IAuth = {
-    status: "loggedOut",
-    token: undefined,
+    status:
+    {
+        phase: "loggedOut",
+        token: undefined,
+    },
     login: async function (email, password)
     {
         const token = await login(email, password);
         if (token != undefined)
         {
-            auth.token = token;
-            auth.status = "loggedIn"
+            auth.status.token = token;
+            auth.status.phase = "loggedIn"
         }
         else
         {
-            auth.status = "loggedOut"
+            auth.status.phase = "loggedOut"
         }
     },
     logout: function ()
     {
-        auth.token = undefined;
-        auth.status = "loggedOut"
+        auth.status.token = undefined;
+        auth.status.phase = "loggedOut"
     }
 }
 
