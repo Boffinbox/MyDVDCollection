@@ -22,13 +22,13 @@ function LoginComponent()
         })
     }
 
-    function handleSubmit(evt: React.FormEvent<HTMLFormElement>)
+    async function handleSubmit(evt: React.FormEvent<HTMLFormElement>)
     {
         evt.preventDefault();
         console.log("Form submitted!");
         console.log("Email is: ", formData.email);
         console.log("Password is: ", formData.password);
-        auth.login(formData.email, formData.password);
+        await auth.login(formData.email, formData.password);
         router.invalidate();
         setFormData(() => { return { email: "", password: "" } })
         console.log("My auth token is: " + token);

@@ -13,18 +13,16 @@ export let auth: IAuth = {
     token: undefined,
     login: async (email: string, password: string) =>
     {
-        // const userData = { email, password }
-        // axios.post(`/api/v1/users/login`, userData).then((response) =>
-        // {
-        //     console.log("Login post request received.");
-        //     auth.token = response.data.token;
-        //     auth.status = "loggedIn";
-        // }).catch((e) =>
-        // {
-        //     console.log(e);;
-        // })
-        auth.token = email;
-        auth.status = "loggedIn";
+        const userData = { email, password }
+        await axios.post(`/api/v1/users/login`, userData).then((response) =>
+        {
+            console.log("Login post request received.");
+            auth.token = response.data.token;
+            auth.status = "loggedIn";
+        }).catch((e) =>
+        {
+            console.log(e);;
+        })
     },
     logout: function ()
     {
