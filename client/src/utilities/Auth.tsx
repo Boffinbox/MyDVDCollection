@@ -1,55 +1,34 @@
 import axios from "axios"
-import { useState } from "react";
-
-const login = async (email: string, password: string): Promise<string | undefined> =>
-{
-    const userData = { email, password }
-    let token: string | undefined = undefined;
-    await axios.post(`/api/v1/users/login`, userData).then((response) =>
-    {
-        console.log("Login post request received.");
-        token = response.data.token;
-    }).catch((e) =>
-    {
-        console.log(e);;
-    })
-    return token;
-}
 
 export interface IAuth
 {
-    status:
-    {
-        phase: "loggedOut" | "loggedIn";
-        token?: string | undefined
-    };
+    status: "loggedOut" | "loggedIn";
+    token?: string | undefined;
     login: (email: string, password: string) => void;
     logout: () => void;
 }
 
-export const auth: IAuth = {
-    status:
+export let auth: IAuth = {
+    status: "loggedOut",
+    token: undefined,
+    login: async (email: string, password: string) =>
     {
-        phase: "loggedOut",
-        token: undefined,
-    },
-    login: async function (email, password)
-    {
-        const token = await login(email, password);
-        if (token != undefined)
-        {
-            auth.status.token = token;
-            auth.status.phase = "loggedIn"
-        }
-        else
-        {
-            auth.status.phase = "loggedOut"
-        }
+        // const userData = { email, password }
+        // axios.post(`/api/v1/users/login`, userData).then((response) =>
+        // {
+        //     console.log("Login post request received.");
+        //     auth.token = response.data.token;
+        //     auth.status = "loggedIn";
+        // }).catch((e) =>
+        // {
+        //     console.log(e);;
+        // })
+        auth.token = email;
+        auth.status = "loggedIn";
     },
     logout: function ()
     {
-        auth.status.token = undefined;
-        auth.status.phase = "loggedOut"
+        auth.token = undefined;
+        auth.status = "loggedOut";
     }
 }
-

@@ -1,6 +1,3 @@
-import { useState } from "react";
-import LoginRefresh from "./utilities/LoginRefresh";
-
 import { Link, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 
@@ -8,11 +5,11 @@ import { Route } from "./routes/__root";
 
 export function App()
 {
-    const { auth } = Route.useRouteContext({ select: ({ auth }) => ({ auth }) })
+    const { auth, token, status } = Route.useRouteContext({ select: ({ auth }) => ({ auth, token: auth.token, status: auth.status }) })
 
     return <div>
-        <p>Current token is: {auth.status.token}</p>
-        <p>Status: {auth.status.phase}</p>
+        <p>Current token is: {token}</p>
+        <p>Status: {status}</p>
         <div className="p-2 flex gap-2">
             <Link to="/" className="[&.active]:font-bold">
                 Home

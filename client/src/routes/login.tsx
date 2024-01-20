@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FileRoute } from "@tanstack/react-router";
+import { FileRoute, useRouter } from "@tanstack/react-router";
 
 export const Route = new FileRoute('/login').createRoute({
     component: LoginComponent
@@ -8,8 +8,8 @@ export const Route = new FileRoute('/login').createRoute({
 function LoginComponent()
 {
     const [formData, setFormData] = useState({ email: "", password: "" })
-
-    const { auth } = Route.useRouteContext({ select: ({ auth }) => ({ auth }) })
+    const router = useRouter();
+    const { auth, token, status } = Route.useRouteContext({ select: ({ auth }) => ({ auth, token: auth.token, status: auth.status }) })
 
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
     {
@@ -29,32 +29,20 @@ function LoginComponent()
         console.log("Email is: ", formData.email);
         console.log("Password is: ", formData.password);
         auth.login(formData.email, formData.password);
-        if (auth.status.phase === "loggedIn")
-        {
-            setFormData(() => { return { email: "", password: "" } })
-            console.log("My auth token is: " + auth.status.token);
-        }
-        else
-        {
-
-        }
-        // const userData = {
-        //     email: formData.email,
-        //     password: formData.password
-        // }
-        // axios.post(`/api/v1/users/login`, userData).then((response) =>
-        // {
-        //     console.log("Login post request received.");
-        //     user.setUserToken(() => response.data.token);
-        //     setFormData(() => { return { email: "", password: "" } })
-        // }).catch((e) =>
-        // {
-        //     console.log(e);
-        // })
+        router.invalidate();
+        setFormData(() => { return { email: "", password: "" } })
+        console.log("My auth token is: " + token);
     }
 
-    return (
-        <div>
+    return status === "loggedIn" ? (
+        <>
+            <p>Current token is: {token}</p>
+            <p>Login status: {status}</p>
+        </>
+    ) : (
+        <>
+            <p>Current token is: {token}</p>
+            <p>Login status: {status}</p>
             <div>
                 <form action="" onSubmit={handleSubmit}>
                     <div>
@@ -68,6 +56,6 @@ function LoginComponent()
                     <button>Submit!</button>
                 </form>
             </div>
-        </div>
+        </>
     )
 }
