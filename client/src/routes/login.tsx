@@ -49,8 +49,6 @@ function LoginComponent()
         </>
     ) : (
         <>
-            <p>Current token is: {token}</p>
-            <p>Login status: {status}</p>
             <div>
                 <form action="" onSubmit={handleSubmit}>
                     <div>
