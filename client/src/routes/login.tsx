@@ -1,11 +1,15 @@
-import axios from "axios";
-import { useState, useContext } from "react";
-import { UserContext } from "../components/UserContext";
+import { useState } from "react";
+import { FileRoute, useRouter } from "@tanstack/react-router";
 
-export default function Login()
+export const Route = new FileRoute('/login').createRoute({
+    component: LoginComponent
+})
+
+function LoginComponent()
 {
     const [formData, setFormData] = useState({ email: "", password: "" })
-    const user = useContext(UserContext);
+    const router = useRouter();
+    const { auth, token, status } = Route.useRouteContext({ select: ({ auth }) => ({ auth, token: auth.token, status: auth.status }) })
 
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
     {
@@ -18,28 +22,35 @@ export default function Login()
         })
     }
 
-    function handleSubmit(evt: React.FormEvent<HTMLFormElement>)
+    async function handleSubmit(evt: React.FormEvent<HTMLFormElement>)
     {
         evt.preventDefault();
         console.log("Form submitted!");
         console.log("Email is: ", formData.email);
         console.log("Password is: ", formData.password);
-        const userData = {
-            email: formData.email,
-            password: formData.password
-        }
-        axios.post(`/api/v1/users/login`, userData).then((response) =>
-        {
-            console.log("Login post request received.");
-            user.setUserToken(() => response.data.token)
-        }).catch((e) =>
-        {
-            console.log(e);
-        })
+        await auth.login(formData.email, formData.password);
+        router.invalidate();
+        setFormData(() => { return { email: "", password: "" } })
+        console.log("My auth token is: " + token);
     }
 
-    return (
-        <div>
+    return status === "loggedIn" ? (
+        <>
+            <p>Logged in!</p>
+            <button
+                onClick={() =>
+                {
+                    auth.logout()
+                    router.invalidate();
+                }}
+            >
+                Logout
+            </button>
+        </>
+    ) : (
+        <>
+            <p>Current token is: {token}</p>
+            <p>Login status: {status}</p>
             <div>
                 <form action="" onSubmit={handleSubmit}>
                     <div>
@@ -53,6 +64,6 @@ export default function Login()
                     <button>Submit!</button>
                 </form>
             </div>
-        </div>
+        </>
     )
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios"
-import { UserContext } from "../components/UserContext";
+import { UserContext } from "../utilities/UserContext";
 
 interface IDiscCollectionData
 {

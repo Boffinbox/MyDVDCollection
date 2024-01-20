@@ -1,4 +1,4 @@
-export default function Index()
+export const component = function Index()
 {
     return (
         <>
@@ -20,5 +20,5 @@ export default function Index()
                 </div>
             </div>
         </>
-    );
+    )
 }
