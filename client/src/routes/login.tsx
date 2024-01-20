@@ -36,8 +36,7 @@ function LoginComponent()
 
     return status === "loggedIn" ? (
         <>
-            <p>Current token is: {token}</p>
-            <p>Login status: {status}</p>
+            <p>Logged in!</p>
             <button
                 onClick={() =>
                 {
