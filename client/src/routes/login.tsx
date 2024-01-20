@@ -38,6 +38,15 @@ function LoginComponent()
         <>
             <p>Current token is: {token}</p>
             <p>Login status: {status}</p>
+            <button
+                onClick={() =>
+                {
+                    auth.logout()
+                    router.invalidate();
+                }}
+            >
+                Logout
+            </button>
         </>
     ) : (
         <>
