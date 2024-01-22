@@ -2,23 +2,18 @@ import { FileRoute, lazyRouteComponent } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as LoginImport } from './routes/login'
+import { Route as CollectionsImport } from './routes/collections'
 import { Route as CollectionsCollectionIdImport } from './routes/collections.$collectionId'
 
-const CollectionsComponentImport = new FileRoute('/collections').createRoute()
 const IndexComponentImport = new FileRoute('/').createRoute()
-
-const CollectionsComponentRoute = CollectionsComponentImport.update({
-  path: '/collections',
-  getParentRoute: () => rootRoute,
-} as any).update({
-  component: lazyRouteComponent(
-    () => import('./routes/collections.component'),
-    'component',
-  ),
-})
 
 const LoginRoute = LoginImport.update({
   path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CollectionsRoute = CollectionsImport.update({
+  path: '/collections',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -34,7 +29,7 @@ const IndexComponentRoute = IndexComponentImport.update({
 
 const CollectionsCollectionIdRoute = CollectionsCollectionIdImport.update({
   path: '/$collectionId',
-  getParentRoute: () => CollectionsComponentRoute,
+  getParentRoute: () => CollectionsRoute,
 } as any)
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
@@ -42,22 +37,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexComponentImport
       parentRoute: typeof rootRoute
     }
+    '/collections': {
+      preLoaderRoute: typeof CollectionsImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
-    '/collections': {
-      preLoaderRoute: typeof CollectionsComponentImport
-      parentRoute: typeof rootRoute
-    }
     '/collections/$collectionId': {
       preLoaderRoute: typeof CollectionsCollectionIdImport
-      parentRoute: typeof CollectionsComponentImport
+      parentRoute: typeof CollectionsImport
     }
   }
 }
 export const routeTree = rootRoute.addChildren([
   IndexComponentRoute,
+  CollectionsRoute.addChildren([CollectionsCollectionIdRoute]),
   LoginRoute,
-  CollectionsComponentRoute.addChildren([CollectionsCollectionIdRoute]),
 ])

@@ -31,7 +31,6 @@ function LoginComponent()
         await auth.login(formData.email, formData.password);
         router.invalidate();
         setFormData(() => { return { email: "", password: "" } })
-        console.log("My auth token is: " + token);
     }
 
     return status === "loggedIn" ? (
