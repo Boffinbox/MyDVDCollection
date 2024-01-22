@@ -1,9 +1,7 @@
 import { FileRoute } from "@tanstack/react-router"
-import { useContext } from "react";
-import { UserContext } from "../utilities/UserContext";
 
 export const Route = new FileRoute('/collections/$collectionId').createRoute({
-    loader: async ({ params: { collectionId } }: { params: { collectionId: string } }) => collectionFetch(collectionId),
+    loader: async ({ params: { collectionId }, context: { auth } }) => FetchCollection(collectionId, auth.token),
     component: Collection
 })
 
@@ -24,11 +22,15 @@ function Collection()
     )
 }
 
-const collectionFetch = async function (collectionId: string)
+const FetchCollection = async function (collectionId: string, token: string | undefined)
 {
+    if (token == undefined)
+    {
+        throw new Error("No access token supplied to fetch collection.");
+    }
     const config =
     {
-        headers: { Authorization: `Bearer ${user.userToken}` }
+        headers: { Authorization: `Bearer ${token}` }
         // headers: { Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTU3YTMwZGQ1ZTU0NDQxYjE1YjAyNDQiLCJ1c2VybmFtZSI6ImJvZmYiLCJpYXQiOjE3MDU2ODgwODQsImV4cCI6MTcwNTY4ODk4NH0.KX4OX42b_YWbSl9_qDL2CJM_kxZ7OxcmEjSjv7zia9g` }
     }
     // axios.get(`/api/v1/disccollections/${collectionId}`, config).then((response) =>
@@ -41,6 +43,6 @@ const collectionFetch = async function (collectionId: string)
     //     console.log(e);
     // })
     const res = await fetch(`/api/v1/disccollections/${collectionId}`, config)
-    if (!res.ok) throw new Error("Failed to get collection data")
+    if (!res.ok) throw new Error("Failed to fetch user's collection.")
     return res.json()
 }
