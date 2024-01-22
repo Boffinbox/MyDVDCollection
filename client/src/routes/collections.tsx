@@ -14,14 +14,18 @@ function Collections()
     return (
         <>
             <div>
-                {JSON.stringify(data, null, 4)}
                 Collections {` `}
-                <Link
-                    to="/collections/$collectionId"
-                    params={{
-                        collectionId: "6557a7fe22dd6bff7082b921"
-                    }}
-                >Click to load example collection.</Link>
+                {data.map((coll: any) => (
+                    <p>
+                        <Link
+                            to="/collections/$collectionId"
+                            params={{
+                                collectionId: coll._id
+                            }}
+                        >Click to load the "{coll.title} collection".
+                        </Link>
+                    </p>
+                ))}
                 <hr />
                 <Outlet />
             </div>
