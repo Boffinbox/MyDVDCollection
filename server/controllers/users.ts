@@ -113,7 +113,12 @@ export async function logout(req, res)
     user.refreshTokens = filteredTokenList;
     user.save().then((user) =>
     {
-        return res.clearCookie("refreshToken", COOKIE_OPTIONS).status(200).send({ success: true })
+        const deletedCookieOptions = {
+            ...COOKIE_OPTIONS,
+            // setting maxAge to 0, because technically, you can't actually delete cookies...
+            maxAge: 0
+        }
+        return res.clearCookie("refreshToken", deletedCookieOptions).status(200).send({ success: true })
     }
     ).catch((err) =>
     {
