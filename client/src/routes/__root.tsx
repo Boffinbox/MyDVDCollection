@@ -1,5 +1,5 @@
 import { rootRouteWithContext } from '@tanstack/react-router'
-import { IAuth } from '../utilities/Auth';
+import { auth, IAuth } from '../utilities/Auth';
 
 import { Link, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
@@ -7,6 +7,13 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 export const Route = rootRouteWithContext<{
     auth: IAuth
 }>()({
+    beforeLoad: async () =>
+    {
+        if (auth.status == "loggedOut" || auth.token == undefined)
+        {
+            await auth.refreshAccessToken();
+        }
+    },
     component: App
 })
 
