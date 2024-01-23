@@ -27,10 +27,24 @@ export let auth: IAuth = {
             console.log(e);;
         })
     },
-    logout: function ()
+    logout: async function ()
     {
-        auth.token = undefined;
-        auth.status = "loggedOut";
+        auth.status = "pending"
+        const config =
+        {
+            headers: { Authorization: `Bearer ${auth.token}` }
+        }
+        await axios.post(`/api/v1/users/logout`, ``, config).then((response) =>
+        {
+            console.log("Logout request received - removing refresh cookie.");
+            console.log(response);
+            auth.token = undefined
+            auth.status = "loggedOut"
+        }).catch((e) =>
+        {
+            auth.status = "loggedIn"
+            console.log(e);
+        })
     },
     refreshAccessToken: async function ()
     {

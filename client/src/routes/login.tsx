@@ -37,9 +37,9 @@ function LoginComponent()
         <>
             <p>Logged in!</p>
             <button
-                onClick={() =>
+                onClick={async () =>
                 {
-                    auth.logout()
+                    await auth.logout()
                     router.invalidate();
                 }}
             >
