@@ -9,7 +9,7 @@ function LoginComponent()
 {
     const [formData, setFormData] = useState({ email: "", password: "" })
     const router = useRouter();
-    const { auth, token, status } = Route.useRouteContext({ select: ({ auth }) => ({ auth, token: auth.token, status: auth.status }) })
+    const { auth, status } = Route.useRouteContext({ select: ({ auth }) => ({ auth, status: auth.status }) })
 
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
     {
