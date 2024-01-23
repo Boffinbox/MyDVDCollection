@@ -33,7 +33,7 @@ function App()
             <Link to="/login" className="[&.active]:font-bold">
                 Login
             </Link>{` `}
-            <Link to="/collections" className="[&.active]:font-bold">
+            <Link to="/mdc/collections" className="[&.active]:font-bold">
                 Collections
             </Link>
         </div>

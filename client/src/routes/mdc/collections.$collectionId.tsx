@@ -1,7 +1,7 @@
 import { FileRoute } from "@tanstack/react-router"
-import { FetchCollection } from "../fetch/FetchCollection";
+import { FetchCollection } from "../../fetch/FetchCollection";
 
-export const Route = new FileRoute('/collections/$collectionId').createRoute({
+export const Route = new FileRoute('/mdc/collections/$collectionId').createRoute({
     loader: async ({ params: { collectionId }, context: { auth } }) => FetchCollection(collectionId, auth.token),
     component: Collection
 })
