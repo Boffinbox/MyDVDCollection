@@ -4,7 +4,7 @@ export interface IAuth
 {
     status: "loggedOut" | "loggedIn" | "pending"
     token?: string | undefined;
-    login: (email: string, password: string) => void;
+    login: (email: string, password: string) => Promise<"loggedOut" | "loggedIn" | "pending">;
     logout: () => void;
     refreshAccessToken: () => void;
 }
@@ -24,8 +24,9 @@ export let auth: IAuth = {
         }).catch((e) =>
         {
             auth.status = "loggedOut"
-            console.log(e);;
+            console.log("Unable to login with provided credentials.");;
         })
+        return auth.status
     },
     logout: async function ()
     {

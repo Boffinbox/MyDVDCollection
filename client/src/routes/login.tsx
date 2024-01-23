@@ -7,9 +7,10 @@ export const Route = new FileRoute('/login').createRoute({
 
 function LoginComponent()
 {
-    const [formData, setFormData] = useState({ email: "", password: "" })
     const router = useRouter();
     const { auth, status } = Route.useRouteContext({ select: ({ auth }) => ({ auth, status: auth.status }) })
+
+    const [formData, setFormData] = useState({ email: "", password: "" })
 
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
     {
@@ -28,9 +29,18 @@ function LoginComponent()
         console.log("Form submitted!");
         console.log("Email is: ", formData.email);
         console.log("Password is: ", formData.password);
-        await auth.login(formData.email, formData.password);
+        const result = await auth.login(formData.email, formData.password);
         router.invalidate();
-        setFormData(() => { return { email: "", password: "" } })
+        if (result !== "loggedIn")
+        {
+            // todo
+            console.log("wrong credentials todo inside login.tsx")
+        }
+        else
+        {
+            router.history.push(`/`)
+            setFormData(() => { return { email: "", password: "" } })
+        }
     }
 
     return status === "loggedIn" ? (
