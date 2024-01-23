@@ -1,5 +1,5 @@
 import { rootRouteWithContext } from '@tanstack/react-router'
-import { auth, IAuth } from '../utilities/Auth';
+import { IAuth } from '../utilities/Auth';
 
 import { Link, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
@@ -7,13 +7,6 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 export const Route = rootRouteWithContext<{
     auth: IAuth
 }>()({
-    beforeLoad: async () =>
-    {
-        if (auth.status == "loggedOut" || auth.token == undefined)
-        {
-            await auth.refreshAccessToken();
-        }
-    },
     component: App
 })
 
@@ -33,7 +26,7 @@ function App()
             <Link to="/login" className="[&.active]:font-bold">
                 Login
             </Link>{` `}
-            <Link to="/mdc/collections" className="[&.active]:font-bold">
+            <Link to="/collections" className="[&.active]:font-bold">
                 Collections
             </Link>
         </div>
