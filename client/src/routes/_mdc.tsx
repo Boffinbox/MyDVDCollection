@@ -1,4 +1,4 @@
-import { FileRoute, Outlet } from '@tanstack/react-router'
+import { FileRoute, Outlet, redirect } from '@tanstack/react-router'
 import { auth } from '../utilities/Auth';
 
 export const Route = new FileRoute('/_mdc').createRoute({
@@ -6,8 +6,16 @@ export const Route = new FileRoute('/_mdc').createRoute({
     {
         if (auth.status == "loggedOut" || auth.token == undefined)
         {
-            console.log("tane");
             await auth.refreshAccessToken();
+            if (auth.status == "loggedOut" || auth.token == undefined)
+            {
+                throw redirect({
+                    to: "/login",
+                    search: {
+                        redirect: location.href
+                    }
+                })
+            }
         }
     },
     component: MDCComponent

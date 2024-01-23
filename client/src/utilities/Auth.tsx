@@ -54,10 +54,10 @@ export let auth: IAuth = {
             console.log("Refresh request received.");
             auth.token = response.data.token;
             auth.status = "loggedIn"
-        }).catch((e) =>
+        }).catch(() =>
         {
+            console.log("Unable to refresh token, redirecting to login...")
             auth.status = "loggedOut"
-            console.log(e);
         })
     }
 }
