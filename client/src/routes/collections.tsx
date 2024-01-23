@@ -3,6 +3,7 @@ import { FetchCollections } from "../utilities/FetchCollections"
 
 export const Route = new FileRoute('/collections').createRoute({
     loader: async ({ context: { auth } }) => await FetchCollections(auth.token),
+    staleTime: 20_000,
     component: Collections
 })
 
@@ -16,15 +17,14 @@ function Collections()
             <div>
                 Collections {` `}
                 {data.map((coll: any) => (
-                    <p>
-                        <Link
-                            to="/collections/$collectionId"
-                            params={{
-                                collectionId: coll._id
-                            }}
-                        >Click to load the "{coll.title} collection".
-                        </Link>
-                    </p>
+                    <Link key={coll._id}
+                        to="/collections/$collectionId"
+                        params={{
+                            collectionId: coll._id
+                        }}
+                    >
+                        <p>Click to load the "{coll.title} collection".</p>
+                    </Link>
                 ))}
                 <hr />
                 <Outlet />
