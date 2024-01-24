@@ -17,7 +17,7 @@ function LoginComponent()
 {
     const router = useRouter();
     const navigate = useNavigate();
-    const { auth, status } = Route.useRouteContext({ select: ({ auth }) => ({ auth, status: auth.status }) })
+    const { auth } = Route.useRouteContext({ select: ({ auth }) => ({ auth }) })
 
     const [formData, setFormData] = useState({ email: "", password: "" })
 
@@ -52,20 +52,7 @@ function LoginComponent()
         }
     }
 
-    return status === "loggedIn" ? (
-        <>
-            <p>Logged in!</p>
-            <button
-                onClick={async () =>
-                {
-                    await auth.logout()
-                    router.invalidate();
-                }}
-            >
-                Logout
-            </button>
-        </>
-    ) : (
+    return (
         <>
             <div>
                 <form action="" onSubmit={handleSubmit}>
