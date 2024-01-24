@@ -8,15 +8,34 @@ export const Route = new FileRoute('/_mdc/collections/$collectionId').createRout
 
 function Collection()
 {
-    const data: [] = Route.useLoaderData();
+    const data: {
+        _id: string,
+        title: string,
+        discs: [
+            {
+                _id: string,
+                rating: number,
+                watched: boolean,
+                referenceDVD:
+                {
+                    _id: string,
+                    barcode: string,
+                    title: string
+                }
+            }
+        ]
+    } = Route.useLoaderData();
     console.log(data)
 
     return (
         <>
+            <h3>{data.title}</h3>
             <div>
-                <pre>
-                    {JSON.stringify(data, null, 4)}
-                </pre>
+                {data.discs.map((disc, idx) => (
+                    <div>
+                        Disc {idx + 1}: {disc.referenceDVD.title}
+                    </div>
+                ))}
             </div>
         </>
     )

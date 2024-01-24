@@ -9,14 +9,14 @@ export const Route = new FileRoute('/_mdc/collections').createRoute({
 
 function Collections()
 {
-    const data = Route.useLoaderData();
+    const data: [{ _id: string, title: string }] = Route.useLoaderData();
     console.log("My coll data is: ", data)
 
     return (
         <>
             <div>
                 Collections {` `}
-                {data.map((coll: any) => (
+                {data.map((coll) => (
                     <Link key={coll._id}
                         to="/collections/$collectionId"
                         params={{
