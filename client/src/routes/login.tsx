@@ -38,7 +38,7 @@ function LoginComponent()
         }
         else
         {
-            router.history.push(`/`)
+            router.history.push(`/collections`)
             setFormData(() => { return { email: "", password: "" } })
         }
     }

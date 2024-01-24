@@ -10,10 +10,7 @@ export const Route = new FileRoute('/_mdc').createRoute({
             if (auth.status == "loggedOut" || auth.token == undefined)
             {
                 throw redirect({
-                    to: "/login",
-                    search: {
-                        redirect: location.href
-                    }
+                    to: "/login"
                 })
             }
         }
@@ -35,7 +32,7 @@ function MDCComponent()
                     Home
                 </Link>{` `}
                 <Link to="/login" className="[&.active]:font-bold">
-                    Login
+                    Logout
                 </Link>{` `}
                 <Link to="/collections" className="[&.active]:font-bold">
                     Collections
