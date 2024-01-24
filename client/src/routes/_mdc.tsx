@@ -23,15 +23,19 @@ function MDCComponent()
     const { token, status } = Route.useRouteContext({ select: ({ auth }) => ({ token: auth.token, status: auth.status }) })
     return (
         <>
-            <p>Current token is: {token}</p>
-            <p>Status: {status}</p>
-            <hr />
+            <div>
+                <div style={{ backgroundColor: "rebeccapurple", color: 'orange', fontSize: "small", fontWeight: 100 }}>
+                    <p>Current token is: {token}</p>
+                    <p>Status: {status}</p>
+                </div>
+                <hr />
+            </div>
             <h1>My DVD Collection</h1>
             <div className="p-2 flex gap-2">
                 <Link to="/" className="[&.active]:font-bold">
                     Home
                 </Link>{` `}
-                <Link to="/login" className="[&.active]:font-bold">
+                <Link to="/logout" className="[&.active]:font-bold">
                     Logout
                 </Link>{` `}
                 <Link to="/collections" className="[&.active]:font-bold">

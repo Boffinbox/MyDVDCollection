@@ -1,9 +1,15 @@
 import { Route as rootRoute } from './routes/__root'
+import { Route as LogoutImport } from './routes/logout'
 import { Route as LoginImport } from './routes/login'
 import { Route as MdcImport } from './routes/_mdc'
 import { Route as IndexImport } from './routes/index'
 import { Route as MdcCollectionsImport } from './routes/_mdc/collections'
 import { Route as MdcCollectionsCollectionIdImport } from './routes/_mdc/collections.$collectionId'
+
+const LogoutRoute = LogoutImport.update({
+  path: '/logout',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const LoginRoute = LoginImport.update({
   path: '/login',
@@ -45,6 +51,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/logout': {
+      preLoaderRoute: typeof LogoutImport
+      parentRoute: typeof rootRoute
+    }
     '/_mdc/collections': {
       preLoaderRoute: typeof MdcCollectionsImport
       parentRoute: typeof MdcImport
@@ -61,4 +71,5 @@ export const routeTree = rootRoute.addChildren([
     MdcCollectionsRoute.addChildren([MdcCollectionsCollectionIdRoute]),
   ]),
   LoginRoute,
+  LogoutRoute,
 ])

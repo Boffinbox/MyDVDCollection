@@ -1,7 +1,15 @@
 import { useState } from "react";
-import { FileRoute, Link, useRouter } from "@tanstack/react-router";
+import { FileRoute, Link, redirect, useRouter } from "@tanstack/react-router";
+import { auth } from "../utilities/Auth";
 
 export const Route = new FileRoute('/login').createRoute({
+    beforeLoad: async () =>
+    {
+        if (auth.status == "loggedIn")
+            throw redirect({
+                to: "/collections"
+            })
+    },
     component: LoginComponent
 })
 
@@ -38,7 +46,6 @@ function LoginComponent()
         }
         else
         {
-            router.history.push(`/collections`)
             setFormData(() => { return { email: "", password: "" } })
         }
     }
