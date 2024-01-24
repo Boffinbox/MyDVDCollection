@@ -1,6 +1,8 @@
 import { FileRoute } from "@tanstack/react-router"
 import { GetCollection } from "../../httpverbs/get/GetCollection";
 import { DeleteDisc } from "../../httpverbs/delete/DeleteDisc";
+import { PostBarcode } from "../../httpverbs/post/PostBarcode";
+import { useState } from "react";
 
 export const Route = new FileRoute('/_mdc/collections/$collectionId').createRoute({
     loader: async ({ params: { collectionId }, context: { auth } }) => GetCollection(collectionId, auth.token),
@@ -10,6 +12,7 @@ export const Route = new FileRoute('/_mdc/collections/$collectionId').createRout
 function Collection()
 {
     const { token } = Route.useRouteContext({ select: ({ auth }) => ({ token: auth.token }) })
+    const [formData, setFormData] = useState({ barcode: "" })
 
     const data: {
         _id: string,
@@ -28,11 +31,43 @@ function Collection()
             }
         ]
     } = Route.useLoaderData();
-    console.log(data)
+
+    function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
+    {
+        setFormData(currentData =>
+        {
+            return {
+                ...currentData,
+                [evt.target.name]: evt.target.value
+            }
+        })
+    }
 
     return (
         <>
             <h3>{data.title}</h3>
+            <form action="" onSubmit={async (evt) => 
+            {
+                evt.preventDefault();
+                try
+                {
+                    await PostBarcode(token, data._id, formData.barcode)
+                    setFormData(() => { return { barcode: "" } })
+                }
+                catch (e)
+                {
+                    console.log(e);
+                }
+            }}>
+                <p>
+                    <label htmlFor="barcode">barcode</label>
+                    <input type="text" id="barcode" name="barcode" onChange={handleChange} value={formData.barcode} />
+                    {` `}
+                    <button>
+                        Submit!
+                    </button>
+                </p>
+            </form>
             <div>
                 {data.discs.map((disc, idx) => (
                     <div key={disc._id}>

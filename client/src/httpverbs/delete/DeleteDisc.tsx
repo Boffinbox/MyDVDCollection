@@ -2,7 +2,6 @@ import axios from "axios";
 
 export async function DeleteDisc(token: string | undefined, collectionId: string, discId: string)
 {
-    console.log("reached deletedisc")
     if (token == undefined)
     {
         throw new Error("No access token supplied to delete disc.");
