@@ -1,12 +1,9 @@
-import { FileRoute, lazyRouteComponent } from '@tanstack/react-router'
-
 import { Route as rootRoute } from './routes/__root'
 import { Route as LoginImport } from './routes/login'
 import { Route as MdcImport } from './routes/_mdc'
+import { Route as IndexImport } from './routes/index'
 import { Route as MdcCollectionsImport } from './routes/_mdc/collections'
 import { Route as MdcCollectionsCollectionIdImport } from './routes/_mdc/collections.$collectionId'
-
-const IndexComponentImport = new FileRoute('/').createRoute()
 
 const LoginRoute = LoginImport.update({
   path: '/login',
@@ -18,15 +15,10 @@ const MdcRoute = MdcImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexComponentRoute = IndexComponentImport.update({
+const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
-} as any).update({
-  component: lazyRouteComponent(
-    () => import('./routes/index.component'),
-    'component',
-  ),
-})
+} as any)
 
 const MdcCollectionsRoute = MdcCollectionsImport.update({
   path: '/collections',
@@ -42,7 +34,7 @@ const MdcCollectionsCollectionIdRoute = MdcCollectionsCollectionIdImport.update(
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      preLoaderRoute: typeof IndexComponentImport
+      preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
     '/_mdc': {
@@ -64,7 +56,7 @@ declare module '@tanstack/react-router' {
   }
 }
 export const routeTree = rootRoute.addChildren([
-  IndexComponentRoute,
+  IndexRoute,
   MdcRoute.addChildren([
     MdcCollectionsRoute.addChildren([MdcCollectionsCollectionIdRoute]),
   ]),

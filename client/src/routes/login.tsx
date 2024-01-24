@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FileRoute, useRouter } from "@tanstack/react-router";
+import { FileRoute, Link, useRouter } from "@tanstack/react-router";
 
 export const Route = new FileRoute('/login').createRoute({
     component: LoginComponent
@@ -70,6 +70,11 @@ function LoginComponent()
                     </div>
                     <button>Submit!</button>
                 </form>
+                <Link
+                    to={"/"}
+                >
+                    Return to homepage
+                </Link>
             </div>
         </>
     )
