@@ -1,5 +1,6 @@
 import { FileRoute } from "@tanstack/react-router"
 import { GetCollection } from "../../httpverbs/get/GetCollection";
+import { DeleteDisc } from "../../httpverbs/delete/DeleteDisc";
 
 export const Route = new FileRoute('/_mdc/collections/$collectionId').createRoute({
     loader: async ({ params: { collectionId }, context: { auth } }) => GetCollection(collectionId, auth.token),
@@ -8,6 +9,8 @@ export const Route = new FileRoute('/_mdc/collections/$collectionId').createRout
 
 function Collection()
 {
+    const { token } = Route.useRouteContext({ select: ({ auth }) => ({ token: auth.token }) })
+
     const data: {
         _id: string,
         title: string,
@@ -33,14 +36,27 @@ function Collection()
             <div>
                 {data.discs.map((disc, idx) => (
                     <div key={disc._id}>
-                        Disc {idx + 1}: {disc.referenceDVD.title}
-                        {` `}
-                        <button>
-                            Delete!
-                        </button>
+                        <form action="" onSubmit={async (evt) =>
+                        {
+                            evt.preventDefault();
+                            try
+                            {
+                                await DeleteDisc(token, data._id, disc._id)
+                            }
+                            catch (e)
+                            {
+                                console.log(e);
+                            }
+                        }}>
+                            Disc {idx + 1}: {disc.referenceDVD.title}
+                            {` `}
+                            <button>
+                                Delete!
+                            </button>
+                        </form>
                     </div>
                 ))}
-            </div>
+            </div >
         </>
     )
 }
