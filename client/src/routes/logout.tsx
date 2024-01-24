@@ -1,12 +1,23 @@
-import { FileRoute, redirect } from "@tanstack/react-router";
+import { FileRoute, useNavigate } from "@tanstack/react-router";
 import { auth } from "../utilities/Auth";
 
 export const Route = new FileRoute('/logout').createRoute({
     beforeLoad: async () =>
     {
         await auth.logout();
-        throw redirect({
-            to: "/"
-        })
-    }
+    },
+    component: Logout
 })
+
+function Logout()
+{
+    const navigate = useNavigate();
+
+    setTimeout(() => navigate({ to: "/" }), 1000)
+
+    return (
+        <>
+            <div>Logging out...</div>
+        </>
+    )
+}
