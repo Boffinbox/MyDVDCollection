@@ -34,6 +34,10 @@ function Collection()
                 {data.discs.map((disc, idx) => (
                     <div key={disc._id}>
                         Disc {idx + 1}: {disc.referenceDVD.title}
+                        {` `}
+                        <button>
+                            Delete!
+                        </button>
                     </div>
                 ))}
             </div>

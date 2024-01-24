@@ -17,14 +17,20 @@ function Collections()
             <div>
                 Collections {` `}
                 {data.map((coll) => (
-                    <Link key={coll._id}
-                        to="/collections/$collectionId"
-                        params={{
-                            collectionId: coll._id
-                        }}
-                    >
-                        <p>Click to load the "{coll.title} collection".</p>
-                    </Link>
+                    <p key={coll._id}>
+                        <Link
+                            to="/collections/$collectionId"
+                            params={{
+                                collectionId: coll._id
+                            }}
+                        >
+                            Click to load the "{coll.title} collection".
+                        </Link>
+                        {` `}
+                        <button>
+                            Delete!
+                        </button>
+                    </p>
                 ))}
                 <hr />
                 <Outlet />
