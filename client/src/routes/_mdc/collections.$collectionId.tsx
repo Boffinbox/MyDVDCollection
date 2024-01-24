@@ -32,7 +32,7 @@ function Collection()
             <h3>{data.title}</h3>
             <div>
                 {data.discs.map((disc, idx) => (
-                    <div>
+                    <div key={disc._id}>
                         Disc {idx + 1}: {disc.referenceDVD.title}
                     </div>
                 ))}
