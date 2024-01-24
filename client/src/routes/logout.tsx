@@ -4,7 +4,10 @@ import { auth } from "../utilities/Auth";
 export const Route = new FileRoute('/logout').createRoute({
     beforeLoad: async () =>
     {
-        await auth.logout();
+        if (auth.status === "loggedIn")
+        {
+            await auth.logout();
+        }
     },
     component: Logout
 })
