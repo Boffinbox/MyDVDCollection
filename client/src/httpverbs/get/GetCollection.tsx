@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export async function GetCollection(collectionId: string, token: string | undefined)
 {
     if (token == undefined)
@@ -7,18 +9,17 @@ export async function GetCollection(collectionId: string, token: string | undefi
     const config =
     {
         headers: { Authorization: `Bearer ${token}` }
-        // headers: { Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTU3YTMwZGQ1ZTU0NDQxYjE1YjAyNDQiLCJ1c2VybmFtZSI6ImJvZmYiLCJpYXQiOjE3MDU2ODgwODQsImV4cCI6MTcwNTY4ODk4NH0.KX4OX42b_YWbSl9_qDL2CJM_kxZ7OxcmEjSjv7zia9g` }
     }
-    // axios.get(`/api/v1/disccollections/${collectionId}`, config).then((response) =>
-    // {
-    //     console.log("Collection request received.");
-    //     console.log(response.data);
-    //     return response.data
-    // }).catch((e) =>
-    // {
-    //     console.log(e);
-    // })
-    const res = await fetch(`/api/v1/disccollections/${collectionId}`, config)
-    if (!res.ok) throw new Error("Failed to fetch user's collection.")
-    return res.json()
+    try
+    {
+        const response = await axios.get(`/api/v1/disccollections/${collectionId}`, config)
+        console.log("token used was: ", token);
+        console.log("Collection request received.");
+        console.log(response.data);
+        return response.data;
+    }
+    catch (e)
+    {
+        throw new Error("Failed to fetch user's collection.");
+    }
 }
