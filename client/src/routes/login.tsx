@@ -5,6 +5,10 @@ import { auth } from "../utilities/Auth";
 export const Route = new FileRoute('/login').createRoute({
     beforeLoad: async () =>
     {
+        if (auth.status == "loggedOut" || auth.token == undefined)
+        {
+            await auth.refreshAccessToken();
+        }
         if (auth.status == "loggedIn")
             throw redirect({
                 to: "/collections"
