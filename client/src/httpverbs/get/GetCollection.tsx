@@ -1,4 +1,4 @@
-export async function FetchCollection(collectionId: string, token: string | undefined)
+export async function GetCollection(collectionId: string, token: string | undefined)
 {
     if (token == undefined)
     {
