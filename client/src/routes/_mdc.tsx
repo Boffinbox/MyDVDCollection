@@ -1,4 +1,4 @@
-import { FileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { FileRoute, Link, Outlet, redirect } from '@tanstack/react-router'
 import { auth } from '../utilities/Auth';
 
 export const Route = new FileRoute('/_mdc').createRoute({
@@ -23,7 +23,26 @@ export const Route = new FileRoute('/_mdc').createRoute({
 
 function MDCComponent()
 {
+    const { token, status } = Route.useRouteContext({ select: ({ auth }) => ({ token: auth.token, status: auth.status }) })
     return (
-        <Outlet />
+        <>
+            <p>Current token is: {token}</p>
+            <p>Status: {status}</p>
+            <hr />
+            <h1>My DVD Collection</h1>
+            <div className="p-2 flex gap-2">
+                <Link to="/" className="[&.active]:font-bold">
+                    Home
+                </Link>{` `}
+                <Link to="/login" className="[&.active]:font-bold">
+                    Login
+                </Link>{` `}
+                <Link to="/collections" className="[&.active]:font-bold">
+                    Collections
+                </Link>
+            </div>
+            <hr />
+            <Outlet />
+        </>
     )
 }

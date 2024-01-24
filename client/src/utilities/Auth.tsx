@@ -21,7 +21,7 @@ export let auth: IAuth = {
             console.log("Login post request received.");
             auth.token = response.data.token;
             auth.status = "loggedIn";
-        }).catch((e) =>
+        }).catch(() =>
         {
             auth.status = "loggedOut"
             console.log("Unable to login with provided credentials.");;
