@@ -1,4 +1,4 @@
-import { FileRoute, Link, Outlet, redirect } from '@tanstack/react-router'
+import { FileRoute, Link, Outlet } from '@tanstack/react-router'
 import { auth } from '../utilities/Auth';
 
 export const Route = new FileRoute('/_mdc').createRoute({
@@ -7,12 +7,6 @@ export const Route = new FileRoute('/_mdc').createRoute({
         if (auth.status == "loggedOut" || auth.token == undefined)
         {
             await auth.refreshAccessToken();
-            if (auth.status == "loggedOut" || auth.token == undefined)
-            {
-                throw redirect({
-                    to: "/login"
-                })
-            }
         }
     },
     component: MDCComponent
@@ -21,7 +15,16 @@ export const Route = new FileRoute('/_mdc').createRoute({
 function MDCComponent()
 {
     const { token, status } = Route.useRouteContext({ select: ({ auth }) => ({ token: auth.token, status: auth.status }) })
-    return (
+    return status !== "loggedIn" ? (
+        <>
+            <div>You are not logged in!</div>
+            <p>
+                <Link to="/login">
+                    Click here to login...
+                </Link>{` `}
+            </p>
+        </>
+    ) : (
         <>
             <div>
                 <div style={{ backgroundColor: "rebeccapurple", color: 'orange', fontSize: "small", fontWeight: 100 }}>
@@ -32,13 +35,13 @@ function MDCComponent()
             </div>
             <h1>My DVD Collection</h1>
             <div className="p-2 flex gap-2">
-                <Link to="/" className="[&.active]:font-bold">
+                <Link to="/">
                     Home
                 </Link>{` `}
-                <Link to="/logout" className="[&.active]:font-bold">
+                <Link to="/logout">
                     Logout
                 </Link>{` `}
-                <Link to="/collections" className="[&.active]:font-bold">
+                <Link to="/collections">
                     Collections
                 </Link>
             </div>

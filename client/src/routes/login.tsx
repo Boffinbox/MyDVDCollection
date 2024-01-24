@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FileRoute, Link, redirect, useRouter } from "@tanstack/react-router";
+import { FileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { auth } from "../utilities/Auth";
 
 export const Route = new FileRoute('/login').createRoute({
@@ -9,10 +9,6 @@ export const Route = new FileRoute('/login').createRoute({
         {
             await auth.refreshAccessToken();
         }
-        if (auth.status == "loggedIn")
-            throw redirect({
-                to: "/collections"
-            })
     },
     component: LoginComponent
 })
@@ -20,6 +16,7 @@ export const Route = new FileRoute('/login').createRoute({
 function LoginComponent()
 {
     const router = useRouter();
+    const navigate = useNavigate();
     const { auth, status } = Route.useRouteContext({ select: ({ auth }) => ({ auth, status: auth.status }) })
 
     const [formData, setFormData] = useState({ email: "", password: "" })
@@ -51,6 +48,7 @@ function LoginComponent()
         else
         {
             setFormData(() => { return { email: "", password: "" } })
+            navigate({ to: "/collections" });
         }
     }
 
