@@ -1,63 +1,75 @@
-import { FileRoute, lazyRouteComponent } from '@tanstack/react-router'
-
 import { Route as rootRoute } from './routes/__root'
+import { Route as LogoutImport } from './routes/logout'
 import { Route as LoginImport } from './routes/login'
-import { Route as CollectionsCollectionIdImport } from './routes/collections.$collectionId'
+import { Route as MdcImport } from './routes/_mdc'
+import { Route as IndexImport } from './routes/index'
+import { Route as MdcCollectionsImport } from './routes/_mdc/collections'
+import { Route as MdcCollectionsCollectionIdImport } from './routes/_mdc/collections.$collectionId'
 
-const CollectionsComponentImport = new FileRoute('/collections').createRoute()
-const IndexComponentImport = new FileRoute('/').createRoute()
-
-const CollectionsComponentRoute = CollectionsComponentImport.update({
-  path: '/collections',
+const LogoutRoute = LogoutImport.update({
+  path: '/logout',
   getParentRoute: () => rootRoute,
-} as any).update({
-  component: lazyRouteComponent(
-    () => import('./routes/collections.component'),
-    'component',
-  ),
-})
+} as any)
 
 const LoginRoute = LoginImport.update({
   path: '/login',
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexComponentRoute = IndexComponentImport.update({
+const MdcRoute = MdcImport.update({
+  id: '/_mdc',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
-} as any).update({
-  component: lazyRouteComponent(
-    () => import('./routes/index.component'),
-    'component',
-  ),
-})
-
-const CollectionsCollectionIdRoute = CollectionsCollectionIdImport.update({
-  path: '/$collectionId',
-  getParentRoute: () => CollectionsComponentRoute,
 } as any)
+
+const MdcCollectionsRoute = MdcCollectionsImport.update({
+  path: '/collections',
+  getParentRoute: () => MdcRoute,
+} as any)
+
+const MdcCollectionsCollectionIdRoute = MdcCollectionsCollectionIdImport.update(
+  {
+    path: '/$collectionId',
+    getParentRoute: () => MdcCollectionsRoute,
+  } as any,
+)
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      preLoaderRoute: typeof IndexComponentImport
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/_mdc': {
+      preLoaderRoute: typeof MdcImport
       parentRoute: typeof rootRoute
     }
     '/login': {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
-    '/collections': {
-      preLoaderRoute: typeof CollectionsComponentImport
+    '/logout': {
+      preLoaderRoute: typeof LogoutImport
       parentRoute: typeof rootRoute
     }
-    '/collections/$collectionId': {
-      preLoaderRoute: typeof CollectionsCollectionIdImport
-      parentRoute: typeof CollectionsComponentImport
+    '/_mdc/collections': {
+      preLoaderRoute: typeof MdcCollectionsImport
+      parentRoute: typeof MdcImport
+    }
+    '/_mdc/collections/$collectionId': {
+      preLoaderRoute: typeof MdcCollectionsCollectionIdImport
+      parentRoute: typeof MdcCollectionsImport
     }
   }
 }
 export const routeTree = rootRoute.addChildren([
-  IndexComponentRoute,
+  IndexRoute,
+  MdcRoute.addChildren([
+    MdcCollectionsRoute.addChildren([MdcCollectionsCollectionIdRoute]),
+  ]),
   LoginRoute,
-  CollectionsComponentRoute.addChildren([CollectionsCollectionIdRoute]),
+  LogoutRoute,
 ])

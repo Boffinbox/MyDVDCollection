@@ -1,15 +1,25 @@
 import { useState } from "react";
-import { FileRoute, useRouter } from "@tanstack/react-router";
+import { FileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { auth } from "../utilities/Auth";
 
 export const Route = new FileRoute('/login').createRoute({
+    beforeLoad: async () =>
+    {
+        if (auth.status == "loggedOut" || auth.token == undefined)
+        {
+            await auth.refreshAccessToken();
+        }
+    },
     component: LoginComponent
 })
 
 function LoginComponent()
 {
-    const [formData, setFormData] = useState({ email: "", password: "" })
     const router = useRouter();
-    const { auth, token, status } = Route.useRouteContext({ select: ({ auth }) => ({ auth, token: auth.token, status: auth.status }) })
+    const navigate = useNavigate();
+    const { auth } = Route.useRouteContext({ select: ({ auth }) => ({ auth }) })
+
+    const [formData, setFormData] = useState({ email: "", password: "" })
 
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
     {
@@ -28,29 +38,22 @@ function LoginComponent()
         console.log("Form submitted!");
         console.log("Email is: ", formData.email);
         console.log("Password is: ", formData.password);
-        await auth.login(formData.email, formData.password);
+        const result = await auth.login(formData.email, formData.password);
         router.invalidate();
-        setFormData(() => { return { email: "", password: "" } })
-        console.log("My auth token is: " + token);
+        if (result !== "loggedIn")
+        {
+            // todo
+            console.log("wrong credentials todo inside login.tsx")
+        }
+        else
+        {
+            setFormData(() => { return { email: "", password: "" } })
+            navigate({ to: "/collections" });
+        }
     }
 
-    return status === "loggedIn" ? (
+    return (
         <>
-            <p>Logged in!</p>
-            <button
-                onClick={() =>
-                {
-                    auth.logout()
-                    router.invalidate();
-                }}
-            >
-                Logout
-            </button>
-        </>
-    ) : (
-        <>
-            <p>Current token is: {token}</p>
-            <p>Login status: {status}</p>
             <div>
                 <form action="" onSubmit={handleSubmit}>
                     <div>
@@ -63,6 +66,11 @@ function LoginComponent()
                     </div>
                     <button>Submit!</button>
                 </form>
+                <Link
+                    to={"/"}
+                >
+                    Return to homepage
+                </Link>
             </div>
         </>
     )
