@@ -1,4 +1,4 @@
-export function AddButton({ addToServer }: { addToServer: () => void })
+export function AddButton({ addToServer, addToClient }: { addToServer: () => void, addToClient: () => void })
 {
     return (
         <>
@@ -8,6 +8,7 @@ export function AddButton({ addToServer }: { addToServer: () => void })
                 try
                 {
                     await addToServer();
+                    addToClient();
                 }
                 catch (e)
                 {
@@ -15,7 +16,7 @@ export function AddButton({ addToServer }: { addToServer: () => void })
                 }
             }}>
                 <button style={{ backgroundColor: "lightblue" }}>
-                    Delete!
+                    Submit!
                 </button>
             </form>
         </>

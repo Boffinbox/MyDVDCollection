@@ -4,6 +4,7 @@ import { DeleteCollection } from "../../httpverbs/delete/DeleteCollection";
 import { DeleteButton } from "../../components/DeleteButton";
 import { useState } from "react";
 import { PostCollection } from "../../httpverbs/post/PostCollection";
+import { AddButton } from "../../components/AddButton";
 
 export const Route = new FileRoute('/_mdc/collections').createRoute({
     loader: async ({ context: { auth } }) => await GetCollections(auth.token),
@@ -34,28 +35,16 @@ function Collections()
 
     return (
         <>
-            <form action="" onSubmit={async (evt) => 
-            {
-                evt.preventDefault();
-                try
+            <label htmlFor="title">Title</label>
+            <input type="text" id="title" name="title" onChange={handleChange} value={formData.title} />
+            <AddButton
+                addToServer={async () =>
                 {
                     await PostCollection(token, formData.title)
                     setFormData(() => { return { title: "" } })
-                }
-                catch (e)
-                {
-                    console.log(e);
-                }
-            }}>
-                <p>
-                    <label htmlFor="title">Title</label>
-                    <input type="text" id="title" name="title" onChange={handleChange} value={formData.title} />
-                    {` `}
-                    <button>
-                        Submit!
-                    </button>
-                </p>
-            </form>
+                }}
+                addToClient={() => router.invalidate()}
+            />
             <div>
                 Collections {` `}
                 {data.map((coll) => (
