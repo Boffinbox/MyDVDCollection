@@ -3,7 +3,6 @@ import { GetCollections } from "../../httpverbs/get/GetCollections"
 
 export const Route = new FileRoute('/_mdc/collections').createRoute({
     loader: async ({ context: { auth } }) => await GetCollections(auth.token),
-    staleTime: 20_000,
     component: Collections
 })
 

@@ -1,4 +1,4 @@
-import { FileRoute } from "@tanstack/react-router"
+import { FileRoute, useRouter } from "@tanstack/react-router"
 import { GetCollection } from "../../httpverbs/get/GetCollection";
 import { DeleteDisc } from "../../httpverbs/delete/DeleteDisc";
 import { PostBarcode } from "../../httpverbs/post/PostBarcode";
@@ -33,7 +33,8 @@ function Collection()
         }[]
     }
 
-    const [collData, setCollData] = useState<ICollData>(Route.useLoaderData())
+    const collData: ICollData = Route.useLoaderData()
+    const router = useRouter();
 
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
     {
@@ -78,17 +79,7 @@ function Collection()
                         {` `}
                         <DeleteButton
                             deleteFromServer={async () => await DeleteDisc(token, collData._id, disc._id)}
-                            deleteFromClient={() => 
-                            {
-                                const newDiscs = collData.discs.filter((item) => item._id !== disc._id)
-                                setCollData((prevData) =>
-                                {
-                                    return {
-                                        ...prevData,
-                                        discs: newDiscs
-                                    }
-                                })
-                            }}
+                            deleteFromClient={() => router.invalidate()}
                         />
                     </div>
                 ))}
