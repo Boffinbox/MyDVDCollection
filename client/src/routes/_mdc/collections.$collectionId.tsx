@@ -3,6 +3,7 @@ import { GetCollection } from "../../httpverbs/get/GetCollection";
 import { DeleteDisc } from "../../httpverbs/delete/DeleteDisc";
 import { PostBarcode } from "../../httpverbs/post/PostBarcode";
 import { useState } from "react";
+import { AddButton } from "../../components/AddButton";
 import { DeleteButton } from "../../components/DeleteButton";
 
 export const Route = new FileRoute('/_mdc/collections/$collectionId').createRoute({
@@ -50,28 +51,16 @@ function Collection()
     return (
         <>
             <h3>{collData.title}</h3>
-            <form action="" onSubmit={async (evt) => 
-            {
-                evt.preventDefault();
-                try
+            <label htmlFor="barcode">barcode</label>
+            <input type="text" id="barcode" name="barcode" onChange={handleChange} value={formData.barcode} />
+            <AddButton
+                addToServer={async () =>
                 {
                     await PostBarcode(token, collData._id, formData.barcode)
                     setFormData(() => { return { barcode: "" } })
-                }
-                catch (e)
-                {
-                    console.log(e);
-                }
-            }}>
-                <p>
-                    <label htmlFor="barcode">barcode</label>
-                    <input type="text" id="barcode" name="barcode" onChange={handleChange} value={formData.barcode} />
-                    {` `}
-                    <button>
-                        Submit!
-                    </button>
-                </p>
-            </form>
+                }}
+                addToClient={() => router.invalidate()}
+            />
             <div>
                 {collData.discs.map((disc, idx) => (
                     <div key={disc._id}>
