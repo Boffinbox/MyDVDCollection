@@ -14,6 +14,6 @@ function App()
 {
     return <div>
         <Outlet />
-        <TanStackRouterDevtools />
+        <TanStackRouterDevtools position='bottom-right' />
     </div >
 }
