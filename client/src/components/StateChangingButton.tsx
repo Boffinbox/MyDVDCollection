@@ -1,4 +1,13 @@
-export function StateChangingButton({ text, toServer, toClient }: { text: string, toServer: () => void, toClient: () => void })
+export function StateChangingButton(
+    {
+        text,
+        toServer,
+        toClient
+    }: {
+        text: string,
+        toServer: (...args: any[]) => void,
+        toClient: (...args: any[]) => void
+    })
 {
     return (
         <>

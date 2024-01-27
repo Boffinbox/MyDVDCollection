@@ -1,9 +1,9 @@
 import { Link, Outlet, createFileRoute, useRouter } from "@tanstack/react-router"
 import { GetCollections } from "../../httpverbs/get/GetCollections"
 import { DeleteCollection } from "../../httpverbs/delete/DeleteCollection";
-import { useState } from "react";
 import { PostCollection } from "../../httpverbs/post/PostCollection";
 import { StateChangingButton } from "../../components/StateChangingButton";
+import { SingleLineForm } from "../../components/SingleLineForm";
 
 export const Route = createFileRoute('/_mdc/collections')({
     loader: async ({ context: { auth } }) => await GetCollections(auth.token),
@@ -19,31 +19,17 @@ function Collections()
     const data: [{ _id: string, title: string }] = Route.useLoaderData();
     console.log("My coll data is: ", data)
 
-    const [formData, setFormData] = useState({ title: "" })
-
-    function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
-    {
-        setFormData(currentData =>
-        {
-            return {
-                ...currentData,
-                [evt.target.name]: evt.target.value
-            }
-        })
-    }
-
     return (
         <>
-            <label htmlFor="title">Title</label>
-            <input type="text" id="title" name="title" onChange={handleChange} value={formData.title} />
-            <StateChangingButton
-                text={"Submit!"}
-                toServer={async () =>
+            <SingleLineForm
+                submitButtonText="Submit!"
+                labelText="Title"
+                toServer={async (title) => await PostCollection(token, title)}
+                toClient={() => 
                 {
-                    await PostCollection(token, formData.title)
-                    setFormData(() => { return { title: "" } })
+                    console.log("invalidating router...")
+                    router.invalidate()
                 }}
-                toClient={() => router.invalidate()}
             />
             <div>
                 Collections {` `}
