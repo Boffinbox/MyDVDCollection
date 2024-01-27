@@ -1,7 +1,7 @@
-import { FileRoute, Link } from "@tanstack/react-router"
+import { createFileRoute, Link } from "@tanstack/react-router"
 import { auth } from '../utilities/Auth';
 
-export const Route = new FileRoute('/').createRoute({
+export const Route = createFileRoute('/')({
     beforeLoad: async () =>
     {
         if (auth.status == "loggedOut" || auth.token == undefined)

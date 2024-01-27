@@ -1,7 +1,7 @@
-import { FileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { auth } from "../utilities/Auth";
 
-export const Route = new FileRoute('/logout').createRoute({
+export const Route = createFileRoute('/logout')({
     beforeLoad: async () =>
     {
         if (auth.status === "loggedIn")

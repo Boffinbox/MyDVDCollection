@@ -1,11 +1,11 @@
-import { FileRoute, useRouter } from "@tanstack/react-router"
+import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { GetCollection } from "../../httpverbs/get/GetCollection";
 import { DeleteDisc } from "../../httpverbs/delete/DeleteDisc";
 import { PostBarcode } from "../../httpverbs/post/PostBarcode";
 import { useState } from "react";
 import { StateChangingButton } from "../../components/StateChangingButton";
 
-export const Route = new FileRoute('/_mdc/collections/$collectionId').createRoute({
+export const Route = createFileRoute('/_mdc/collections/$collectionId')({
     loader: async ({ params: { collectionId }, context: { auth } }) => GetCollection(collectionId, auth.token),
     component: Collection
 })
