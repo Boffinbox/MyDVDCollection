@@ -2,8 +2,8 @@ import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { GetCollection } from "../../httpverbs/get/GetCollection";
 import { DeleteDisc } from "../../httpverbs/delete/DeleteDisc";
 import { PostBarcode } from "../../httpverbs/post/PostBarcode";
-import { useState } from "react";
 import { StateChangingButton } from "../../components/StateChangingButton";
+import { SingleLineForm } from "../../components/SingleLineForm";
 
 export const Route = createFileRoute('/_mdc/collections/$collectionId')({
     loader: async ({ params: { collectionId }, context: { auth } }) => GetCollection(collectionId, auth.token),
@@ -13,7 +13,6 @@ export const Route = createFileRoute('/_mdc/collections/$collectionId')({
 function Collection()
 {
     const { token } = Route.useRouteContext({ select: ({ auth }) => ({ token: auth.token }) })
-    const [formData, setFormData] = useState({ barcode: "" })
 
     interface ICollData
     {
@@ -36,30 +35,18 @@ function Collection()
     const collData: ICollData = Route.useLoaderData()
     const router = useRouter();
 
-    function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
-    {
-        setFormData(currentData =>
-        {
-            return {
-                ...currentData,
-                [evt.target.name]: evt.target.value
-            }
-        })
-    }
-
     return (
         <>
             <h3>{collData.title}</h3>
-            <label htmlFor="barcode">barcode</label>
-            <input type="text" id="barcode" name="barcode" onChange={handleChange} value={formData.barcode} />
-            <StateChangingButton
-                text={"Submit!"}
-                toServer={async () =>
+            <SingleLineForm
+                submitButtonText="Submit!"
+                labelText="Barcode"
+                toServer={async (barcode) => await PostBarcode(token, collData._id, barcode)}
+                toClient={() => 
                 {
-                    await PostBarcode(token, collData._id, formData.barcode)
-                    setFormData(() => { return { barcode: "" } })
+                    console.log("invalidating router...")
+                    router.invalidate()
                 }}
-                toClient={() => router.invalidate()}
             />
             <div>
                 {collData.discs.map((disc, idx) => (

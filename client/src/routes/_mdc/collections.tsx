@@ -17,7 +17,6 @@ function Collections()
     const router = useRouter();
 
     const data: [{ _id: string, title: string }] = Route.useLoaderData();
-    console.log("My coll data is: ", data)
 
     return (
         <>
