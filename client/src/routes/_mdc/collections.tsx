@@ -1,10 +1,9 @@
 import { Link, Outlet, FileRoute, useRouter } from "@tanstack/react-router"
 import { GetCollections } from "../../httpverbs/get/GetCollections"
 import { DeleteCollection } from "../../httpverbs/delete/DeleteCollection";
-import { DeleteButton } from "../../components/DeleteButton";
 import { useState } from "react";
 import { PostCollection } from "../../httpverbs/post/PostCollection";
-import { AddButton } from "../../components/AddButton";
+import { StateChangingButton } from "../../components/StateChangingButton";
 
 export const Route = new FileRoute('/_mdc/collections').createRoute({
     loader: async ({ context: { auth } }) => await GetCollections(auth.token),
@@ -37,13 +36,14 @@ function Collections()
         <>
             <label htmlFor="title">Title</label>
             <input type="text" id="title" name="title" onChange={handleChange} value={formData.title} />
-            <AddButton
-                addToServer={async () =>
+            <StateChangingButton
+                text={"Submit!"}
+                toServer={async () =>
                 {
                     await PostCollection(token, formData.title)
                     setFormData(() => { return { title: "" } })
                 }}
-                addToClient={() => router.invalidate()}
+                toClient={() => router.invalidate()}
             />
             <div>
                 Collections {` `}
@@ -58,9 +58,10 @@ function Collections()
                             Click to load the "{coll.title} collection".
                         </Link>
                         {` `}
-                        <DeleteButton
-                            deleteFromServer={async () => await DeleteCollection(token, coll._id)}
-                            deleteFromClient={() => router.invalidate()}
+                        <StateChangingButton
+                            text={"Delete..."}
+                            toServer={async () => await DeleteCollection(token, coll._id)}
+                            toClient={() => router.invalidate()}
                         />
                     </div>
                 ))}

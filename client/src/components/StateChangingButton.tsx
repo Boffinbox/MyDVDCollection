@@ -1,4 +1,4 @@
-export function AddButton({ addToServer, addToClient }: { addToServer: () => void, addToClient: () => void })
+export function StateChangingButton({ text, toServer, toClient }: { text: string, toServer: () => void, toClient: () => void })
 {
     return (
         <>
@@ -7,8 +7,8 @@ export function AddButton({ addToServer, addToClient }: { addToServer: () => voi
                 evt.preventDefault();
                 try
                 {
-                    await addToServer();
-                    addToClient();
+                    await toServer();
+                    toClient();
                 }
                 catch (e)
                 {
@@ -16,7 +16,7 @@ export function AddButton({ addToServer, addToClient }: { addToServer: () => voi
                 }
             }}>
                 <button style={{ backgroundColor: "lightblue" }}>
-                    Submit!
+                    {text}
                 </button>
             </form>
         </>

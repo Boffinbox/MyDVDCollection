@@ -3,8 +3,7 @@ import { GetCollection } from "../../httpverbs/get/GetCollection";
 import { DeleteDisc } from "../../httpverbs/delete/DeleteDisc";
 import { PostBarcode } from "../../httpverbs/post/PostBarcode";
 import { useState } from "react";
-import { AddButton } from "../../components/AddButton";
-import { DeleteButton } from "../../components/DeleteButton";
+import { StateChangingButton } from "../../components/StateChangingButton";
 
 export const Route = new FileRoute('/_mdc/collections/$collectionId').createRoute({
     loader: async ({ params: { collectionId }, context: { auth } }) => GetCollection(collectionId, auth.token),
@@ -53,22 +52,24 @@ function Collection()
             <h3>{collData.title}</h3>
             <label htmlFor="barcode">barcode</label>
             <input type="text" id="barcode" name="barcode" onChange={handleChange} value={formData.barcode} />
-            <AddButton
-                addToServer={async () =>
+            <StateChangingButton
+                text={"Submit!"}
+                toServer={async () =>
                 {
                     await PostBarcode(token, collData._id, formData.barcode)
                     setFormData(() => { return { barcode: "" } })
                 }}
-                addToClient={() => router.invalidate()}
+                toClient={() => router.invalidate()}
             />
             <div>
                 {collData.discs.map((disc, idx) => (
                     <div key={disc._id}>
-                        Disc {idx + 1}: {disc.referenceDVD.title}
+                        Disc {idx + 1}: Barcode: {disc.referenceDVD.barcode}, {disc.referenceDVD.title}
                         {` `}
-                        <DeleteButton
-                            deleteFromServer={async () => await DeleteDisc(token, collData._id, disc._id)}
-                            deleteFromClient={() => router.invalidate()}
+                        <StateChangingButton
+                            text={"Delete..."}
+                            toServer={async () => await DeleteDisc(token, collData._id, disc._id)}
+                            toClient={() => router.invalidate()}
                         />
                     </div>
                 ))}
