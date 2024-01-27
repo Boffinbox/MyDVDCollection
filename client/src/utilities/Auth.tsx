@@ -57,7 +57,7 @@ export let auth: IAuth = {
             auth.status = "loggedIn"
         }).catch(() =>
         {
-            console.log("Unable to refresh token, redirecting to login...")
+            console.log("Unable to refresh token.")
             auth.status = "loggedOut"
         })
     }

@@ -54,23 +54,27 @@ function LoginComponent()
 
     return (
         <>
-            <div>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", textAlign: "center" }}>
                 <form action="" onSubmit={handleSubmit}>
-                    <div>
+                    <p>
                         <label htmlFor="email">email</label>
                         <input type="text" id="email" name="email" onChange={handleChange} value={formData.email} />
-                    </div>
-                    <div>
+                    </p>
+                    <p>
                         <label htmlFor="password">password</label>
                         <input type="text" id="password" name="password" onChange={handleChange} value={formData.password} />
-                    </div>
-                    <button>Submit!</button>
+                    </p>
+                    <p>
+                        <button>Submit!</button>
+                    </p>
+                    <p>
+                        <Link
+                            to={"/"}
+                        >
+                            Return to homepage
+                        </Link>
+                    </p>
                 </form>
-                <Link
-                    to={"/"}
-                >
-                    Return to homepage
-                </Link>
             </div>
         </>
     )

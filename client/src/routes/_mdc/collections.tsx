@@ -1,30 +1,68 @@
-import { Link, Outlet, FileRoute } from "@tanstack/react-router"
-import { FetchCollections } from "../../fetch/FetchCollections"
+import { Link, Outlet, FileRoute, useRouter } from "@tanstack/react-router"
+import { GetCollections } from "../../httpverbs/get/GetCollections"
+import { DeleteCollection } from "../../httpverbs/delete/DeleteCollection";
+import { DeleteButton } from "../../components/DeleteButton";
+import { useState } from "react";
+import { PostCollection } from "../../httpverbs/post/PostCollection";
+import { AddButton } from "../../components/AddButton";
 
 export const Route = new FileRoute('/_mdc/collections').createRoute({
-    loader: async ({ context: { auth } }) => await FetchCollections(auth.token),
-    staleTime: 20_000,
+    loader: async ({ context: { auth } }) => await GetCollections(auth.token),
     component: Collections
 })
 
 function Collections()
 {
-    const data = Route.useLoaderData();
+    const { token } = Route.useRouteContext({ select: ({ auth }) => ({ token: auth.token }) })
+
+    const router = useRouter();
+
+    const data: [{ _id: string, title: string }] = Route.useLoaderData();
     console.log("My coll data is: ", data)
+
+    const [formData, setFormData] = useState({ title: "" })
+
+    function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
+    {
+        setFormData(currentData =>
+        {
+            return {
+                ...currentData,
+                [evt.target.name]: evt.target.value
+            }
+        })
+    }
 
     return (
         <>
+            <label htmlFor="title">Title</label>
+            <input type="text" id="title" name="title" onChange={handleChange} value={formData.title} />
+            <AddButton
+                addToServer={async () =>
+                {
+                    await PostCollection(token, formData.title)
+                    setFormData(() => { return { title: "" } })
+                }}
+                addToClient={() => router.invalidate()}
+            />
             <div>
                 Collections {` `}
-                {data.map((coll: any) => (
-                    <Link key={coll._id}
-                        to="/collections/$collectionId"
-                        params={{
-                            collectionId: coll._id
-                        }}
-                    >
-                        <p>Click to load the "{coll.title} collection".</p>
-                    </Link>
+                {data.map((coll) => (
+                    <div key={coll._id}>
+                        <Link
+                            to="/collections/$collectionId"
+                            params={{
+                                collectionId: coll._id
+                            }}
+                        >
+                            Click to load the "{coll.title} collection".
+                        </Link>
+                        {` `}
+                        <DeleteButton
+                            deleteFromServer={async () => await DeleteCollection(token, coll._id)}
+                            deleteFromClient={() => router.invalidate()}
+                        />
+                    </div>
                 ))}
                 <hr />
                 <Outlet />
