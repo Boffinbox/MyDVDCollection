@@ -31,7 +31,8 @@ function Collections()
 
     const newCollectionMutation = useMutation({
         mutationFn: (title: string) => PostCollection(token, title),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["collections"] })
+        onSuccess: (data) => queryClient.setQueryData(["collections"],
+            (oldData: any) => [...oldData, data])
     })
 
     if (collectionsQuery.isLoading) return <h1>Loading...</h1>

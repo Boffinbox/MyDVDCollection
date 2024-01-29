@@ -21,6 +21,7 @@ export async function PostCollection(token: string | undefined, title: string)
         console.log("token used was: ", token);
         console.log("Post request received.");
         console.log(response.data)
+        return response.data
     }
     catch (e)
     {
