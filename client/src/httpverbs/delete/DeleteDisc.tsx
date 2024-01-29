@@ -15,7 +15,8 @@ export async function DeleteDisc(token: string | undefined, collectionId: string
         const response = await axios.delete(`/api/v1/disccollections/${collectionId}/userdvds/${discId}`, config)
         console.log("token used was: ", token);
         console.log("Deletion request received.");
-        console.log(response.data.message)
+        console.log(response.data)
+        return response.data
     }
     catch (e)
     {
