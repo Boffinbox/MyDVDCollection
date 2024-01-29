@@ -15,7 +15,7 @@ export async function DeleteCollection(token: string | undefined, collectionId: 
         const response = await axios.delete(`/api/v1/disccollections/${collectionId}`, config)
         console.log("token used was: ", token);
         console.log("Deletion request received.");
-        console.log(response.data.message)
+        return response.data
     }
     catch (e)
     {

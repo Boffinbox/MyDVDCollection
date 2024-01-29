@@ -14,11 +14,12 @@ export function StateChangingButton(
                 evt.preventDefault();
                 try
                 {
+                    console.log(onSubmit)
                     await onSubmit()
                 }
                 catch (e)
                 {
-                    console.log("Couldn't add.")
+                    console.log("Couldn't perform action.")
                 }
             }}>
                 <button style={{ backgroundColor: "lightblue" }}>

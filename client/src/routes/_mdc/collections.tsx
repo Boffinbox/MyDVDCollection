@@ -1,4 +1,4 @@
-import { Link, Outlet, createFileRoute, useRouter } from "@tanstack/react-router"
+import { Link, Outlet, createFileRoute } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { DeleteCollection } from "../../httpverbs/delete/DeleteCollection";
@@ -8,7 +8,6 @@ import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";
 
 import { CollectionsQueryOptions } from "../../queries/Collections"
-import { Wait } from "../../utilities/Wait";
 
 export const Route = createFileRoute('/_mdc/collections')({
     loader: ({ context: { auth, queryClient } }) =>
@@ -22,8 +21,6 @@ function Collections()
 {
     const { token } = Route.useRouteContext({ select: ({ auth }) => ({ token: auth.token }) })
 
-    const router = useRouter();
-
     const queryClient = useQueryClient();
 
     const collectionsQuery = useQuery(CollectionsQueryOptions(token))
@@ -33,6 +30,12 @@ function Collections()
         mutationFn: (title: string) => PostCollection(token, title),
         onSuccess: (data) => queryClient.setQueryData(["collections"],
             (oldData: any) => [...oldData, data])
+    })
+
+    const deleteCollectionMutation = useMutation({
+        mutationFn: (collectionId: string) => DeleteCollection(token, collectionId),
+        onSuccess: (data: any) => queryClient.setQueryData(["collections"],
+            (oldData: any) => oldData.filter((coll: any) => coll._id !== data._id))
     })
 
     if (collectionsQuery.isLoading) return <h1>Loading...</h1>
@@ -47,7 +50,7 @@ function Collections()
                 onSubmit={async (title) => await newCollectionMutation.mutate(title)}
             />
             <div>
-                Collections {` `}
+                <p>{` `}</p>
                 {collections.map((coll) => (
                     <div key={coll._id}>
                         <Link
@@ -61,7 +64,7 @@ function Collections()
                         {` `}
                         <StateChangingButton
                             text={"Delete..."}
-                            onSubmit={async () => await DeleteCollection(token, coll._id)}
+                            onSubmit={async () => await deleteCollectionMutation.mutate(coll._id)}
                         />
                     </div>
                 ))}
