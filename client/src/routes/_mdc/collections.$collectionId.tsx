@@ -41,12 +41,7 @@ function Collection()
             <SingleLineForm
                 submitButtonText="Submit!"
                 labelText="Barcode"
-                toServer={async (barcode) => await PostBarcode(token, collData._id, barcode)}
-                toClient={() => 
-                {
-                    console.log("invalidating router...")
-                    router.invalidate()
-                }}
+                onSubmit={async (barcode) => await PostBarcode(token, collData._id, barcode)}
             />
             <div>
                 {collData.discs.map((disc, idx) => (
@@ -55,8 +50,7 @@ function Collection()
                         {` `}
                         <StateChangingButton
                             text={"Delete..."}
-                            toServer={async () => await DeleteDisc(token, collData._id, disc._id)}
-                            toClient={() => router.invalidate()}
+                            onSubmit={async () => await DeleteDisc(token, collData._id, disc._id)}
                         />
                     </div>
                 ))}

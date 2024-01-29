@@ -1,12 +1,10 @@
 export function StateChangingButton(
     {
         text,
-        toServer,
-        toClient
+        onSubmit,
     }: {
         text: string,
-        toServer: (...args: any[]) => void,
-        toClient: (...args: any[]) => void
+        onSubmit: (...args: any[]) => void,
     })
 {
     return (
@@ -16,8 +14,7 @@ export function StateChangingButton(
                 evt.preventDefault();
                 try
                 {
-                    await toServer();
-                    toClient();
+                    await onSubmit()
                 }
                 catch (e)
                 {

@@ -43,9 +43,7 @@ function Collections()
             <SingleLineForm
                 submitButtonText="Submit!"
                 labelText="Title"
-                // toServer={async (title) => await PostCollection(token, title)}
-                toServer={async (title) => await newCollectionMutation.mutate(title)}
-                toClient={() => { }}
+                onSubmit={async (title) => await newCollectionMutation.mutate(title)}
             />
             <div>
                 Collections {` `}
@@ -62,8 +60,7 @@ function Collections()
                         {` `}
                         <StateChangingButton
                             text={"Delete..."}
-                            toServer={async () => await DeleteCollection(token, coll._id)}
-                            toClient={() => router.invalidate()}
+                            onSubmit={async () => await DeleteCollection(token, coll._id)}
                         />
                     </div>
                 ))}

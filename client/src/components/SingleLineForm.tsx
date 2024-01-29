@@ -5,13 +5,11 @@ export function SingleLineForm(
     {
         submitButtonText,
         labelText,
-        toServer,
-        toClient
+        onSubmit,
     }: {
         submitButtonText: string,
         labelText: string,
-        toServer: (...args: any[]) => void,
-        toClient: (...args: any[]) => void
+        onSubmit: (...args: any[]) => void,
     })
 {
     const [formData, setFormData] = useState({ data: "" })
@@ -33,11 +31,11 @@ export function SingleLineForm(
             <input type="text" id={labelText} name="data" onChange={handleChange} value={formData.data} />
             <StateChangingButton
                 text={submitButtonText}
-                toServer={async () =>
+                onSubmit={async () =>
                 {
-                    await toServer(formData.data)
+                    await onSubmit(formData.data);
+                    setFormData(() => ({ data: "" }))
                 }}
-                toClient={() => setFormData(() => ({ data: "" }))}
             />
         </>
     )
