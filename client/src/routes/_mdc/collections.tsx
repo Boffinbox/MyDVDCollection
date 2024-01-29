@@ -1,7 +1,6 @@
 import { Link, Outlet, createFileRoute, useRouter } from "@tanstack/react-router"
-import { useQuery, useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { GetCollections } from "../../httpverbs/get/GetCollections"
 import { DeleteCollection } from "../../httpverbs/delete/DeleteCollection";
 import { PostCollection } from "../../httpverbs/post/PostCollection";
 
@@ -9,12 +8,13 @@ import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";
 
 import { CollectionsQueryOptions } from "../../queries/Collections"
+import { Wait } from "../../utilities/Wait";
 
 export const Route = createFileRoute('/_mdc/collections')({
-    // loader: async ({ context: { auth, queryClient } }) =>
-    // {
-    //     await queryClient.ensureQueryData(CollectionsQueryOptions(auth.token))
-    // },
+    loader: ({ context: { auth, queryClient } }) =>
+    {
+        queryClient.ensureQueryData(CollectionsQueryOptions(auth.token))
+    },
     component: Collections
 })
 
@@ -24,8 +24,15 @@ function Collections()
 
     const router = useRouter();
 
+    const queryClient = useQueryClient();
+
     const collectionsQuery = useQuery(CollectionsQueryOptions(token))
     const collections: [{ _id: string, title: string }] = collectionsQuery.data;
+
+    const newCollectionMutation = useMutation({
+        mutationFn: (title: string) => PostCollection(token, title),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["collections"] })
+    })
 
     if (collectionsQuery.isLoading) return <h1>Loading...</h1>
     if (collectionsQuery.isError) return <pre>{JSON.stringify(collectionsQuery.error)}</pre>
@@ -36,12 +43,9 @@ function Collections()
             <SingleLineForm
                 submitButtonText="Submit!"
                 labelText="Title"
-                toServer={async (title) => await PostCollection(token, title)}
-                toClient={() => 
-                {
-                    console.log("invalidating router...")
-                    router.invalidate()
-                }}
+                // toServer={async (title) => await PostCollection(token, title)}
+                toServer={async (title) => await newCollectionMutation.mutate(title)}
+                toClient={() => { }}
             />
             <div>
                 Collections {` `}

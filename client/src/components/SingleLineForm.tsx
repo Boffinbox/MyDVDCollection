@@ -37,7 +37,7 @@ export function SingleLineForm(
                 {
                     await toServer(formData.data)
                 }}
-                toClient={toClient}
+                toClient={() => setFormData(() => ({ data: "" }))}
             />
         </>
     )
