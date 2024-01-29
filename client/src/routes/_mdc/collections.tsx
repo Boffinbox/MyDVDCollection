@@ -8,6 +8,7 @@ import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";
 
 import { CollectionsQueryOptions } from "../../queries/Collections"
+import { ICollection } from "../../Interfaces";
 
 export const Route = createFileRoute('/_mdc/collections')({
     loader: ({ context: { auth, queryClient } }) =>
@@ -28,14 +29,14 @@ function Collections()
 
     const newCollectionMutation = useMutation({
         mutationFn: (title: string) => PostCollection(token, title),
-        onSuccess: (data) => queryClient.setQueryData(["collections"],
-            (oldData: any) => [...oldData, data])
+        onSuccess: (data: ICollection) => queryClient.setQueryData(["collections"],
+            (oldData: ICollection[]) => [...oldData, data])
     })
 
     const deleteCollectionMutation = useMutation({
         mutationFn: (collectionId: string) => DeleteCollection(token, collectionId),
-        onSuccess: (data: any) => queryClient.setQueryData(["collections"],
-            (oldData: any) => oldData.filter((coll: any) => coll._id !== data._id))
+        onSuccess: (data: ICollection) => queryClient.setQueryData(["collections"],
+            (oldData: ICollection[]) => oldData.filter((coll: ICollection) => coll._id !== data._id))
     })
 
     if (collectionsQuery.isLoading) return <h1>Loading...</h1>

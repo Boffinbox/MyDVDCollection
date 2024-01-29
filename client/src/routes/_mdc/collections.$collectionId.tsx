@@ -1,9 +1,10 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import { GetCollection } from "../../httpverbs/get/GetCollection";
 import { DeleteDisc } from "../../httpverbs/delete/DeleteDisc";
 import { PostBarcode } from "../../httpverbs/post/PostBarcode";
 import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";
+import { ICollectionHydrated } from "../../Interfaces";
 
 export const Route = createFileRoute('/_mdc/collections/$collectionId')({
     loader: async ({ params: { collectionId }, context: { auth } }) => GetCollection(collectionId, auth.token),
@@ -14,26 +15,7 @@ function Collection()
 {
     const { token } = Route.useRouteContext({ select: ({ auth }) => ({ token: auth.token }) })
 
-    interface ICollData
-    {
-        _id: string,
-        title: string,
-        discs:
-        {
-            _id: string,
-            rating: number,
-            watched: boolean,
-            referenceDVD:
-            {
-                _id: string,
-                barcode: string,
-                title: string
-            }
-        }[]
-    }
-
-    const collData: ICollData = Route.useLoaderData()
-    const router = useRouter();
+    const collData: ICollectionHydrated = Route.useLoaderData()
 
     return (
         <>
