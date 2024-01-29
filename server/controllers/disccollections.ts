@@ -8,13 +8,7 @@ export async function index(req, res)
     const userId = req.user._id
     const user = await UserModel.findById({ _id: userId })
         .populate({
-            path: "collections",
-            populate: {
-                path: "discs",
-                populate: {
-                    path: "referenceDVD"
-                }
-            }
+            path: "collections"
         }).exec();
     if (!user)
     {
