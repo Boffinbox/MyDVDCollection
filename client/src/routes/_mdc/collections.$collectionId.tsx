@@ -5,6 +5,7 @@ import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { CollectionQueryOptions } from "../../queries/Collections";
+import { ICollectionHydrated, IDisc } from "../../Interfaces";
 
 export const Route = createFileRoute('/_mdc/collections/$collectionId')({
     loader: async ({ params: { collectionId }, context: { auth, queryClient } }) =>
@@ -23,21 +24,21 @@ function Collection()
     const queryClient = useQueryClient();
 
     const collectionQuery = useQuery(CollectionQueryOptions(token, collectionId))
-    const collection: any = collectionQuery.data;
+    const collection: ICollectionHydrated = collectionQuery.data;
 
     const newDiscMutation = useMutation({
         mutationFn: (barcode: string) => PostBarcode(token, collectionId, barcode),
-        onSuccess: (data: any) =>
+        onSuccess: (returnedDisc: IDisc) =>
         {
-            console.log("received data was: ", data)
+            console.log("received data was: ", returnedDisc)
             console.log("coll id is: ", collectionId)
             queryClient.setQueryData(["collection", collectionId],
-                (oldData: any) =>
+                (oldData: ICollectionHydrated) =>
                 {
                     console.log(oldData)
                     return {
                         ...oldData,
-                        discs: [...oldData.discs, data]
+                        discs: [...oldData.discs, returnedDisc]
                     }
                 }
             )
@@ -46,12 +47,12 @@ function Collection()
 
     const deleteDiscMutation = useMutation({
         mutationFn: (discId: string) => DeleteDisc(token, collectionId, discId),
-        onSuccess: (data: any) => queryClient.setQueryData(["collection", collectionId],
-            (oldData: any) =>
+        onSuccess: (returnedDisc: IDisc) => queryClient.setQueryData(["collection", collectionId],
+            (oldData: ICollectionHydrated) =>
             {
                 return {
                     ...oldData,
-                    discs: oldData.discs.filter((coll: any) => coll._id !== data._id)
+                    discs: oldData.discs.filter((disc: IDisc) => disc._id !== returnedDisc._id)
                 }
 
             })
@@ -69,7 +70,7 @@ function Collection()
                 onSubmit={async (barcode) => await newDiscMutation.mutate(barcode)}
             />
             <div>
-                {collection.discs.map((disc: any, idx: any) => (
+                {collection.discs.map((disc: IDisc, idx: number) => (
                     <div key={disc._id}>
                         Disc {idx + 1}: Barcode: {disc.referenceDVD.barcode}, {disc.referenceDVD.title}
                         {` `}

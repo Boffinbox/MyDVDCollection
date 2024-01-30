@@ -29,14 +29,14 @@ function Collections()
 
     const newCollectionMutation = useMutation({
         mutationFn: (title: string) => PostCollection(token, title),
-        onSuccess: (data: ICollection) => queryClient.setQueryData(["collections"],
-            (oldData: ICollection[]) => [...oldData, data])
+        onSuccess: (returnedCollection: ICollection) => queryClient.setQueryData(["collections"],
+            (oldData: ICollection[]) => [...oldData, returnedCollection])
     })
 
     const deleteCollectionMutation = useMutation({
         mutationFn: (collectionId: string) => DeleteCollection(token, collectionId),
-        onSuccess: (data: ICollection) => queryClient.setQueryData(["collections"],
-            (oldData: ICollection[]) => oldData.filter((coll: ICollection) => coll._id !== data._id))
+        onSuccess: (returnedCollection: ICollection) => queryClient.setQueryData(["collections"],
+            (oldData: ICollection[]) => oldData.filter((coll: ICollection) => coll._id !== returnedCollection._id))
     })
 
     if (collectionsQuery.isLoading) return <h1>Loading...</h1>
