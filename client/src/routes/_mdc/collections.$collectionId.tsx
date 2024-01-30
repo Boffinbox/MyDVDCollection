@@ -4,7 +4,7 @@ import { PostBarcode } from "../../httpverbs/post/PostBarcode";
 import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { CollectionQueryOptions } from "../../queries/Collections";
+import { CollectionQueryOptions } from "../../utilities/Queries";
 import { ICollectionHydrated, IDisc } from "../../Interfaces";
 
 export const Route = createFileRoute('/_mdc/collections/$collectionId')({

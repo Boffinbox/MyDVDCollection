@@ -7,7 +7,7 @@ import { PostCollection } from "../../httpverbs/post/PostCollection";
 import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";
 
-import { CollectionsQueryOptions } from "../../queries/Collections"
+import { CollectionsQueryOptions } from "../../utilities/Queries"
 import { ICollection } from "../../Interfaces";
 
 export const Route = createFileRoute('/_mdc/collections')({

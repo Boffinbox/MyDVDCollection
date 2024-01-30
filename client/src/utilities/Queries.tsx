@@ -1,4 +1,4 @@
-import { queryOptions, } from "@tanstack/react-query"
+import { queryOptions } from "@tanstack/react-query"
 import { GetCollections } from "../httpverbs/get/GetCollections"
 import { GetCollection } from "../httpverbs/get/GetCollection"
 
