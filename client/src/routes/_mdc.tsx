@@ -1,35 +1,39 @@
 import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
-import { auth } from '../utilities/Auth';
+import { useQuery } from '@tanstack/react-query';
+import { AccessTokenQueryOptions } from '../utilities/Queries';
 
 export const Route = createFileRoute('/_mdc')({
-    beforeLoad: async () =>
+    beforeLoad: async ({ context: { queryClient } }) =>
     {
-        if (auth.status == "loggedOut" || auth.token == undefined)
-        {
-            await auth.refreshAccessToken();
-        }
+        queryClient.ensureQueryData(AccessTokenQueryOptions())
     },
     component: MDCComponent
 })
 
 function MDCComponent()
 {
-    const { token, status } = Route.useRouteContext({ select: ({ auth }) => ({ token: auth.token, status: auth.status }) })
-    return status !== "loggedIn" ? (
+    const tokenQuery = useQuery(AccessTokenQueryOptions())
+    const token: string | undefined = tokenQuery.data;
+
+    if (tokenQuery.isLoading) return <h1>Loading...</h1>
+
+    if (tokenQuery.status === "error") return (
         <>
-            <div>You are not logged in!</div>
+            <div>Oh no! Something went wrong.</div>
             <p>
-                <Link to="/login">
-                    Click here to login...
+                <Link to="/">
+                    Click here to go to homepage...
                 </Link>{` `}
             </p>
+            Error: {tokenQuery.error.message}
         </>
-    ) : (
+    )
+
+    return (
         <>
             <div>
                 <div style={{ backgroundColor: "rebeccapurple", color: 'orange', fontSize: "small", fontWeight: 100 }}>
                     <p>Current token is: {token}</p>
-                    <p>Status: {status}</p>
                 </div>
                 <hr />
             </div>
