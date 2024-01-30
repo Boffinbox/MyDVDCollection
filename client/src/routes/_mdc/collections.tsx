@@ -1,8 +1,8 @@
 import { Link, Outlet, createFileRoute } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { DeleteCollection } from "../../httpverbs/delete/DeleteCollection";
-import { PostCollection } from "../../httpverbs/post/PostCollection";
+import { DeleteCollection } from "../../httpverbs/DeleteCollection";
+import { PostCollection } from "../../httpverbs/PostCollection";
 
 import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";

@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query"
-import { GetCollections } from "../httpverbs/get/GetCollections"
-import { GetCollection } from "../httpverbs/get/GetCollection"
+import { GetCollections } from "../httpverbs/GetCollections"
+import { GetCollection } from "../httpverbs/GetCollection"
 
 
 export function CollectionsQueryOptions(token: string | undefined)

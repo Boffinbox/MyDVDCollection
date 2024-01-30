@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { DeleteDisc } from "../../httpverbs/delete/DeleteDisc";
-import { PostBarcode } from "../../httpverbs/post/PostBarcode";
+import { DeleteDisc } from "../../httpverbs/DeleteDisc";
+import { PostBarcode } from "../../httpverbs/PostBarcode";
 import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
