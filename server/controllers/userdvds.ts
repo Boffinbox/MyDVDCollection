@@ -44,7 +44,7 @@ export async function addDVD(req, res)
         collectionToModify.discs.push(newDVD._id);
         await newDVD.save();
         await collectionToModify.save();
-        res.status(201).json({ dvd: newDVD });
+        res.status(201).json(newDVD);
     }
 }
 
