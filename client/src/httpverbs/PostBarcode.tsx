@@ -21,6 +21,7 @@ export async function PostBarcode(token: string | undefined, collectionId: strin
         console.log("token used was: ", token);
         console.log("Post request received.");
         console.log(response.data)
+        return response.data
     }
     catch (e)
     {

@@ -44,7 +44,7 @@ export async function addDVD(req, res)
         collectionToModify.discs.push(newDVD._id);
         await newDVD.save();
         await collectionToModify.save();
-        res.status(201).json({ dvd: newDVD });
+        res.status(201).json(newDVD);
     }
 }
 
@@ -84,7 +84,7 @@ export async function updateDVD(req, res)
         discToModify.rating = rating;
         discToModify.watched = watched;
         await discToModify.save();
-        res.status(200).json({ message: "it worked" });
+        res.status(200).json(discToModify);
     }
 }
 
@@ -105,7 +105,7 @@ export async function deleteDVD(req, res)
     {
         return res.status(401).json({ message: "wrong collection, disc mismatch" });
     }
-    await UserDVDModel.findByIdAndDelete(discId);
+    const deletedDisc = await UserDVDModel.findByIdAndDelete(discId);
     await DiscCollectionModel.findByIdAndUpdate(collectionId, { $pull: { discs: discId } });
-    res.status(200).json({ message: "it worked" });
+    res.status(200).json(deletedDisc);
 }

@@ -1,4 +1,11 @@
-export function AddButton({ addToServer, addToClient }: { addToServer: () => void, addToClient: () => void })
+export function StateChangingButton(
+    {
+        text,
+        onSubmit,
+    }: {
+        text: string,
+        onSubmit: (...args: any[]) => void,
+    })
 {
     return (
         <>
@@ -7,16 +14,16 @@ export function AddButton({ addToServer, addToClient }: { addToServer: () => voi
                 evt.preventDefault();
                 try
                 {
-                    await addToServer();
-                    addToClient();
+                    console.log(onSubmit)
+                    await onSubmit()
                 }
                 catch (e)
                 {
-                    console.log("Couldn't add.")
+                    console.log("Couldn't perform action.")
                 }
             }}>
                 <button style={{ backgroundColor: "lightblue" }}>
-                    Submit!
+                    {text}
                 </button>
             </form>
         </>

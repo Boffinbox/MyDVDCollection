@@ -1,74 +1,82 @@
-import { FileRoute, useRouter } from "@tanstack/react-router"
-import { GetCollection } from "../../httpverbs/get/GetCollection";
-import { DeleteDisc } from "../../httpverbs/delete/DeleteDisc";
-import { PostBarcode } from "../../httpverbs/post/PostBarcode";
-import { useState } from "react";
-import { AddButton } from "../../components/AddButton";
-import { DeleteButton } from "../../components/DeleteButton";
+import { createFileRoute } from "@tanstack/react-router"
+import { DeleteDisc } from "../../httpverbs/DeleteDisc";
+import { PostBarcode } from "../../httpverbs/PostBarcode";
+import { StateChangingButton } from "../../components/StateChangingButton";
+import { SingleLineForm } from "../../components/SingleLineForm";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
+import { CollectionQueryOptions } from "../../utilities/Queries";
+import { ICollectionHydrated, IDisc } from "../../Interfaces";
 
-export const Route = new FileRoute('/_mdc/collections/$collectionId').createRoute({
-    loader: async ({ params: { collectionId }, context: { auth } }) => GetCollection(collectionId, auth.token),
+export const Route = createFileRoute('/_mdc/collections/$collectionId')({
+    loader: async ({ params: { collectionId }, context: { auth, queryClient } }) =>
+    {
+        queryClient.ensureQueryData(CollectionQueryOptions(auth.token, collectionId))
+    },
     component: Collection
 })
 
 function Collection()
 {
     const { token } = Route.useRouteContext({ select: ({ auth }) => ({ token: auth.token }) })
-    const [formData, setFormData] = useState({ barcode: "" })
 
-    interface ICollData
-    {
-        _id: string,
-        title: string,
-        discs:
+    const { collectionId } = Route.useParams();
+
+    const queryClient = useQueryClient();
+
+    const collectionQuery = useQuery(CollectionQueryOptions(token, collectionId))
+    const collection: ICollectionHydrated = collectionQuery.data;
+
+    const newDiscMutation = useMutation({
+        mutationFn: (barcode: string) => PostBarcode(token, collectionId, barcode),
+        onSuccess: (returnedDisc: IDisc) =>
         {
-            _id: string,
-            rating: number,
-            watched: boolean,
-            referenceDVD:
+            console.log("received data was: ", returnedDisc)
+            console.log("coll id is: ", collectionId)
+            queryClient.setQueryData(["collection", collectionId],
+                (oldData: ICollectionHydrated) =>
+                {
+                    console.log(oldData)
+                    return {
+                        ...oldData,
+                        discs: [...oldData.discs, returnedDisc]
+                    }
+                }
+            )
+        }
+    })
+
+    const deleteDiscMutation = useMutation({
+        mutationFn: (discId: string) => DeleteDisc(token, collectionId, discId),
+        onSuccess: (returnedDisc: IDisc) => queryClient.setQueryData(["collection", collectionId],
+            (oldData: ICollectionHydrated) =>
             {
-                _id: string,
-                barcode: string,
-                title: string
-            }
-        }[]
-    }
+                return {
+                    ...oldData,
+                    discs: oldData.discs.filter((disc: IDisc) => disc._id !== returnedDisc._id)
+                }
 
-    const collData: ICollData = Route.useLoaderData()
-    const router = useRouter();
+            })
+    })
 
-    function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
-    {
-        setFormData(currentData =>
-        {
-            return {
-                ...currentData,
-                [evt.target.name]: evt.target.value
-            }
-        })
-    }
+    if (collectionQuery.isLoading) return <h1>Loading...</h1>
+    if (collectionQuery.isError) return <pre>{JSON.stringify(collectionQuery.error)}</pre>
 
     return (
         <>
-            <h3>{collData.title}</h3>
-            <label htmlFor="barcode">barcode</label>
-            <input type="text" id="barcode" name="barcode" onChange={handleChange} value={formData.barcode} />
-            <AddButton
-                addToServer={async () =>
-                {
-                    await PostBarcode(token, collData._id, formData.barcode)
-                    setFormData(() => { return { barcode: "" } })
-                }}
-                addToClient={() => router.invalidate()}
+            <h3>{collection.title}{` `}{collectionQuery.isFetching ? <span style={{ fontSize: "small" }}>Fetching...</span> : null}</h3>
+            <SingleLineForm
+                submitButtonText="Submit!"
+                labelText="Barcode"
+                onSubmit={async (barcode) => await newDiscMutation.mutate(barcode)}
             />
             <div>
-                {collData.discs.map((disc, idx) => (
+                {collection.discs.map((disc: IDisc, idx: number) => (
                     <div key={disc._id}>
-                        Disc {idx + 1}: {disc.referenceDVD.title}
+                        Disc {idx + 1}: Barcode: {disc.referenceDVD.barcode}, {disc.referenceDVD.title}
                         {` `}
-                        <DeleteButton
-                            deleteFromServer={async () => await DeleteDisc(token, collData._id, disc._id)}
-                            deleteFromClient={() => router.invalidate()}
+                        <StateChangingButton
+                            text={"Delete..."}
+                            onSubmit={async () => await deleteDiscMutation.mutate(disc._id)}
                         />
                     </div>
                 ))}

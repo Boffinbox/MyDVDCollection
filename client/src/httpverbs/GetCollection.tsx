@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function GetCollection(collectionId: string, token: string | undefined)
+export async function GetCollection(token: string | undefined, collectionId: string)
 {
     if (token == undefined)
     {
