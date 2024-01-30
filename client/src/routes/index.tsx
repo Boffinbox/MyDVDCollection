@@ -1,20 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
-import { auth } from '../utilities/Auth';
+import { useQuery } from "@tanstack/react-query"
+import { AccessTokenQueryOptions } from "../utilities/Queries"
 
 export const Route = createFileRoute('/')({
-    beforeLoad: async () =>
+    beforeLoad: async ({ context: { queryClient } }) =>
     {
-        if (auth.status == "loggedOut" || auth.token == undefined)
-        {
-            await auth.refreshAccessToken();
-        }
+        queryClient.ensureQueryData(AccessTokenQueryOptions())
     },
     component: Index
 })
 
 function Index()
 {
-    const { status } = Route.useRouteContext({ select: ({ auth }) => ({ status: auth.status }) })
+    const tokenQuery = useQuery(AccessTokenQueryOptions())
+
+    if (tokenQuery.isLoading) return <h1>Loading...</h1>
 
     return (
         <>
@@ -23,7 +23,7 @@ function Index()
                     <h2>My DVD Collection</h2>
                     <p>Welcome to My DVD Collection! Your place for digitally tracking your DVDs, Blu-Rays, CDs, and more!</p>
                     <p>
-                        {status === "loggedOut" ?
+                        {tokenQuery.isError ?
                             <Link
                                 to="/login"
                             >Click here to login
