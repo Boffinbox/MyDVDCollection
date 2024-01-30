@@ -62,7 +62,7 @@ test(`delete an existing dvd`, async () =>
         .set(`Authorization`, `Bearer ${testSetup.userToken}`)
         .send();
     expect(deleteRes.status).toBe(200);
-    expect(deleteRes.body.message).toEqual("it worked");
+    expect(deleteRes.body).toMatchObject({ _id: testSetup.dvd._id });
 
     const collRes = await request(app)
         .get(`${api}/disccollections/${testSetup.collId}`)
