@@ -1,23 +1,14 @@
 import { useState } from "react";
-import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { auth } from "../utilities/Auth";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { PostLogin } from "../httpverbs/PostLogin";
 
 export const Route = createFileRoute('/login')({
-    beforeLoad: async () =>
-    {
-        if (auth.status == "loggedOut" || auth.token == undefined)
-        {
-            await auth.refreshAccessToken();
-        }
-    },
     component: LoginComponent
 })
 
 function LoginComponent()
 {
-    const router = useRouter();
     const navigate = useNavigate();
-    const { auth } = Route.useRouteContext({ select: ({ auth }) => ({ auth }) })
 
     const [formData, setFormData] = useState({ email: "", password: "" })
 
@@ -38,17 +29,16 @@ function LoginComponent()
         console.log("Form submitted!");
         console.log("Email is: ", formData.email);
         console.log("Password is: ", formData.password);
-        const result = await auth.login(formData.email, formData.password);
-        router.invalidate();
-        if (result !== "loggedIn")
+        try
+        {
+            await PostLogin(formData.email, formData.password);
+            setFormData(() => { return { email: "", password: "" } })
+            navigate({ to: "/collections" });
+        }
+        catch
         {
             // todo
             console.log("wrong credentials todo inside login.tsx")
-        }
-        else
-        {
-            setFormData(() => { return { email: "", password: "" } })
-            navigate({ to: "/collections" });
         }
     }
 
