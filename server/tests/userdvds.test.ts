@@ -18,7 +18,7 @@ test(`check the basic test dvd setup works correctly`, async () =>
         .get(`${api}/disccollections/${testSetup.collId}`)
         .set(`Authorization`, `Bearer ${testSetup.userToken}`)
         .send();
-    expect(collRes.body.discs[0]).toEqual(testSetup.dvdRes.body.dvd);
+    expect(collRes.body.discs[0]).toEqual(testSetup.dvdRes.body);
 })
 
 test(`add a dvd without adding a corresponding reference dvd`, async () =>

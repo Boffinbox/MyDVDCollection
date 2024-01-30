@@ -35,8 +35,8 @@ export async function testDVDSetup(
 
     const dvdRes = await newDVD(userToken, collId, barcode, title)
     expect(dvdRes.status).toBe(201);
-    expect(dvdRes.body.dvd.referenceDVD.barcode).toEqual(barcode)
-    const dvd = dvdRes.body.dvd
+    expect(dvdRes.body.referenceDVD.barcode).toEqual(barcode)
+    const dvd = dvdRes.body
 
     const returnObject: {
         userDetails: string,
