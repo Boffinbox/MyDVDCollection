@@ -4,24 +4,21 @@ import { PostBarcode } from "../../httpverbs/PostBarcode";
 import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { CollectionQueryOptions } from "../../utilities/Queries";
+import { AccessTokenQueryOptions, CollectionQueryOptions } from "../../utilities/Queries";
 import { ICollectionHydrated, IDisc } from "../../Interfaces";
 
 export const Route = createFileRoute('/_mdc/collections/$collectionId')({
-    loader: async ({ params: { collectionId }, context: { auth, queryClient } }) =>
-    {
-        queryClient.ensureQueryData(CollectionQueryOptions(auth.token, collectionId))
-    },
     component: Collection
 })
 
 function Collection()
 {
-    const { token } = Route.useRouteContext({ select: ({ auth }) => ({ token: auth.token }) })
-
     const { collectionId } = Route.useParams();
 
     const queryClient = useQueryClient();
+
+    const tokenQuery = useQuery(AccessTokenQueryOptions())
+    const token: string | undefined = tokenQuery.data;
 
     const collectionQuery = useQuery(CollectionQueryOptions(token, collectionId))
     const collection: ICollectionHydrated = collectionQuery.data;

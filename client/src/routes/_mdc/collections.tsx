@@ -7,22 +7,19 @@ import { PostCollection } from "../../httpverbs/PostCollection";
 import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";
 
-import { CollectionsQueryOptions } from "../../utilities/Queries"
+import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries"
 import { ICollection } from "../../Interfaces";
 
 export const Route = createFileRoute('/_mdc/collections')({
-    loader: ({ context: { auth, queryClient } }) =>
-    {
-        queryClient.ensureQueryData(CollectionsQueryOptions(auth.token))
-    },
     component: Collections
 })
 
 function Collections()
 {
-    const { token } = Route.useRouteContext({ select: ({ auth }) => ({ token: auth.token }) })
-
     const queryClient = useQueryClient();
+
+    const tokenQuery = useQuery(AccessTokenQueryOptions())
+    const token: string | undefined = tokenQuery.data;
 
     const collectionsQuery = useQuery(CollectionsQueryOptions(token))
     const collections: [{ _id: string, title: string }] = collectionsQuery.data;
