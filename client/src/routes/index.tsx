@@ -14,8 +14,6 @@ function Index()
 {
     const tokenQuery = useQuery(AccessTokenQueryOptions())
 
-    if (tokenQuery.isLoading) return <h1>Loading...</h1>
-
     return (
         <>
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
@@ -23,14 +21,14 @@ function Index()
                     <h2>My DVD Collection</h2>
                     <p>Welcome to My DVD Collection! Your place for digitally tracking your DVDs, Blu-Rays, CDs, and more!</p>
                     <p>
-                        {tokenQuery.isError ?
+                        {tokenQuery.isSuccess ?
                             <Link
-                                to="/login"
-                            >Click here to login
+                                to="/collections"
+                            >Click here
                             </Link>
                             :
                             <Link
-                                to="/collections"
+                                to="/login"
                             >Click here
                             </Link>
                         }
