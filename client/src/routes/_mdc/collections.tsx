@@ -37,7 +37,13 @@ function Collections()
     })
 
     if (collectionsQuery.isLoading) return <h1>Loading...</h1>
-    if (collectionsQuery.isError) return <pre>{JSON.stringify(collectionsQuery.error)}</pre>
+    if (collectionsQuery.isError) return (
+        <>
+            <div>Oh no! Something went wrong...</div>
+            <pre>{JSON.stringify(collectionsQuery.error.message)}</pre>
+        </>
+    )
+
 
     return (
         <>
