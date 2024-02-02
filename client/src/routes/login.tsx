@@ -59,7 +59,7 @@ function LoginComponent()
                     alignItems: "center",
                     justifyContent: "center",
                     height: 1,
-                    textAlign: "center"
+                    textAlign: "center",
                 }}>
                 <div>
                     <Typography level="h4" component="h1">
@@ -81,16 +81,16 @@ function LoginComponent()
                     </Button>
                 </form>
                 <Typography
-                    endDecorator={<RouterLink
-                        to={"/"}
-                    >
-                        <Link disabled sx={{ textDecoration: "line-through" }}>Sign up</Link>
-                    </RouterLink>}
+                    endDecorator={
+                        <RouterLink to="/" disabled>
+                            <Link disabled sx={{ textDecoration: "line-through" }}>Sign up</Link>
+                        </RouterLink>}
                     fontSize="sm"
                     sx={{ alignSelf: 'center' }}
                 >
                     Don&apos;t have an account?
                 </Typography>
+                <Typography level="body-xs">Signups are currently closed.</Typography>
             </Sheet>
         </>
     )
