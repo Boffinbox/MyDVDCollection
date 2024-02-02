@@ -1,7 +1,9 @@
-import { rootRouteWithContext } from '@tanstack/react-router'
+import { CssVarsProvider } from '@mui/joy/styles';
+import CssBaseline from '@mui/joy/CssBaseline';
 
-import { Outlet } from "@tanstack/react-router";
+import { rootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { QueryClient } from '@tanstack/react-query';
+
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
@@ -14,7 +16,11 @@ export const Route = rootRouteWithContext<{
 function App()
 {
     return <div>
-        <Outlet />
+        <CssVarsProvider>
+            <CssBaseline>
+                <Outlet />
+            </CssBaseline>
+        </CssVarsProvider>
         <ReactQueryDevtools buttonPosition='top-right' position='right' />
         <TanStackRouterDevtools position='bottom-right' />
     </div >
