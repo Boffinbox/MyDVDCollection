@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 
 import { AccessTokenQueryOptions } from "../utilities/Queries"
 
-import { Sheet } from '@mui/joy';
+import { Sheet, Typography } from '@mui/joy';
 
 export const Route = createFileRoute('/')({
     beforeLoad: async ({ context: { queryClient } }) =>
@@ -28,9 +28,13 @@ function Index()
                     height: 1,
                     textAlign: "center"
                 }}>
-                <h2>My DVD Collection</h2>
-                <p>Welcome to My DVD Collection! Your place for digitally tracking your DVDs, Blu-Rays, CDs, and more!</p>
-                <p>
+                <Typography level="h2" sx={{ py: 1, mx: 2 }}>
+                    My DVD Collection
+                </Typography>
+                <Typography level="body-sm" sx={{ py: 1, mx: 2 }}>
+                    Welcome to My DVD Collection! Your place for digitally tracking your DVDs, Blu-Rays, CDs, and more!
+                </Typography>
+                <Typography sx={{ py: 1, mx: 2 }}>
                     {tokenQuery.isSuccess ?
                         <Link
                             to="/collections"
@@ -43,7 +47,7 @@ function Index()
                         </Link>
                     }
                     {` `}and get started!
-                </p>
+                </Typography>
             </Sheet >
         </>
     )
