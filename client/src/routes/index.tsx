@@ -1,9 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
+import { createFileRoute, Link as RouterLink } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 
 import { AccessTokenQueryOptions } from "../utilities/Queries"
 
-import { Sheet, Typography } from '@mui/joy';
+import { Sheet, Typography, Link } from '@mui/joy';
 
 export const Route = createFileRoute('/')({
     beforeLoad: async ({ context: { queryClient } }) =>
@@ -28,7 +28,7 @@ function Index()
                     height: 1,
                     textAlign: "center"
                 }}>
-                <Typography level="h2" sx={{ py: 1, mx: 2 }}>
+                <Typography level="h2" sx={{ py: 1, mx: 2 }} component="h1">
                     My DVD Collection
                 </Typography>
                 <Typography level="body-sm" sx={{ py: 1, mx: 2 }}>
@@ -36,15 +36,13 @@ function Index()
                 </Typography>
                 <Typography sx={{ py: 1, mx: 2 }}>
                     {tokenQuery.isSuccess ?
-                        <Link
-                            to="/collections"
-                        >Click here
-                        </Link>
+                        <RouterLink to="/collections">
+                            <Link>Click here</Link>
+                        </RouterLink>
                         :
-                        <Link
-                            to="/login"
-                        >Click here
-                        </Link>
+                        <RouterLink to="/login">
+                            <Link>Click here</Link>
+                        </RouterLink>
                     }
                     {` `}and get started!
                 </Typography>
