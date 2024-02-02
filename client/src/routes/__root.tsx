@@ -1,4 +1,4 @@
-import { rootRouteWithContext, Outlet, redirect } from '@tanstack/react-router'
+import { rootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { QueryClient } from '@tanstack/react-query';
 
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
