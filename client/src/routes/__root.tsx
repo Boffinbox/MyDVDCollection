@@ -6,7 +6,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import { CssVarsProvider } from '@mui/joy/styles';
 import { CssBaseline, Sheet } from '@mui/joy';
-import { DarkModeToggle } from '../components/DarkModeToggle';
 
 export const Route = rootRouteWithContext<{
     queryClient: QueryClient
@@ -19,7 +18,6 @@ function App()
     return <div>
         <CssVarsProvider>
             <CssBaseline>
-                <DarkModeToggle />
                 <Sheet
                     variant='solid'
                     sx={{

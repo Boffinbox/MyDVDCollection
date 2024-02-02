@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { AccessTokenQueryOptions } from "../utilities/Queries"
 
 import { Sheet, Typography, Link } from '@mui/joy';
+import { DarkModeToggle } from "../components/DarkModeToggle";
 
 export const Route = createFileRoute('/')({
     beforeLoad: async ({ context: { queryClient } }) =>
@@ -19,6 +20,7 @@ function Index()
 
     return (
         <>
+            <DarkModeToggle />
             <Sheet
                 sx={{
                     display: "flex",
@@ -26,15 +28,16 @@ function Index()
                     alignItems: "center",
                     justifyContent: "center",
                     height: 1,
+                    gap: 2,
                     textAlign: "center"
                 }}>
-                <Typography level="h2" sx={{ py: 1, mx: 2 }} component="h1">
+                <Typography level="h2" sx={{ mx: 2 }} component="h1">
                     My DVD Collection
                 </Typography>
-                <Typography level="body-sm" sx={{ py: 1, mx: 2 }}>
+                <Typography level="body-sm" sx={{ mx: 2 }}>
                     Welcome to My DVD Collection! Your place for digitally tracking your DVDs, Blu-Rays, CDs, and more!
                 </Typography>
-                <Typography sx={{ py: 1, mx: 2 }}>
+                <Typography sx={{ mx: 2 }}>
                     {tokenQuery.isSuccess ?
                         <RouterLink to="/collections">
                             <Link>Click here</Link>

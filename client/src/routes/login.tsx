@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link as RouterLink, useNavigate } from "@tanstack/react-router";
 import { PostLogin } from "../httpverbs/PostLogin";
+
+import { Sheet, FormControl, FormLabel, Input, Button, Typography, Link } from "@mui/joy"
 
 export const Route = createFileRoute('/login')({
     component: LoginComponent
@@ -44,28 +46,52 @@ function LoginComponent()
 
     return (
         <>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", textAlign: "center" }}>
+            <Sheet
+                sx={{
+                    width: 300,
+                    mx: "auto",
+                    my: 4,
+                    py: 3,
+                    px: 2,
+                    gap: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: 1,
+                    textAlign: "center"
+                }}>
+                <div>
+                    <Typography level="h4" component="h1">
+                        <b>Welcome to mDc!</b>
+                    </Typography>
+                    <Typography level="body-sm">Sign in to continue.</Typography>
+                </div>
                 <form action="" onSubmit={handleSubmit}>
-                    <p>
-                        <label htmlFor="email">email</label>
-                        <input type="text" id="email" name="email" onChange={handleChange} value={formData.email} />
-                    </p>
-                    <p>
-                        <label htmlFor="password">password</label>
-                        <input type="text" id="password" name="password" onChange={handleChange} value={formData.password} />
-                    </p>
-                    <p>
-                        <button>Submit!</button>
-                    </p>
-                    <p>
-                        <Link
-                            to={"/"}
-                        >
-                            Return to homepage
-                        </Link>
-                    </p>
+                    <FormControl>
+                        <FormLabel id="email">Email</FormLabel>
+                        <Input type="text" id="email" name="email" onChange={handleChange} value={formData.email} />
+                    </FormControl>
+                    <FormControl>
+                        <FormLabel id="password">Password</FormLabel>
+                        <Input type="password" id="password" name="password" onChange={handleChange} value={formData.password} />
+                    </FormControl>
+                    <Button type="submit" sx={{ mt: 1 }} fullWidth>
+                        Log in
+                    </Button>
                 </form>
-            </div>
+                <Typography
+                    endDecorator={<RouterLink
+                        to={"/"}
+                    >
+                        <Link disabled sx={{ textDecoration: "line-through" }}>Sign up</Link>
+                    </RouterLink>}
+                    fontSize="sm"
+                    sx={{ alignSelf: 'center' }}
+                >
+                    Don&apos;t have an account?
+                </Typography>
+            </Sheet>
         </>
     )
 }
