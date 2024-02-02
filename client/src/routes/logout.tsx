@@ -1,12 +1,30 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { auth } from "../utilities/Auth";
+import { PostLogout } from "../httpverbs/PostLogout";
+import { Wait } from "../utilities/Wait";
+import { GetAccessToken } from "../httpverbs/GetAccessToken";
 
 export const Route = createFileRoute('/logout')({
-    beforeLoad: async () =>
+    beforeLoad: async ({ context: { queryClient } }) =>
     {
-        if (auth.status === "loggedIn")
+        let token: string | undefined = await queryClient.getQueryData(["accesstoken"])
+        console.log("in preloader: ", token)
+        if (token == undefined)
         {
-            await auth.logout();
+            token = await GetAccessToken()
+        }
+        if (token == undefined) // if it's *still* undefined
+        {
+            // todo - something went wrong
+            return
+        }
+        try
+        {
+            await PostLogout(token)
+            queryClient.removeQueries({ queryKey: ["accesstoken"], exact: true })
+        }
+        catch
+        {
+            console.log("oh no!");
         }
     },
     component: Logout
@@ -16,7 +34,8 @@ function Logout()
 {
     const navigate = useNavigate();
 
-    setTimeout(() => navigate({ to: "/" }), 1000)
+    // this is just a fake delay to make the user feel good
+    Wait(1000).then(() => navigate({ to: "/" }))
 
     return (
         <>

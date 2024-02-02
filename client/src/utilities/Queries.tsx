@@ -1,6 +1,15 @@
 import { queryOptions } from "@tanstack/react-query"
 import { GetCollections } from "../httpverbs/GetCollections"
 import { GetCollection } from "../httpverbs/GetCollection"
+import { GetAccessToken } from "../httpverbs/GetAccessToken"
+
+export function AccessTokenQueryOptions()
+{
+    return queryOptions({
+        queryKey: ["accesstoken"],
+        queryFn: () => GetAccessToken()
+    })
+}
 
 
 export function CollectionsQueryOptions(token: string | undefined)
