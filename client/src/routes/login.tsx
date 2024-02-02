@@ -90,7 +90,7 @@ function LoginComponent()
                 >
                     Don&apos;t have an account?
                 </Typography>
-                <Typography level="body-xs">Signups are currently closed.</Typography>
+                <Typography level="body-xs">Signups are currently closed. 🙁</Typography>
             </Sheet>
         </>
     )
