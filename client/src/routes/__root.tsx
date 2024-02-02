@@ -19,16 +19,18 @@ function App()
         <CssVarsProvider>
             <CssBaseline>
                 <Sheet
-                    variant='outlined'
+                    variant='solid'
                     sx={{
                         width: { md: 900 },
                         mx: "auto",
-                        backgroundColor: { xs: "pink", sm: "lightgreen", md: "lightblue" },
+                        my: "auto",
                         py: 3, // padding top & bottom
                         px: 2, // padding left & right
                         display: 'flex',
                         flexDirection: 'column',
                         gap: 2,
+                        backgroundColor: { xs: "pink", sm: "lightgreen", md: "lightblue" },
+                        height: "100vh",
                     }}
                 >
                     <Outlet />
