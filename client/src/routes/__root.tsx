@@ -1,4 +1,4 @@
-import { rootRouteWithContext, Outlet } from '@tanstack/react-router'
+import { rootRouteWithContext, Outlet, redirect } from '@tanstack/react-router'
 import { QueryClient } from '@tanstack/react-query';
 
 import { TanStackRouterDevtools } from '@tanstack/router-devtools'
@@ -21,16 +21,14 @@ function App()
                 <Sheet
                     variant='outlined'
                     sx={{
-                        width: 600,
-                        mx: 'auto', // margin left & right
-                        my: 4, // margin top & bottom
+                        width: { md: 900 },
+                        mx: "auto",
+                        backgroundColor: { xs: "pink", sm: "lightgreen", md: "lightblue" },
                         py: 3, // padding top & bottom
                         px: 2, // padding left & right
                         display: 'flex',
                         flexDirection: 'column',
                         gap: 2,
-                        borderRadius: 'sm',
-                        boxShadow: 'md',
                     }}
                 >
                     <Outlet />
