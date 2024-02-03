@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { AccessTokenQueryOptions } from '../utilities/Queries';
 
-import { Sheet, FormControl, FormLabel, Input, Button, Typography, Link } from "@mui/joy"
+import { Sheet, Typography, ButtonGroup, Button, Link, Divider } from "@mui/joy"
 import { DarkModeToggle } from '../components/DarkModeToggle';
 
 export const Route = createFileRoute('/_mdc')({
@@ -19,14 +19,12 @@ function MDCComponent()
     const tokenQuery = useQuery(AccessTokenQueryOptions())
     const token: string | undefined = tokenQuery.data;
 
-    if (tokenQuery.isLoading) return <h1>Loading...</h1>
-
     if (tokenQuery.status === "error") return (
         <>
-            <div>Oh no! Something went wrong.</div>
+            <div>Oh no! Something went wrong... 🙁</div>
             <p>
                 <RouterLink to="/">
-                    Click here to go to homepage...
+                    <Link>Click here to go to homepage...</Link>
                 </RouterLink>{` `}
             </p>
             Error: {tokenQuery.error.message}
@@ -45,31 +43,62 @@ function MDCComponent()
                 }}>
                 Current token is: {token}
             </Typography>
-            <DarkModeToggle />
             <Sheet
                 sx={{
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: "center",
                     justifyContent: "center",
-                    height: 1,
-                    gap: 2,
-                    textAlign: "center"
                 }}>
-
-                <div className="p-2 flex gap-2">
-                    <RouterLink to="/">
-                        Home
-                    </RouterLink>{` `}
-                    <RouterLink to="/logout">
-                        Logout
-                    </RouterLink>{` `}
-                    <RouterLink to="/collections">
-                        Collections
-                    </RouterLink>
-                </div>
-                <Outlet />
-            </Sheet>
+                <Sheet
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        height: 1,
+                        gap: 2,
+                        textAlign: "center"
+                    }}>
+                    {tokenQuery.isLoading ?
+                        <Sheet
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: "100%",
+                                gap: 2,
+                                textAlign: "center"
+                            }}>
+                            <Typography
+                                level="h1"
+                            >
+                                Loading...
+                            </Typography>
+                        </Sheet>
+                        :
+                        <>
+                            <Sheet sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                            }}>
+                                <ButtonGroup variant="plain">
+                                    <RouterLink to="/">
+                                        <Button>Home</Button>
+                                    </RouterLink>{` `}
+                                    <RouterLink to="/logout">
+                                        <Button>Logout</Button>
+                                    </RouterLink>{` `}
+                                    <RouterLink to="/collections">
+                                        <Button>Collections</Button>
+                                    </RouterLink>
+                                </ButtonGroup>
+                                <DarkModeToggle />
+                            </Sheet>
+                            <Divider />
+                            <Outlet />
+                        </>}
+                </Sheet>
+            </Sheet >
         </>
     )
 }

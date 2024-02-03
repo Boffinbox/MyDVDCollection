@@ -3,6 +3,7 @@ import { createFileRoute, Link as RouterLink, useNavigate } from "@tanstack/reac
 import { PostLogin } from "../httpverbs/PostLogin";
 
 import { Sheet, FormControl, FormLabel, Input, Button, Typography, Link } from "@mui/joy"
+import { DarkModeToggle } from "../components/DarkModeToggle"
 
 export const Route = createFileRoute('/login')({
     component: LoginComponent
@@ -48,45 +49,58 @@ function LoginComponent()
         <>
             <Sheet
                 sx={{
-                    width: "100%",
-                    height: "100%",
-                    gap: 2,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    textAlign: "center",
+                    height: "100%"
                 }}>
-                <div>
-                    <Typography level="h4" component="h1">
-                        <b>Welcome to mDc!</b>
+                <Sheet sx={{ alignSelf: "start" }}>
+                    <DarkModeToggle />
+                </Sheet>
+                <Sheet
+                    sx={{
+                        width: "100%",
+                        height: "100%",
+                        gap: 2,
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        textAlign: "center",
+                    }}>
+
+                    <div>
+                        <Typography level="h4" component="h1">
+                            <b>Welcome to mDc!</b>
+                        </Typography>
+                        <Typography level="body-sm">Sign in to continue.</Typography>
+                    </div>
+                    <form action="" onSubmit={handleSubmit}>
+                        <FormControl>
+                            <FormLabel id="email">Email</FormLabel>
+                            <Input type="text" id="email" name="email" onChange={handleChange} value={formData.email} />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel id="password">Password</FormLabel>
+                            <Input type="password" id="password" name="password" onChange={handleChange} value={formData.password} />
+                        </FormControl>
+                        <Button type="submit" sx={{ mt: 1 }} fullWidth>
+                            Log in
+                        </Button>
+                    </form>
+                    <Typography
+                        endDecorator={
+                            <RouterLink to="/">
+                                <Link disabled sx={{ textDecoration: "line-through" }}>Sign up</Link>
+                            </RouterLink>}
+                        fontSize="sm"
+                        sx={{ alignSelf: 'center' }}
+                    >
+                        Don&apos;t have an account?
                     </Typography>
-                    <Typography level="body-sm">Sign in to continue.</Typography>
-                </div>
-                <form action="" onSubmit={handleSubmit}>
-                    <FormControl>
-                        <FormLabel id="email">Email</FormLabel>
-                        <Input type="text" id="email" name="email" onChange={handleChange} value={formData.email} />
-                    </FormControl>
-                    <FormControl>
-                        <FormLabel id="password">Password</FormLabel>
-                        <Input type="password" id="password" name="password" onChange={handleChange} value={formData.password} />
-                    </FormControl>
-                    <Button type="submit" sx={{ mt: 1 }} fullWidth>
-                        Log in
-                    </Button>
-                </form>
-                <Typography
-                    endDecorator={
-                        <RouterLink to="/">
-                            <Link disabled sx={{ textDecoration: "line-through" }}>Sign up</Link>
-                        </RouterLink>}
-                    fontSize="sm"
-                    sx={{ alignSelf: 'center' }}
-                >
-                    Don&apos;t have an account?
-                </Typography>
-                <Typography level="body-xs">Signups are currently closed. 🙁</Typography>
+                    <Typography level="body-xs">Signups are currently closed. 🙁</Typography>
+                </Sheet>
             </Sheet>
         </>
     )
