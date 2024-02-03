@@ -55,7 +55,7 @@ function MDCComponent()
                         flexDirection: "column",
                         justifyContent: "center",
                         height: 1,
-                        gap: 2,
+                        gap: 0.5,
                         textAlign: "center"
                     }}>
                     {tokenQuery.isLoading ?

@@ -32,7 +32,7 @@ function App()
         <CssVarsProvider theme={mdcTheme}>
             <CssBaseline>
                 <Sheet
-                    variant='solid'
+                    variant='plain'
                     sx={{
                         width: { md: 900 },
                         height: "100vh",
@@ -43,7 +43,7 @@ function App()
                         display: 'flex',
                         flexDirection: 'column',
                         gap: 2,
-                        backgroundColor: { xs: "pink", sm: "lightgreen", md: "lightblue" },
+                        // backgroundColor: { xs: "pink", sm: "lightgreen", md: "lightblue" },
                     }}
                 >
                     <Outlet />

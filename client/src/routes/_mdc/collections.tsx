@@ -1,4 +1,4 @@
-import { Link, Outlet, createFileRoute } from "@tanstack/react-router"
+import { Link as RouterLink, Outlet, createFileRoute } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { DeleteCollection } from "../../httpverbs/DeleteCollection";
@@ -9,6 +9,8 @@ import { SingleLineForm } from "../../components/SingleLineForm";
 
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries"
 import { ICollection } from "../../Interfaces";
+
+import { Sheet, Typography, ButtonGroup, Button, Link, Divider } from "@mui/joy"
 
 export const Route = createFileRoute('/_mdc/collections')({
     component: Collections
@@ -57,14 +59,14 @@ function Collections()
                 <p>{` `}</p>
                 {collections.map((coll) => (
                     <div key={coll._id}>
-                        <Link
+                        <RouterLink
                             to="/collections/$collectionId"
                             params={{
                                 collectionId: coll._id
                             }}
                         >
                             Click to load the "{coll.title} collection".
-                        </Link>
+                        </RouterLink>
                         {` `}
                         <StateChangingButton
                             text={"Delete..."}
