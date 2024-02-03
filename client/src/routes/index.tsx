@@ -20,36 +20,47 @@ function Index()
 
     return (
         <>
-            <DarkModeToggle />
             <Sheet
                 sx={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    height: 1,
-                    gap: 2,
-                    textAlign: "center"
+                    height: "100%"
                 }}>
-                <Typography level="h2" sx={{ mx: 2 }} component="h1">
-                    My DVD Collection
-                </Typography>
-                <Typography level="body-sm" sx={{ mx: 2 }}>
-                    Welcome to My DVD Collection! Your place for digitally tracking your DVDs, Blu-Rays, CDs, and more!
-                </Typography>
-                <Typography sx={{ mx: 2 }}>
-                    {tokenQuery.isSuccess ?
-                        <RouterLink to="/collections">
-                            <Link>Click here</Link>
-                        </RouterLink>
-                        :
-                        <RouterLink to="/login">
-                            <Link>Click here</Link>
-                        </RouterLink>
-                    }
-                    {` `}and get started!
-                </Typography>
-            </Sheet >
+                <Sheet sx={{ alignSelf: "start" }}>
+                    <DarkModeToggle />
+                </Sheet>
+                <Sheet
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 2,
+                        textAlign: "center",
+                        height: "100%",
+                    }}>
+                    <Typography level="h2" sx={{ mx: 2 }} component="h1">
+                        My DVD Collection
+                    </Typography>
+                    <Typography level="body-sm" sx={{ mx: 2 }}>
+                        Welcome to My DVD Collection! Your place for digitally tracking your DVDs, Blu-Rays, CDs, and more!
+                    </Typography>
+                    <Typography sx={{ mx: 2 }}>
+                        {tokenQuery.isSuccess ?
+                            <RouterLink to="/collections">
+                                <Link>Click here</Link>
+                            </RouterLink>
+                            :
+                            <RouterLink to="/login">
+                                <Link>Click here</Link>
+                            </RouterLink>
+                        }
+                        {` `}and get started!
+                    </Typography>
+                </Sheet >
+            </Sheet>
         </>
     )
 }

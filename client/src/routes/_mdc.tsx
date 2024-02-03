@@ -1,6 +1,10 @@
-import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Link as RouterLink, Outlet } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query';
+
 import { AccessTokenQueryOptions } from '../utilities/Queries';
+
+import { Sheet, FormControl, FormLabel, Input, Button, Typography, Link } from "@mui/joy"
+import { DarkModeToggle } from '../components/DarkModeToggle';
 
 export const Route = createFileRoute('/_mdc')({
     beforeLoad: async ({ context: { queryClient } }) =>
@@ -21,9 +25,9 @@ function MDCComponent()
         <>
             <div>Oh no! Something went wrong.</div>
             <p>
-                <Link to="/">
+                <RouterLink to="/">
                     Click here to go to homepage...
-                </Link>{` `}
+                </RouterLink>{` `}
             </p>
             Error: {tokenQuery.error.message}
         </>
@@ -31,26 +35,41 @@ function MDCComponent()
 
     return (
         <>
-            <div>
-                <div style={{ backgroundColor: "rebeccapurple", color: 'orange', fontSize: "small", fontWeight: 100 }}>
-                    <p>Current token is: {token}</p>
+            <Typography
+                sx={{
+                    backgroundColor: "rebeccapurple",
+                    color: 'orange',
+                    fontSize: "small",
+                    fontWeight: 100,
+                    wordBreak: "break-all"
+                }}>
+                Current token is: {token}
+            </Typography>
+            <DarkModeToggle />
+            <Sheet
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: 1,
+                    gap: 2,
+                    textAlign: "center"
+                }}>
+
+                <div className="p-2 flex gap-2">
+                    <RouterLink to="/">
+                        Home
+                    </RouterLink>{` `}
+                    <RouterLink to="/logout">
+                        Logout
+                    </RouterLink>{` `}
+                    <RouterLink to="/collections">
+                        Collections
+                    </RouterLink>
                 </div>
-                <hr />
-            </div>
-            <h1>My DVD Collection</h1>
-            <div className="p-2 flex gap-2">
-                <Link to="/">
-                    Home
-                </Link>{` `}
-                <Link to="/logout">
-                    Logout
-                </Link>{` `}
-                <Link to="/collections">
-                    Collections
-                </Link>
-            </div>
-            <hr />
-            <Outlet />
+                <Outlet />
+            </Sheet>
         </>
     )
 }

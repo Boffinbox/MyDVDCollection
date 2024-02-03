@@ -48,17 +48,13 @@ function LoginComponent()
         <>
             <Sheet
                 sx={{
-                    width: 300,
-                    mx: "auto",
-                    my: 4,
-                    py: 3,
-                    px: 2,
+                    width: "100%",
+                    height: "100%",
                     gap: 2,
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    height: 1,
                     textAlign: "center",
                 }}>
                 <div>
@@ -82,7 +78,7 @@ function LoginComponent()
                 </form>
                 <Typography
                     endDecorator={
-                        <RouterLink to="/" disabled>
+                        <RouterLink to="/">
                             <Link disabled sx={{ textDecoration: "line-through" }}>Sign up</Link>
                         </RouterLink>}
                     fontSize="sm"
