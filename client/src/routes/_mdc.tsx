@@ -56,7 +56,6 @@ function MDCComponent()
                         justifyContent: "center",
                         height: 1,
                         gap: 0.5,
-                        textAlign: "center"
                     }}>
                     {tokenQuery.isLoading ?
                         <Sheet
@@ -67,7 +66,6 @@ function MDCComponent()
                                 justifyContent: "center",
                                 height: "100%",
                                 gap: 2,
-                                textAlign: "center"
                             }}>
                             <Typography
                                 level="h1"

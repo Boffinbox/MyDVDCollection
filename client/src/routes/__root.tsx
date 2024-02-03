@@ -42,7 +42,7 @@ function App()
                         px: 2, // padding left & right
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: 2,
+                        gap: 0,
                         // backgroundColor: { xs: "pink", sm: "lightgreen", md: "lightblue" },
                     }}
                 >
