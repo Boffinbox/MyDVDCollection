@@ -1,3 +1,5 @@
+import { Button } from "@mui/joy"
+
 export function StateChangingButton(
     {
         text,
@@ -22,9 +24,9 @@ export function StateChangingButton(
                     console.log("Couldn't perform action.")
                 }
             }}>
-                <button style={{ backgroundColor: "lightblue" }}>
+                <Button type="submit" sx={{}}>
                     {text}
-                </button>
+                </Button>
             </form>
         </>
     )

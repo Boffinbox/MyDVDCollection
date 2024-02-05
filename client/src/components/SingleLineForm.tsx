@@ -1,6 +1,8 @@
 import { StateChangingButton } from "./StateChangingButton"
 import { useState } from "react"
 
+import { FormControl, FormLabel, Input } from "@mui/joy"
+
 export function SingleLineForm(
     {
         submitButtonText,
@@ -27,8 +29,10 @@ export function SingleLineForm(
 
     return (
         <>
-            <label htmlFor={labelText}>{labelText}</label>
-            <input type="text" id={labelText} name="data" onChange={handleChange} value={formData.data} />
+            <FormControl>
+                <FormLabel id={labelText}>{labelText}</FormLabel>
+                <Input type="text" id={labelText} name="data" onChange={handleChange} value={formData.data} />
+            </FormControl>
             <StateChangingButton
                 text={submitButtonText}
                 onSubmit={async () =>

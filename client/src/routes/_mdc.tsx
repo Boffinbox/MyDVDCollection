@@ -1,6 +1,10 @@
-import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Link as RouterLink, Outlet } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query';
+
 import { AccessTokenQueryOptions } from '../utilities/Queries';
+
+import { Sheet, Typography, ButtonGroup, Button, Link, Divider } from "@mui/joy"
+import { DarkModeToggle } from '../components/DarkModeToggle';
 
 export const Route = createFileRoute('/_mdc')({
     beforeLoad: async ({ context: { queryClient } }) =>
@@ -15,15 +19,13 @@ function MDCComponent()
     const tokenQuery = useQuery(AccessTokenQueryOptions())
     const token: string | undefined = tokenQuery.data;
 
-    if (tokenQuery.isLoading) return <h1>Loading...</h1>
-
     if (tokenQuery.status === "error") return (
         <>
-            <div>Oh no! Something went wrong.</div>
+            <div>Oh no! Something went wrong... 🙁</div>
             <p>
-                <Link to="/">
-                    Click here to go to homepage...
-                </Link>{` `}
+                <RouterLink to="/">
+                    <Link>Click here to go to homepage...</Link>
+                </RouterLink>{` `}
             </p>
             Error: {tokenQuery.error.message}
         </>
@@ -31,26 +33,52 @@ function MDCComponent()
 
     return (
         <>
-            <div>
-                <div style={{ backgroundColor: "rebeccapurple", color: 'orange', fontSize: "small", fontWeight: 100 }}>
-                    <p>Current token is: {token}</p>
-                </div>
-                <hr />
-            </div>
-            <h1>My DVD Collection</h1>
-            <div className="p-2 flex gap-2">
-                <Link to="/">
-                    Home
-                </Link>{` `}
-                <Link to="/logout">
-                    Logout
-                </Link>{` `}
-                <Link to="/collections">
-                    Collections
-                </Link>
-            </div>
-            <hr />
-            <Outlet />
+            <Sheet
+                sx={{
+                    mx: 2,
+                    mt: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    overflow: "scroll"
+                }}>
+                <Sheet sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                }}>
+                    <ButtonGroup variant="plain">
+                        <RouterLink to="/">
+                            <Button>Home</Button>
+                        </RouterLink>{` `}
+                        <RouterLink to="/logout">
+                            <Button>Logout</Button>
+                        </RouterLink>{` `}
+                        <RouterLink to="/collections">
+                            <Button>Collections</Button>
+                        </RouterLink>
+                    </ButtonGroup>
+                    <DarkModeToggle />
+                </Sheet>
+                {tokenQuery.isLoading ?
+                    <Sheet
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            height: "100%",
+                            gap: 2,
+                        }}>
+                        <Typography
+                            level="h1"
+                        >
+                            Loading...
+                        </Typography>
+                    </Sheet>
+                    :
+                    <Outlet />
+                }
+            </Sheet>
         </>
     )
 }

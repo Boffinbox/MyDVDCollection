@@ -3,22 +3,18 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as LogoutImport } from './routes/logout'
-import { Route as LoginImport } from './routes/login'
+import { Route as NonauthImport } from './routes/_nonauth'
 import { Route as MdcImport } from './routes/_mdc'
-import { Route as IndexImport } from './routes/index'
+import { Route as NonauthLogoutImport } from './routes/_nonauth/logout'
+import { Route as NonauthLoginImport } from './routes/_nonauth/login'
+import { Route as NonauthHomeImport } from './routes/_nonauth/home'
 import { Route as MdcCollectionsImport } from './routes/_mdc/collections'
-import { Route as MdcCollectionsCollectionIdImport } from './routes/_mdc/collections.$collectionId'
+import { Route as MdcCollectionsCollectionIdImport } from './routes/_mdc/collections_.$collectionId'
 
 // Create/Update Routes
 
-const LogoutRoute = LogoutImport.update({
-  path: '/logout',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const LoginRoute = LoginImport.update({
-  path: '/login',
+const NonauthRoute = NonauthImport.update({
+  id: '/_nonauth',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -27,9 +23,19 @@ const MdcRoute = MdcImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
-  path: '/',
-  getParentRoute: () => rootRoute,
+const NonauthLogoutRoute = NonauthLogoutImport.update({
+  path: '/logout',
+  getParentRoute: () => NonauthRoute,
+} as any)
+
+const NonauthLoginRoute = NonauthLoginImport.update({
+  path: '/login',
+  getParentRoute: () => NonauthRoute,
+} as any)
+
+const NonauthHomeRoute = NonauthHomeImport.update({
+  path: '/home',
+  getParentRoute: () => NonauthRoute,
 } as any)
 
 const MdcCollectionsRoute = MdcCollectionsImport.update({
@@ -39,8 +45,8 @@ const MdcCollectionsRoute = MdcCollectionsImport.update({
 
 const MdcCollectionsCollectionIdRoute = MdcCollectionsCollectionIdImport.update(
   {
-    path: '/$collectionId',
-    getParentRoute: () => MdcCollectionsRoute,
+    path: '/collections/$collectionId',
+    getParentRoute: () => MdcRoute,
   } as any,
 )
 
@@ -48,29 +54,33 @@ const MdcCollectionsCollectionIdRoute = MdcCollectionsCollectionIdImport.update(
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
     '/_mdc': {
       preLoaderRoute: typeof MdcImport
       parentRoute: typeof rootRoute
     }
-    '/login': {
-      preLoaderRoute: typeof LoginImport
-      parentRoute: typeof rootRoute
-    }
-    '/logout': {
-      preLoaderRoute: typeof LogoutImport
+    '/_nonauth': {
+      preLoaderRoute: typeof NonauthImport
       parentRoute: typeof rootRoute
     }
     '/_mdc/collections': {
       preLoaderRoute: typeof MdcCollectionsImport
       parentRoute: typeof MdcImport
     }
+    '/_nonauth/home': {
+      preLoaderRoute: typeof NonauthHomeImport
+      parentRoute: typeof NonauthImport
+    }
+    '/_nonauth/login': {
+      preLoaderRoute: typeof NonauthLoginImport
+      parentRoute: typeof NonauthImport
+    }
+    '/_nonauth/logout': {
+      preLoaderRoute: typeof NonauthLogoutImport
+      parentRoute: typeof NonauthImport
+    }
     '/_mdc/collections/$collectionId': {
       preLoaderRoute: typeof MdcCollectionsCollectionIdImport
-      parentRoute: typeof MdcCollectionsImport
+      parentRoute: typeof MdcImport
     }
   }
 }
@@ -78,10 +88,10 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  IndexRoute,
-  MdcRoute.addChildren([
-    MdcCollectionsRoute.addChildren([MdcCollectionsCollectionIdRoute]),
+  MdcRoute.addChildren([MdcCollectionsRoute, MdcCollectionsCollectionIdRoute]),
+  NonauthRoute.addChildren([
+    NonauthHomeRoute,
+    NonauthLoginRoute,
+    NonauthLogoutRoute,
   ]),
-  LoginRoute,
-  LogoutRoute,
 ])

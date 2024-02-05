@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { DeleteDisc } from "../../httpverbs/DeleteDisc";
 import { PostBarcode } from "../../httpverbs/PostBarcode";
-import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionQueryOptions } from "../../utilities/Queries";
 import { ICollectionHydrated, IDisc } from "../../Interfaces";
+import { DiscListItem } from "../../components/DiscListItem";
+import { List } from "@mui/joy";
 
 export const Route = createFileRoute('/_mdc/collections/$collectionId')({
     component: Collection
@@ -71,18 +72,16 @@ function Collection()
                 labelText="Barcode"
                 onSubmit={async (barcode) => await newDiscMutation.mutate(barcode)}
             />
-            <div>
+            <List>
                 {collection.discs.map((disc: IDisc, idx: number) => (
-                    <div key={disc._id}>
-                        Disc {idx + 1}: Barcode: {disc.referenceDVD.barcode}, {disc.referenceDVD.title}
-                        {` `}
-                        <StateChangingButton
-                            text={"Delete..."}
-                            onSubmit={async () => await deleteDiscMutation.mutate(disc._id)}
-                        />
-                    </div>
+                    <DiscListItem
+                        key={disc._id}
+                        title={disc.referenceDVD.title}
+                        barcode={disc.referenceDVD.barcode}
+                        discId={disc._id}
+                        deleteFn={async () => await deleteDiscMutation.mutate(disc._id)} />
                 ))}
-            </div >
+            </List>
         </>
     )
 }

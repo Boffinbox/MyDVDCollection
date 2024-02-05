@@ -1,5 +1,13 @@
 {
   "compilerOptions": {
+    "paths": {
+      "@mui/material": [
+        "./node_modules/@mui/joy"
+      ],
+      "react": [
+        "./node_modules/@types/react"
+      ]
+    },
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": [

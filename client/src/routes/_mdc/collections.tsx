@@ -1,14 +1,16 @@
-import { Link, Outlet, createFileRoute } from "@tanstack/react-router"
+import { Outlet, createFileRoute } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { DeleteCollection } from "../../httpverbs/DeleteCollection";
 import { PostCollection } from "../../httpverbs/PostCollection";
 
-import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";
 
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries"
 import { ICollection } from "../../Interfaces";
+
+import { Divider, Stack } from "@mui/joy"
+import { CollectionCard } from "../../components/CollectionCard";
 
 export const Route = createFileRoute('/_mdc/collections')({
     component: Collections
@@ -48,33 +50,26 @@ function Collections()
     return (
         <>
             <h2>Collections {collectionsQuery.isFetching ? <span style={{ fontSize: "small" }}>Fetching...</span> : null}</h2>
+            <Divider />
             <SingleLineForm
                 submitButtonText="Submit!"
                 labelText="Title"
                 onSubmit={async (title) => await newCollectionMutation.mutate(title)}
             />
-            <div>
-                <p>{` `}</p>
+            <Divider />
+            <Stack
+                spacing={2}
+            >
                 {collections.map((coll) => (
-                    <div key={coll._id}>
-                        <Link
-                            to="/collections/$collectionId"
-                            params={{
-                                collectionId: coll._id
-                            }}
-                        >
-                            Click to load the "{coll.title} collection".
-                        </Link>
-                        {` `}
-                        <StateChangingButton
-                            text={"Delete..."}
-                            onSubmit={async () => await deleteCollectionMutation.mutate(coll._id)}
-                        />
-                    </div>
+                    <CollectionCard
+                        key={coll._id}
+                        title={coll.title}
+                        collId={coll._id}
+                        deleteFn={async () => await deleteCollectionMutation.mutate(coll._id)}
+                    >
+                    </CollectionCard>
                 ))}
-                <hr />
-                <Outlet />
-            </div>
+            </Stack>
         </>
     )
 }

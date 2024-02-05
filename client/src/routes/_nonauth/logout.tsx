@@ -1,9 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { PostLogout } from "../httpverbs/PostLogout";
-import { Wait } from "../utilities/Wait";
-import { GetAccessToken } from "../httpverbs/GetAccessToken";
+import { PostLogout } from "../../httpverbs/PostLogout";
+import { Wait } from "../../utilities/Wait";
+import { GetAccessToken } from "../../httpverbs/GetAccessToken";
 
-export const Route = createFileRoute('/logout')({
+export const Route = createFileRoute('/_nonauth/logout')({
     beforeLoad: async ({ context: { queryClient } }) =>
     {
         let token: string | undefined = await queryClient.getQueryData(["accesstoken"])
@@ -35,7 +35,7 @@ function Logout()
     const navigate = useNavigate();
 
     // this is just a fake delay to make the user feel good
-    Wait(1000).then(() => navigate({ to: "/" }))
+    Wait(1000).then(() => navigate({ to: "/home" }))
 
     return (
         <>
