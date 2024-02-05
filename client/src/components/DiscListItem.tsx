@@ -30,19 +30,15 @@ export function DiscListItem(
 {
     return (
         <>
-            <ListItem
-                sx={{
-                    px: "0"
-                }}
-            >
-                <ListItemButton>
+            <ListItem>
+                <ListItemButton sx={{ px: 0 }}>
                     <ListItemDecorator sx={{ mx: "auto" }}>
                         <AspectRatio ratio="135 / 190" flex>
                             <img src="/dev/dvd.jpg" />
                         </AspectRatio>
                     </ListItemDecorator>
                     <ListItemContent>
-                        <Typography level="title-sm">
+                        <Typography level="title-sm" noWrap>
                             {title}
                         </Typography>
                         <Typography level="body-sm" noWrap>

@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { DeleteDisc } from "../../httpverbs/DeleteDisc";
 import { PostBarcode } from "../../httpverbs/PostBarcode";
-import { StateChangingButton } from "../../components/StateChangingButton";
 import { SingleLineForm } from "../../components/SingleLineForm";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionQueryOptions } from "../../utilities/Queries";
@@ -73,11 +72,7 @@ function Collection()
                 labelText="Barcode"
                 onSubmit={async (barcode) => await newDiscMutation.mutate(barcode)}
             />
-            <List
-                sx={{
-                    '--ListItemDecorator-size': '10vw',
-                }}
-            >
+            <List>
                 {collection.discs.map((disc: IDisc, idx: number) => (
                     <DiscListItem
                         key={disc._id}

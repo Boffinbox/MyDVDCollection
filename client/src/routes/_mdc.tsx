@@ -36,72 +36,31 @@ function MDCComponent()
             <Sheet
                 sx={{
                     mx: 2,
-                    my: 2,
+                    mt: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    overflow: "scroll"
                 }}>
-                <Typography
-                    sx={{
-                        backgroundColor: "rebeccapurple",
-                        color: 'orange',
-                        fontSize: "small",
-                        fontWeight: 100,
-                        wordBreak: "break-all"
-                    }}>
-                    Current token is: {token}
-                </Typography>
-                <Sheet
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                    }}>
+                {tokenQuery.isLoading ?
                     <Sheet
                         sx={{
                             display: "flex",
                             flexDirection: "column",
+                            alignItems: "center",
                             justifyContent: "center",
-                            height: 1,
-                            gap: 0.5,
+                            height: "100%",
+                            gap: 2,
                         }}>
-                        {tokenQuery.isLoading ?
-                            <Sheet
-                                sx={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    height: "100%",
-                                    gap: 2,
-                                }}>
-                                <Typography
-                                    level="h1"
-                                >
-                                    Loading...
-                                </Typography>
-                            </Sheet>
-                            :
-                            <>
-                                <Sheet sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                }}>
-                                    <ButtonGroup variant="plain">
-                                        <RouterLink to="/">
-                                            <Button>Home</Button>
-                                        </RouterLink>{` `}
-                                        <RouterLink to="/logout">
-                                            <Button>Logout</Button>
-                                        </RouterLink>{` `}
-                                        <RouterLink to="/collections">
-                                            <Button>Collections</Button>
-                                        </RouterLink>
-                                    </ButtonGroup>
-                                    <DarkModeToggle />
-                                </Sheet>
-                                <Divider />
-                                <Outlet />
-                            </>}
+                        <Typography
+                            level="h1"
+                        >
+                            Loading...
+                        </Typography>
                     </Sheet>
-                </Sheet >
+                    :
+                    <Outlet />
+                }
             </Sheet>
         </>
     )

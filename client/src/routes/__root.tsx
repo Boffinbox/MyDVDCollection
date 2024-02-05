@@ -5,7 +5,7 @@ import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
-import { CssBaseline, Sheet } from '@mui/joy';
+import { CssBaseline, Sheet, Typography } from '@mui/joy';
 
 export const Route = createRootRouteWithContext<{
     queryClient: QueryClient
@@ -39,12 +39,17 @@ function App()
                         my: "auto",
                         display: 'flex',
                         flexDirection: 'column',
+                        justifyContent: "space-between",
                         gap: 0,
+                        height: "100vh",
                         // debug color breakpoints
-                        // backgroundColor: { xs: "pink", sm: "lightgreen", md: "lightblue" },
+                        backgroundColor: { xs: "pink", sm: "lightgreen", md: "lightblue" },
                     }}
                 >
                     <Outlet />
+                    <Typography sx={{ backgroundColor: "orange" }}>appbar goes here</Typography>
+                    <Typography sx={{ backgroundColor: "orange" }}>appbar goes here</Typography>
+                    <Typography sx={{ backgroundColor: "orange" }}>appbar goes here</Typography>
                 </Sheet>
             </CssBaseline>
         </CssVarsProvider>

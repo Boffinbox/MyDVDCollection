@@ -70,8 +70,6 @@ function Collections()
                     </CollectionCard>
                 ))}
             </Stack>
-            <Divider />
-            <Outlet />
         </>
     )
 }
