@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { AccessTokenQueryOptions } from '../utilities/Queries';
 
-import { Sheet, Typography, ButtonGroup, Button, Link, Divider } from "@mui/joy"
+import { Sheet, Typography, ButtonGroup, Button, Link } from "@mui/joy"
 import { DarkModeToggle } from '../components/DarkModeToggle';
 
 export const Route = createFileRoute('/_mdc')({
@@ -17,7 +17,7 @@ export const Route = createFileRoute('/_mdc')({
 function MDCComponent()
 {
     const tokenQuery = useQuery(AccessTokenQueryOptions())
-    const token: string | undefined = tokenQuery.data;
+    // const token: string | undefined = tokenQuery.data;
 
     if (tokenQuery.status === "error") return (
         <>
@@ -35,19 +35,50 @@ function MDCComponent()
         <>
             <Sheet
                 sx={{
-                    mx: 2,
-                    mt: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: "100%",
-                    overflow: "scroll"
-                }}>
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: "space-between",
+                    gap: 0,
+                    height: "100vh",
+                }}
+            >
+                <Sheet
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "100%",
+                        overflow: "scroll"
+                    }}>
+                    {tokenQuery.isLoading ?
+                        <Sheet
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: "100%",
+                                gap: 2,
+                            }}>
+                            <Typography
+                                level="h1"
+                            >
+                                Loading...
+                            </Typography>
+                        </Sheet>
+                        :
+                        <Sheet sx={{ mx: 2 }}>
+                            <Outlet />
+                        </Sheet>
+                    }
+                </Sheet>
+                // fake app bar //
                 <Sheet sx={{
                     display: "flex",
                     justifyContent: "space-between",
+                    backgroundColor: "darkorange"
                 }}>
                     <ButtonGroup variant="plain">
-                        <RouterLink to="/">
+                        <RouterLink to="/home">
                             <Button>Home</Button>
                         </RouterLink>{` `}
                         <RouterLink to="/logout">
@@ -59,26 +90,8 @@ function MDCComponent()
                     </ButtonGroup>
                     <DarkModeToggle />
                 </Sheet>
-                {tokenQuery.isLoading ?
-                    <Sheet
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            height: "100%",
-                            gap: 2,
-                        }}>
-                        <Typography
-                            level="h1"
-                        >
-                            Loading...
-                        </Typography>
-                    </Sheet>
-                    :
-                    <Outlet />
-                }
             </Sheet>
+
         </>
     )
 }
