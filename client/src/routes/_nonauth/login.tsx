@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { createFileRoute, Link as RouterLink, useNavigate } from "@tanstack/react-router";
-import { PostLogin } from "../httpverbs/PostLogin";
+import { PostLogin } from "../../httpverbs/PostLogin";
 
 import { Sheet, FormControl, FormLabel, Input, Button, Typography, Link } from "@mui/joy"
-import { DarkModeToggle } from "../components/DarkModeToggle"
+import { DarkModeToggle } from "../../components/DarkModeToggle"
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute('/_nonauth/login')({
     component: LoginComponent
 })
 
@@ -93,7 +93,7 @@ function LoginComponent()
                     </form>
                     <Typography
                         endDecorator={
-                            <RouterLink to="/">
+                            <RouterLink to="/home">
                                 <Link disabled sx={{ textDecoration: "line-through" }}>Sign up</Link>
                             </RouterLink>}
                         fontSize="sm"

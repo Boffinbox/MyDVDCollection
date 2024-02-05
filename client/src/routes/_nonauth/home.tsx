@@ -1,20 +1,20 @@
 import { createFileRoute, Link as RouterLink } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 
-import { AccessTokenQueryOptions } from "../utilities/Queries"
+import { AccessTokenQueryOptions } from "../../utilities/Queries"
 
 import { Sheet, Typography, Link } from '@mui/joy';
-import { DarkModeToggle } from "../components/DarkModeToggle";
+import { DarkModeToggle } from "../../components/DarkModeToggle";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute('/_nonauth/home')({
     beforeLoad: async ({ context: { queryClient } }) =>
     {
         queryClient.ensureQueryData(AccessTokenQueryOptions())
     },
-    component: Index
+    component: Home
 })
 
-function Index()
+function Home()
 {
     const tokenQuery = useQuery(AccessTokenQueryOptions())
 

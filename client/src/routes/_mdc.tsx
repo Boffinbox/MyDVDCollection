@@ -42,6 +42,23 @@ function MDCComponent()
                     height: "100%",
                     overflow: "scroll"
                 }}>
+                <Sheet sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                }}>
+                    <ButtonGroup variant="plain">
+                        <RouterLink to="/">
+                            <Button>Home</Button>
+                        </RouterLink>{` `}
+                        <RouterLink to="/logout">
+                            <Button>Logout</Button>
+                        </RouterLink>{` `}
+                        <RouterLink to="/collections">
+                            <Button>Collections</Button>
+                        </RouterLink>
+                    </ButtonGroup>
+                    <DarkModeToggle />
+                </Sheet>
                 {tokenQuery.isLoading ?
                     <Sheet
                         sx={{
