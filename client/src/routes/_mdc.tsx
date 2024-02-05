@@ -71,26 +71,23 @@ function MDCComponent()
                         </Sheet>
                     }
                 </Sheet>
-                // fake app bar //
-                <Sheet sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    backgroundColor: "darkorange"
-                }}>
-                    <ButtonGroup variant="plain">
-                        <RouterLink to="/home">
-                            <Button>Home</Button>
-                        </RouterLink>{` `}
-                        <RouterLink to="/logout">
-                            <Button>Logout</Button>
-                        </RouterLink>{` `}
-                        <RouterLink to="/collections">
-                            <Button>Collections</Button>
-                        </RouterLink>
-                    </ButtonGroup>
+                <ButtonGroup
+                    variant="plain"
+                    buttonFlex={1}
+                    size="lg"
+                >
+                    <RouterLink to="/home">
+                        <Button>Home</Button>
+                    </RouterLink>{` `}
+                    <RouterLink to="/collections">
+                        <Button>Collections</Button>
+                    </RouterLink>
+                    <RouterLink to="/logout">
+                        <Button>Logout</Button>
+                    </RouterLink>{` `}
                     <DarkModeToggle />
-                </Sheet>
-            </Sheet>
+                </ButtonGroup>
+            </Sheet >
 
         </>
     )
