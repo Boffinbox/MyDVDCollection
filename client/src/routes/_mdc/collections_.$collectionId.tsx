@@ -6,6 +6,8 @@ import { SingleLineForm } from "../../components/SingleLineForm";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionQueryOptions } from "../../utilities/Queries";
 import { ICollectionHydrated, IDisc } from "../../Interfaces";
+import { DiscListItem } from "../../components/DiscListItem";
+import { List } from "@mui/joy";
 
 export const Route = createFileRoute('/_mdc/collections/$collectionId')({
     component: Collection
@@ -71,6 +73,16 @@ function Collection()
                 labelText="Barcode"
                 onSubmit={async (barcode) => await newDiscMutation.mutate(barcode)}
             />
+            <List
+                sx={{
+                    '--ListItemDecorator-size': '10vw',
+                }}
+            >
+                <DiscListItem />
+                <DiscListItem />
+                <DiscListItem />
+                <DiscListItem />
+            </List>
             <div>
                 {collection.discs.map((disc: IDisc, idx: number) => (
                     <div key={disc._id}>
