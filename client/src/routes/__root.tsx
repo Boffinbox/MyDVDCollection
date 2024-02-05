@@ -35,14 +35,12 @@ function App()
                     variant='plain'
                     sx={{
                         width: { md: 900 },
-                        height: "100vh",
                         mx: "auto",
                         my: "auto",
-                        py: 2, // padding top & bottom
-                        px: 2, // padding left & right
                         display: 'flex',
                         flexDirection: 'column',
                         gap: 0,
+                        // debug color breakpoints
                         // backgroundColor: { xs: "pink", sm: "lightgreen", md: "lightblue" },
                     }}
                 >

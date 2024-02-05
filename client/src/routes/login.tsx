@@ -53,7 +53,9 @@ function LoginComponent()
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    height: "100%"
+                    height: "100vh",
+                    py: 2, // padding top & bottom
+                    px: 2, // padding left & right
                 }}>
                 <Sheet sx={{ alignSelf: "start" }}>
                     <DarkModeToggle />

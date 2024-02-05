@@ -26,7 +26,9 @@ function Index()
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    height: "100%"
+                    height: "100vh",
+                    px: 2,
+                    py: 2
                 }}>
                 <Sheet sx={{ alignSelf: "start" }}>
                     <DarkModeToggle />
