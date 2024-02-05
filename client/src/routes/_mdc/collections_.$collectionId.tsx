@@ -78,23 +78,15 @@ function Collection()
                     '--ListItemDecorator-size': '10vw',
                 }}
             >
-                <DiscListItem />
-                <DiscListItem />
-                <DiscListItem />
-                <DiscListItem />
-            </List>
-            <div>
                 {collection.discs.map((disc: IDisc, idx: number) => (
-                    <div key={disc._id}>
-                        Disc {idx + 1}: Barcode: {disc.referenceDVD.barcode}, {disc.referenceDVD.title}
-                        {` `}
-                        <StateChangingButton
-                            text={"Delete..."}
-                            onSubmit={async () => await deleteDiscMutation.mutate(disc._id)}
-                        />
-                    </div>
+                    <DiscListItem
+                        key={disc._id}
+                        title={disc.referenceDVD.title}
+                        barcode={disc.referenceDVD.barcode}
+                        discId={disc._id}
+                        deleteFn={async () => await deleteDiscMutation.mutate(disc._id)} />
                 ))}
-            </div >
+            </List>
         </>
     )
 }

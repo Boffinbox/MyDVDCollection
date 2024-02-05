@@ -15,8 +15,18 @@ import
 
 import { MoreVert } from "@mui/icons-material"
 
-
-export function DiscListItem()
+export function DiscListItem(
+    {
+        title = "notitle",
+        barcode = "0000000000000",
+        discId,
+        deleteFn
+    }: {
+        title: string,
+        barcode: string,
+        discId: string,
+        deleteFn: (...args: any[]) => void,
+    })
 {
     return (
         <>
@@ -33,14 +43,10 @@ export function DiscListItem()
                     </ListItemDecorator>
                     <ListItemContent>
                         <Typography level="title-sm">
-                            Disc Title
+                            {title}
                         </Typography>
                         <Typography level="body-sm" noWrap>
-                            Disc Text Description
-                            Disc Text Description
-                            Disc Text Description
-                            Disc Text Description
-                            Disc Text Description
+                            Barcode: {barcode}
                         </Typography>
                     </ListItemContent>
                     <Dropdown>
@@ -48,9 +54,7 @@ export function DiscListItem()
                             <MoreVert />
                         </MenuButton>
                         <Menu>
-                            <MenuItem>Fake Action 1</MenuItem>
-                            <MenuItem>Fake Action 2</MenuItem>
-                            <MenuItem>Fake Action 3</MenuItem>
+                            <MenuItem onClick={deleteFn}>Delete</MenuItem>
                         </Menu>
                     </Dropdown>
                 </ListItemButton>
