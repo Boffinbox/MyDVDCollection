@@ -57,9 +57,6 @@ function LoginComponent()
                     py: 2, // padding top & bottom
                     px: 2, // padding left & right
                 }}>
-                <Sheet sx={{ alignSelf: "start" }}>
-                    <DarkModeToggle />
-                </Sheet>
                 <Sheet
                     sx={{
                         width: "100%",

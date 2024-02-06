@@ -30,9 +30,6 @@ function Home()
                     px: 2,
                     py: 2
                 }}>
-                <Sheet sx={{ alignSelf: "start" }}>
-                    <DarkModeToggle />
-                </Sheet>
                 <Sheet
                     sx={{
                         display: "flex",

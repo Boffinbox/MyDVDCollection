@@ -1,10 +1,8 @@
-import { createFileRoute, Outlet, Link as RouterLink } from '@tanstack/react-router'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 import { AccessTokenQueryOptions } from '../utilities/Queries';
 
-import { Button, ButtonGroup, Sheet } from '@mui/joy';
-import HomeIcon from '@mui/icons-material/Home';
-import { DarkModeToggle } from '../components/DarkModeToggle';
+import { Sheet } from '@mui/joy';
 import { Appbar } from '../components/Appbar';
 
 export const Route = createFileRoute('/_nonauth')({
