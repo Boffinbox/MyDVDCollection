@@ -89,9 +89,12 @@ function LoginComponent()
                     </form>
                     <Typography
                         endDecorator={
-                            <RouterLink to="/home">
-                                <Link disabled sx={{ textDecoration: "line-through" }}>Sign up</Link>
-                            </RouterLink>}
+                            <Link
+                                disabled
+                                sx={{ textDecoration: "line-through" }}
+                                component={RouterLink}
+                                to="/home"
+                            >Sign up</Link>}
                         fontSize="sm"
                         sx={{ alignSelf: 'center' }}
                     >
