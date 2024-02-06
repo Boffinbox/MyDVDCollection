@@ -17,8 +17,6 @@ function Home()
 {
     const tokenQuery = useQuery(AccessTokenQueryOptions())
 
-    const navigate = useNavigate();
-
     return (
         <>
             <Sheet
