@@ -22,33 +22,46 @@ export function Appbar()
                 <ButtonGroup
                     buttonFlex={1}
                     variant="plain"
-                    size="sm"
+                    size="lg"
                 >
                     <RouterLink to="/home" activeOptions={{ exact: true }}>
                         {({ isActive }) =>
                         {
                             return (
                                 <Button
-                                    sx={{ height: "10vh", width: "25vw" }}
+                                    sx={{
+                                        height: "10vh",
+                                        width: "25vw",
+                                        display: "flex",
+                                        justifyContent: "space-evenly"
+                                    }}
                                     disabled={!isActive}
-                                    endDecorator={"Home"}
                                 >
                                     <HomeIcon />
+                                    <Typography sx={{ display: { xs: "none", sm: "block" } }}>
+                                        Home
+                                    </Typography>
                                 </Button>
                             )
                         }}
-
-                    </RouterLink>{` `}
+                    </RouterLink>
                     <RouterLink to="/collections">
                         {({ isActive }) =>
                         {
                             return (
                                 <Button
-                                    sx={{ height: "10vh", width: "25vw" }}
+                                    sx={{
+                                        height: "10vh",
+                                        width: "25vw",
+                                        display: "flex",
+                                        justifyContent: "space-evenly"
+                                    }}
                                     disabled={!isActive}
-                                    endDecorator={"Collections"}
                                 >
                                     <VideoLibraryIcon />
+                                    <Typography sx={{ display: { xs: "none", sm: "block" } }}>
+                                        Collections
+                                    </Typography>
                                 </Button>
                             )
                         }}
@@ -58,25 +71,47 @@ export function Appbar()
                         {
                             return (
                                 <Button
-                                    sx={{ height: "10vh", width: "25vw" }}
+                                    sx={{
+                                        height: "10vh",
+                                        width: "25vw",
+                                        display: "flex",
+                                        justifyContent: "space-evenly"
+                                    }}
                                     disabled={!isActive}
-                                    endDecorator={"Login"}
                                 >
                                     <LoginIcon />
+                                    <Typography sx={{ display: { xs: "none", sm: "block" } }}>
+                                        Login
+                                    </Typography>
                                 </Button>
                             )
                         }}
-                    </RouterLink>{` `}
+                    </RouterLink>
                     <Sheet>
                         <Button
-                            sx={{ height: "10vh", width: "25vw" }}
+                            sx={{
+                                height: "10vh",
+                                width: "25vw",
+                                display: "flex",
+                                justifyContent: "space-evenly"
+                            }}
                             onClick={() =>
                             {
                                 setMode(mode === "light" ? "dark" : "light")
                             }}
-                            endDecorator={mode === "light" ? "Turn dark" : "Turn light"}
                         >
-                            {mode === "light" ? <DarkModeIcon /> : <LightModeIcon />}
+                            {mode === "light" ?
+                                <>
+                                    <DarkModeIcon />
+                                    <Typography sx={{ display: { xs: "none", sm: "block" } }}>
+                                        Turn dark
+                                    </Typography>
+                                </> : <>
+                                    <LightModeIcon />
+                                    <Typography sx={{ display: { xs: "none", sm: "block" } }}>
+                                        Turn light
+                                    </Typography>
+                                </>}
                         </Button>
                     </Sheet>
                 </ButtonGroup>
