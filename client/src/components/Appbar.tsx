@@ -1,4 +1,4 @@
-import { Link as RouterLink } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 
 import { ButtonGroup, Button, useColorScheme, Divider, Sheet, Typography } from "@mui/joy"
 
@@ -12,6 +12,8 @@ export function Appbar()
 {
     const { mode, setMode } = useColorScheme();
 
+    const navigate = useNavigate();
+
     return (
         <>
             <Sheet
@@ -24,96 +26,73 @@ export function Appbar()
                     variant="plain"
                     size="lg"
                 >
-                    <RouterLink to="/home" activeOptions={{ exact: true }}>
-                        {({ isActive }) =>
-                        {
-                            return (
-                                <Button
-                                    sx={{
-                                        height: "10vh",
-                                        width: "25vw",
-                                        display: "flex",
-                                        justifyContent: "space-evenly"
-                                    }}
-                                    disabled={!isActive}
-                                >
-                                    <HomeIcon />
-                                    <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                                        Home
-                                    </Typography>
-                                </Button>
-                            )
+                    <Button
+                        sx={{
+                            height: "10vh",
+                            width: "25vw",
+                            display: "flex",
+                            justifyContent: "space-evenly"
                         }}
-                    </RouterLink>
-                    <RouterLink to="/collections">
-                        {({ isActive }) =>
-                        {
-                            return (
-                                <Button
-                                    sx={{
-                                        height: "10vh",
-                                        width: "25vw",
-                                        display: "flex",
-                                        justifyContent: "space-evenly"
-                                    }}
-                                    disabled={!isActive}
-                                >
-                                    <VideoLibraryIcon />
-                                    <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                                        Collections
-                                    </Typography>
-                                </Button>
-                            )
+                        onClick={() => navigate({ to: "/home" })}
+                    >
+                        <HomeIcon />
+                        <Typography sx={{ display: { xs: "none", sm: "block" } }}>
+                            Home
+                        </Typography>
+                    </Button>
+                    <Button
+                        sx={{
+                            height: "10vh",
+                            width: "25vw",
+                            display: "flex",
+                            justifyContent: "space-evenly"
                         }}
-                    </RouterLink>
-                    <RouterLink to="/login">
-                        {({ isActive }) =>
-                        {
-                            return (
-                                <Button
-                                    sx={{
-                                        height: "10vh",
-                                        width: "25vw",
-                                        display: "flex",
-                                        justifyContent: "space-evenly"
-                                    }}
-                                    disabled={!isActive}
-                                >
-                                    <LoginIcon />
-                                    <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                                        Login
-                                    </Typography>
-                                </Button>
-                            )
+                        onClick={() => navigate({ to: "/collections" })}
+                    >
+                        <VideoLibraryIcon />
+                        <Typography sx={{ display: { xs: "none", sm: "block" } }}>
+                            Collections
+                        </Typography>
+                    </Button>
+                    <Button
+                        sx={{
+                            height: "10vh",
+                            width: "25vw",
+                            display: "flex",
+                            justifyContent: "space-evenly"
                         }}
-                    </RouterLink>
-                    <Sheet>
-                        <Button
-                            sx={{
-                                height: "10vh",
-                                width: "25vw",
-                                display: "flex",
-                                justifyContent: "space-evenly"
-                            }}
-                            onClick={() =>
-                            {
-                                setMode(mode === "light" ? "dark" : "light")
-                            }}
-                        >
-                            {mode === "light" ?
-                                <>
-                                    <DarkModeIcon />
-                                    <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                                        Turn dark
-                                    </Typography>
-                                </> : <>
-                                    <LightModeIcon />
-                                    <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                                        Turn light
-                                    </Typography>
-                                </>}
-                        </Button>
-                    </Sheet>
+                        onClick={() => navigate({ to: "/login" })}
+                    >
+                        <LoginIcon />
+                        <Typography sx={{ display: { xs: "none", sm: "block" } }}>
+                            Login
+                        </Typography>
+                    </Button>
+                    <Button
+                        sx={{
+                            height: "10vh",
+                            width: "25vw",
+                            display: "flex",
+                            justifyContent: "space-evenly"
+                        }}
+                        onClick={() =>
+                        {
+                            setMode(mode === "light" ? "dark" : "light")
+                        }}
+                    >
+                        {mode === "light" ?
+                            <>
+                                <DarkModeIcon />
+                                <Typography sx={{ display: { xs: "none", sm: "block" } }}>
+                                    Turn dark
+                                </Typography>
+                            </> : <>
+                                <LightModeIcon />
+                                <Typography sx={{ display: { xs: "none", sm: "block" } }}>
+                                    Turn light
+                                </Typography>
+                            </>}
+                    </Button>
                 </ButtonGroup>
             </Sheet>
         </>
