@@ -5,6 +5,7 @@ import { AccessTokenQueryOptions } from '../utilities/Queries';
 
 import { Sheet, Typography, ButtonGroup, Button, Link } from "@mui/joy"
 import { DarkModeToggle } from '../components/DarkModeToggle';
+import { Appbar } from '../components/Appbar';
 
 export const Route = createFileRoute('/_mdc')({
     beforeLoad: async ({ context: { queryClient } }) =>
@@ -71,24 +72,8 @@ function MDCComponent()
                         </Sheet>
                     }
                 </Sheet>
-                <ButtonGroup
-                    variant="plain"
-                    buttonFlex={1}
-                    size="lg"
-                >
-                    <RouterLink to="/home">
-                        <Button>Home</Button>
-                    </RouterLink>{` `}
-                    <RouterLink to="/collections">
-                        <Button>Collections</Button>
-                    </RouterLink>
-                    <RouterLink to="/logout">
-                        <Button>Logout</Button>
-                    </RouterLink>{` `}
-                    <DarkModeToggle />
-                </ButtonGroup>
+                <Appbar />
             </Sheet >
-
         </>
     )
 }

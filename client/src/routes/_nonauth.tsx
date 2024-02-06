@@ -3,7 +3,9 @@ import { createFileRoute, Outlet, Link as RouterLink } from '@tanstack/react-rou
 import { AccessTokenQueryOptions } from '../utilities/Queries';
 
 import { Button, ButtonGroup, Sheet } from '@mui/joy';
+import HomeIcon from '@mui/icons-material/Home';
 import { DarkModeToggle } from '../components/DarkModeToggle';
+import { Appbar } from '../components/Appbar';
 
 export const Route = createFileRoute('/_nonauth')({
     beforeLoad: async ({ context: { queryClient } }) =>
@@ -27,23 +29,8 @@ function NonAuthComponent()
                 }}
             >
                 <Outlet />
-                <ButtonGroup
-                    variant="plain"
-                    buttonFlex={1}
-                    size="lg"
-                >
-                    <RouterLink to="/home">
-                        <Button>Home</Button>
-                    </RouterLink>{` `}
-                    <RouterLink to="/collections">
-                        <Button>Collections</Button>
-                    </RouterLink>
-                    <RouterLink to="/login">
-                        <Button>Login</Button>
-                    </RouterLink>{` `}
-                    <DarkModeToggle />
-                </ButtonGroup>
-            </Sheet>
+                <Appbar />
+            </Sheet >
         </>
     )
 }
