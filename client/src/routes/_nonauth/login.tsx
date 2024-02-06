@@ -2,8 +2,7 @@ import { useState } from "react";
 import { createFileRoute, Link as RouterLink, useNavigate } from "@tanstack/react-router";
 import { PostLogin } from "../../httpverbs/PostLogin";
 
-import { Sheet, FormControl, FormLabel, Input, Button, Typography, Link } from "@mui/joy"
-import { DarkModeToggle } from "../../components/DarkModeToggle"
+import { Sheet, FormControl, FormLabel, Input, Button, Typography, Link } from "@mui/joy";
 
 export const Route = createFileRoute('/_nonauth/login')({
     component: LoginComponent

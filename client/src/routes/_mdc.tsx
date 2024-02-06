@@ -3,8 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { AccessTokenQueryOptions } from '../utilities/Queries';
 
-import { Sheet, Typography, ButtonGroup, Button, Link } from "@mui/joy"
-import { DarkModeToggle } from '../components/DarkModeToggle';
+import { Sheet, Typography, Link } from "@mui/joy";
 import { Appbar } from '../components/Appbar';
 
 export const Route = createFileRoute('/_mdc')({

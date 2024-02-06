@@ -28,7 +28,7 @@ export function Appbar()
                 >
                     <Button
                         sx={{
-                            height: "10dvh",
+                            height: "8dvh",
                             width: "25dvw",
                             display: "flex",
                             justifyContent: "space-evenly"
@@ -42,7 +42,7 @@ export function Appbar()
                     </Button>
                     <Button
                         sx={{
-                            height: "10dvh",
+                            height: "8dvh",
                             width: "25dvw",
                             display: "flex",
                             justifyContent: "space-evenly"
@@ -56,7 +56,7 @@ export function Appbar()
                     </Button>
                     <Button
                         sx={{
-                            height: "10dvh",
+                            height: "8dvh",
                             width: "25dvw",
                             display: "flex",
                             justifyContent: "space-evenly"
@@ -70,7 +70,7 @@ export function Appbar()
                     </Button>
                     <Button
                         sx={{
-                            height: "10dvh",
+                            height: "8dvh",
                             width: "25dvw",
                             display: "flex",
                             justifyContent: "space-evenly"

@@ -24,13 +24,13 @@ export function CollectionCard(
                 <CardContent orientation="horizontal">
                     <div>
                         <Typography>
-                            <RouterLink
+                            <Link
+                                component={RouterLink}
+                                overlay
                                 to="/collections/$collectionId"
-                                params={{
-                                    collectionId: collId
-                                }}>
-                                <Link overlay>{title}</Link>
-                            </RouterLink>
+                                params={{ collectionId: collId }}
+                            >{title}
+                            </Link>
                         </Typography>
                         <Typography level="body-sm">
                             Collection info $TODO
