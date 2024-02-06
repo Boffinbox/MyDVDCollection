@@ -40,7 +40,7 @@ function MDCComponent()
                     flexDirection: 'column',
                     justifyContent: "space-between",
                     gap: 0,
-                    height: "100vh",
+                    height: "100dvh",
                 }}
             >
                 <Sheet

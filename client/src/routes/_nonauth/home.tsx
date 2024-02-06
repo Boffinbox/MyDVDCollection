@@ -26,7 +26,7 @@ function Home()
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    height: "100vh",
+                    height: "100dvh",
                     px: 2,
                     py: 2
                 }}>

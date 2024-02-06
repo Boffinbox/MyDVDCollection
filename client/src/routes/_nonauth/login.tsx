@@ -53,7 +53,7 @@ function LoginComponent()
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    height: "100vh",
+                    height: "100dvh",
                     py: 2, // padding top & bottom
                     px: 2, // padding left & right
                 }}>
