@@ -19,6 +19,7 @@ import
 import HomeIcon from '@mui/icons-material/Home';
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
 import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -128,6 +129,15 @@ export function Appbar()
                         <ListItemButton>Actions</ListItemButton>
                         <Divider />
                         <ListItemButton
+                            onClick={() => navigate({ to: "/logout" })}
+                        >
+                            <ListItemDecorator>
+                                <LogoutIcon />
+                            </ListItemDecorator>
+                            <Typography>Logout</Typography>
+                        </ListItemButton>
+                        <Divider />
+                        <ListItemButton
                             sx={{ fontWeight: "lg" }}
                             onClick={() =>
                             {
@@ -139,16 +149,12 @@ export function Appbar()
                                     <ListItemDecorator>
                                         <DarkModeIcon />
                                     </ListItemDecorator>
-                                    <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                                        Turn dark
-                                    </Typography>
+                                    <Typography>Dark mode</Typography>
                                 </> : <>
                                     <ListItemDecorator>
                                         <LightModeIcon />
                                     </ListItemDecorator>
-                                    <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                                        Turn light
-                                    </Typography>
+                                    <Typography>Light mode</Typography>
                                 </>}
                         </ListItemButton>
                     </List>
