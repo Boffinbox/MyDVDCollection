@@ -1,4 +1,4 @@
-import { createFileRoute, Link as RouterLink, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, Link as RouterLink } from "@tanstack/react-router"
 import { useQuery } from "@tanstack/react-query"
 
 import { AccessTokenQueryOptions } from "../../utilities/Queries"
