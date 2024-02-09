@@ -19,7 +19,7 @@ const mdcTheme = extendTheme({
         JoyInput: {
             styleOverrides: {
                 root: {
-                    borderRadius: "10px"
+                    borderRadius: "6px"
                 }
             }
         }

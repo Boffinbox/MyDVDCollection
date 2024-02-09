@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
 
 import { Divider, Select, Option, Typography, FormControl, FormLabel, FormHelperText, Stack, Button, Input } from "@mui/joy"
+import { useState } from "react";
 
 export const Route = createFileRoute('/_mdc/newform')({
     component: NewForm
@@ -19,13 +20,35 @@ function NewForm()
     const collectionsQuery = useQuery(CollectionsQueryOptions(token))
     const collections: [{ _id: string, title: string }] = collectionsQuery.data;
 
+    const [formData, setFormData] = useState({ barcode: "" })
+
+    function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
+    {
+        setFormData(currentData =>
+        {
+            return {
+                ...currentData,
+                [evt.target.name]: evt.target.value
+            }
+        })
+    }
+
     function handleSubmit(evt: React.ChangeEvent<HTMLFormElement>)
     {
         evt.preventDefault();
         const formData = new FormData(evt.currentTarget);
         const formJson = Object.fromEntries((formData as any).entries());
         console.log("collId: ", formJson.collId, " barcode: ", formJson.barcode);
+        setFormData(() => ({ barcode: "" }))
     }
+
+    if (collectionsQuery.isLoading) return <h1>Loading...</h1>
+    if (collectionsQuery.isError) return (
+        <>
+            <div>Oh no! Something went wrong...</div>
+            <pre>{JSON.stringify(collectionsQuery.error.message)}</pre>
+        </>
+    )
 
     return (
         <>
@@ -65,6 +88,8 @@ function NewForm()
                                 placeholder="Type barcode here"
                                 name="barcode"
                                 required
+                                onChange={handleChange}
+                                value={formData.barcode}
                             />
                             <FormHelperText>
                                 $TODO helper text barcode
