@@ -3,7 +3,7 @@ import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { AccessTokenQueryOptions } from '../utilities/Queries';
 
 import { Sheet } from '@mui/joy';
-import { Appbar } from '../components/Appbar';
+import { NonAuthAppbar } from '../components/NonAuthAppbar';
 
 export const Route = createFileRoute('/_nonauth')({
     beforeLoad: async ({ context: { queryClient } }) =>
@@ -27,7 +27,7 @@ function NonAuthComponent()
                 }}
             >
                 <Outlet />
-                <Appbar />
+                <NonAuthAppbar />
             </Sheet >
         </>
     )

@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { AccessTokenQueryOptions } from '../utilities/Queries';
 
 import { Sheet, Typography, Link } from "@mui/joy";
-import { Appbar } from '../components/Appbar';
+import { MdcAppbar } from '../components/MdcAppbar';
 
 export const Route = createFileRoute('/_mdc')({
     beforeLoad: async ({ context: { queryClient } }) =>
@@ -71,7 +71,7 @@ function MDCComponent()
                         </Sheet>
                     }
                 </Sheet>
-                <Appbar />
+                <MdcAppbar />
             </Sheet >
         </>
     )
