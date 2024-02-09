@@ -39,11 +39,11 @@ export function MdcAppbar()
                             display: "flex",
                             justifyContent: "space-evenly"
                         }}
-                        onClick={() => navigate({ to: "/home" })}
+                        onClick={() => navigate({ to: "/collections" })}
                     >
-                        <HomeIcon />
+                        <VideoLibraryIcon />
                         <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                            Home
+                            Collections
                         </Typography>
                     </Button>
                     <Button
@@ -51,11 +51,11 @@ export function MdcAppbar()
                             display: "flex",
                             justifyContent: "space-evenly"
                         }}
-                        onClick={() => navigate({ to: "/collections" })}
+                        onClick={() => navigate({ to: "/newform" })}
                     >
                         <VideoLibraryIcon />
                         <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                            Collections
+                            Add DVD
                         </Typography>
                     </Button>
                     <Button

@@ -46,6 +46,6 @@ function App()
             </CssBaseline>
         </CssVarsProvider>
         <ReactQueryDevtools buttonPosition='top-right' position='right' />
-        <TanStackRouterDevtools position='top-left' />
+        {/* <TanStackRouterDevtools position='top-left' /> */}
     </div >
 }

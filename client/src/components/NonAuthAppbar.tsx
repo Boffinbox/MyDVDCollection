@@ -9,7 +9,6 @@ import
     Typography,
 } from "@mui/joy"
 
-import HomeIcon from '@mui/icons-material/Home';
 import LoginIcon from '@mui/icons-material/Login';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useState } from "react";
@@ -34,18 +33,6 @@ export function NonAuthAppbar()
                     size="lg"
                     sx={{ borderRadius: 0, height: "8dvh" }}
                 >
-                    <Button
-                        sx={{
-                            display: "flex",
-                            justifyContent: "space-evenly"
-                        }}
-                        onClick={() => navigate({ to: "/home" })}
-                    >
-                        <HomeIcon />
-                        <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                            Home
-                        </Typography>
-                    </Button>
                     <Button
                         sx={{
                             display: "flex",
