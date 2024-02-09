@@ -3,8 +3,9 @@ import { createFileRoute } from "@tanstack/react-router"
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
 
-import { Divider, Select, Option, Typography, FormControl, FormLabel, FormHelperText, Stack, Button, Input } from "@mui/joy"
+import { Divider, Select, Option, Typography, FormControl, FormLabel, FormHelperText, Stack, Button, Input, Snackbar } from "@mui/joy"
 import { useState } from "react";
+import { PostBarcode } from "../../httpverbs/PostBarcode";
 
 export const Route = createFileRoute('/_mdc/newform')({
     component: NewForm
@@ -22,6 +23,9 @@ function NewForm()
 
     const [formData, setFormData] = useState({ barcode: "" })
 
+    const [snackBarState, setSnackBarState] = useState({ snackBarText: "", open: false })
+    const { open, snackBarText } = snackBarState
+
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
     {
         setFormData(currentData =>
@@ -33,13 +37,29 @@ function NewForm()
         })
     }
 
-    function handleSubmit(evt: React.ChangeEvent<HTMLFormElement>)
+    async function handleSubmit(evt: React.ChangeEvent<HTMLFormElement>)
     {
         evt.preventDefault();
         const formData = new FormData(evt.currentTarget);
         const formJson = Object.fromEntries((formData as any).entries());
         console.log("collId: ", formJson.collId, " barcode: ", formJson.barcode);
-        setFormData(() => ({ barcode: "" }))
+        try
+        {
+            await PostBarcode(token, formJson.collId, formJson.barcode)
+            setFormData(() => ({ barcode: "" }))
+            setSnackBarState(prevData =>
+            {
+                return {
+                    snackBarText: `${formJson.barcode} added to collection ${formJson.collId}`,
+                    open: true
+                }
+            })
+        }
+        catch
+        {
+            // todo disc no post
+        }
+
     }
 
     if (collectionsQuery.isLoading) return <h1>Loading...</h1>
@@ -99,6 +119,17 @@ function NewForm()
                     </Stack>
                 </form>
             </Stack>
+            <Snackbar
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                open={open}
+                color="success"
+                onClose={(event, reason) =>
+                {
+                    setSnackBarState(prevData => { return { ...prevData, open: false } })
+                }}
+            >
+                {snackBarText}
+            </Snackbar>
         </>
     )
 
