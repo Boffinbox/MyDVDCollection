@@ -1,15 +1,12 @@
 import { useNavigate } from "@tanstack/react-router"
 
-import { Drawer, List, ListItem, Divider, ListItemButton, ListItemDecorator, Typography, useColorScheme } from "@mui/joy"
+import { Drawer, List, ListItem, Divider, ListItemButton, ListItemDecorator, Typography } from "@mui/joy"
 
 import LogoutIcon from '@mui/icons-material/Logout';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
+import { DarkModeToggle } from "./DarkModeToggle";
 
 export function MdcSettingsDrawer({ open, setOpen }: { open: boolean, setOpen: (arg0: boolean) => void })
 {
-    const { mode, setMode } = useColorScheme();
-
     const navigate = useNavigate();
 
     return (
@@ -32,6 +29,7 @@ export function MdcSettingsDrawer({ open, setOpen }: { open: boolean, setOpen: (
             >
                 <ListItem>Settings</ListItem>
                 <Divider />
+                <DarkModeToggle />
                 <ListItemButton>And</ListItemButton>
                 <ListItemButton>Here's</ListItemButton>
                 <ListItemButton>Some</ListItemButton>
@@ -47,26 +45,6 @@ export function MdcSettingsDrawer({ open, setOpen }: { open: boolean, setOpen: (
                     <Typography>Logout</Typography>
                 </ListItemButton>
                 <Divider />
-                <ListItemButton
-                    sx={{ fontWeight: "lg" }}
-                    onClick={() =>
-                    {
-                        setMode(mode === "light" ? "dark" : "light")
-                    }}
-                >
-                    {mode === "light" ?
-                        <>
-                            <ListItemDecorator>
-                                <DarkModeIcon />
-                            </ListItemDecorator>
-                            <Typography>Dark mode</Typography>
-                        </> : <>
-                            <ListItemDecorator>
-                                <LightModeIcon />
-                            </ListItemDecorator>
-                            <Typography>Light mode</Typography>
-                        </>}
-                </ListItemButton>
             </List>
         </Drawer>
     )

@@ -11,7 +11,6 @@ import
 
 import HomeIcon from '@mui/icons-material/Home';
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
-import LoginIcon from '@mui/icons-material/Login';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useState } from "react";
 import { MdcSettingsDrawer } from './MdcSettingsDrawer';
@@ -57,18 +56,6 @@ export function MdcAppbar()
                         <VideoLibraryIcon />
                         <Typography sx={{ display: { xs: "none", sm: "block" } }}>
                             Collections
-                        </Typography>
-                    </Button>
-                    <Button
-                        sx={{
-                            display: "flex",
-                            justifyContent: "space-evenly"
-                        }}
-                        onClick={() => navigate({ to: "/login" })}
-                    >
-                        <LoginIcon />
-                        <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                            Login
                         </Typography>
                     </Button>
                     <Button
