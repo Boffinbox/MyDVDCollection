@@ -62,7 +62,7 @@ function NewForm()
 
     }
 
-    if (collectionsQuery.isLoading) return <h1>Loading...</h1>
+    if (collectionsQuery.isLoading) return <Typography level="h1">Loading...</Typography>
     if (collectionsQuery.isError) return (
         <>
             <div>Oh no! Something went wrong...</div>
