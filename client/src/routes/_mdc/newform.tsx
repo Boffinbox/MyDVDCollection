@@ -59,7 +59,6 @@ function NewForm()
         {
             // todo disc no post
         }
-
     }
 
     if (collectionsQuery.isLoading) return <Typography level="h1">Loading...</Typography>

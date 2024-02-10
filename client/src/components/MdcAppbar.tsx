@@ -14,10 +14,12 @@ import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useState } from "react";
 import { MdcSettingsDrawer } from './MdcSettingsDrawer';
+import { MdcQuickAddDrawer } from "./MdcQuickAddDrawer";
 
 export function MdcAppbar()
 {
-    const [open, setOpen] = useState(false);
+    const [openSettings, setOpenSettings] = useState(false);
+    const [openQuickAdd, setOpenQuickAdd] = useState(false);
 
     const navigate = useNavigate();
 
@@ -51,11 +53,12 @@ export function MdcAppbar()
                             display: "flex",
                             justifyContent: "space-evenly"
                         }}
-                        onClick={() => navigate({ to: "/newform" })}
+                        // onClick={() => navigate({ to: "/newform" })}
+                        onClick={() => { setOpenQuickAdd(true) }}
                     >
                         <AddCircleIcon />
                         <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                            Add DVD
+                            Quick Add
                         </Typography>
                     </Button>
                     <Button
@@ -63,7 +66,7 @@ export function MdcAppbar()
                             display: "flex",
                             justifyContent: "space-evenly",
                         }}
-                        onClick={() => { setOpen(true) }}
+                        onClick={() => { setOpenSettings(true) }}
                     >
                         <SettingsIcon />
                         <Typography sx={{ display: { xs: "none", sm: "block" } }}>
@@ -71,7 +74,8 @@ export function MdcAppbar()
                         </Typography>
                     </Button>
                 </ButtonGroup>
-                <MdcSettingsDrawer open={open} setOpen={setOpen} />
+                <MdcQuickAddDrawer open={openQuickAdd} setOpen={setOpenQuickAdd} />
+                <MdcSettingsDrawer open={openSettings} setOpen={setOpenSettings} />
             </Sheet >
         </>
     )

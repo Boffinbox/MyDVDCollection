@@ -1,7 +1,7 @@
 import { createFileRoute, Link as RouterLink, Outlet } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query';
 
-import { AccessTokenQueryOptions } from '../utilities/Queries';
+import { AccessTokenQueryOptions, CollectionsQueryOptions } from '../utilities/Queries';
 
 import { Sheet, Typography, Link } from "@mui/joy";
 import { MdcAppbar } from '../components/MdcAppbar';
@@ -9,7 +9,8 @@ import { MdcAppbar } from '../components/MdcAppbar';
 export const Route = createFileRoute('/_mdc')({
     beforeLoad: async ({ context: { queryClient } }) =>
     {
-        queryClient.ensureQueryData(AccessTokenQueryOptions())
+        const data = await queryClient.ensureQueryData(AccessTokenQueryOptions())
+        await queryClient.ensureQueryData(CollectionsQueryOptions(data))
     },
     component: MDCComponent
 })
