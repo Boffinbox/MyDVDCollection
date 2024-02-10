@@ -9,7 +9,7 @@ import
     Typography,
 } from "@mui/joy"
 
-import HomeIcon from '@mui/icons-material/Home';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useState } from "react";
@@ -53,7 +53,7 @@ export function MdcAppbar()
                         }}
                         onClick={() => navigate({ to: "/newform" })}
                     >
-                        <VideoLibraryIcon />
+                        <AddCircleIcon />
                         <Typography sx={{ display: { xs: "none", sm: "block" } }}>
                             Add DVD
                         </Typography>
