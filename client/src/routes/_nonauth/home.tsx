@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query"
 import { AccessTokenQueryOptions } from "../../utilities/Queries"
 
 import { Sheet, Typography, Link } from '@mui/joy';
-import { DarkModeToggle } from "../../components/DarkModeToggle";
 
 export const Route = createFileRoute('/_nonauth/home')({
     beforeLoad: async ({ context: { queryClient } }) =>
@@ -26,13 +25,10 @@ function Home()
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    height: "100vh",
+                    height: "100dvh",
                     px: 2,
                     py: 2
                 }}>
-                <Sheet sx={{ alignSelf: "start" }}>
-                    <DarkModeToggle />
-                </Sheet>
                 <Sheet
                     sx={{
                         display: "flex",
@@ -51,13 +47,9 @@ function Home()
                     </Typography>
                     <Typography sx={{ mx: 2 }}>
                         {tokenQuery.isSuccess ?
-                            <RouterLink to="/collections">
-                                <Link>Click here</Link>
-                            </RouterLink>
+                            <Link component={RouterLink} to="/collections">Click here</Link>
                             :
-                            <RouterLink to="/login">
-                                <Link>Click here</Link>
-                            </RouterLink>
+                            <Link component={RouterLink} to="/login">Click here</Link>
                         }
                         {` `}and get started!
                     </Typography>

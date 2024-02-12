@@ -2,8 +2,7 @@ import { useState } from "react";
 import { createFileRoute, Link as RouterLink, useNavigate } from "@tanstack/react-router";
 import { PostLogin } from "../../httpverbs/PostLogin";
 
-import { Sheet, FormControl, FormLabel, Input, Button, Typography, Link } from "@mui/joy"
-import { DarkModeToggle } from "../../components/DarkModeToggle"
+import { Sheet, FormControl, FormLabel, Input, Button, Typography, Link } from "@mui/joy";
 
 export const Route = createFileRoute('/_nonauth/login')({
     component: LoginComponent
@@ -53,13 +52,10 @@ function LoginComponent()
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    height: "100vh",
+                    height: "100dvh",
                     py: 2, // padding top & bottom
                     px: 2, // padding left & right
                 }}>
-                <Sheet sx={{ alignSelf: "start" }}>
-                    <DarkModeToggle />
-                </Sheet>
                 <Sheet
                     sx={{
                         width: "100%",
@@ -93,9 +89,12 @@ function LoginComponent()
                     </form>
                     <Typography
                         endDecorator={
-                            <RouterLink to="/home">
-                                <Link disabled sx={{ textDecoration: "line-through" }}>Sign up</Link>
-                            </RouterLink>}
+                            <Link
+                                disabled
+                                sx={{ textDecoration: "line-through" }}
+                                component={RouterLink}
+                                to="/home"
+                            >Sign up</Link>}
                         fontSize="sm"
                         sx={{ alignSelf: 'center' }}
                     >

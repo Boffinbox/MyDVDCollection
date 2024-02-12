@@ -1,4 +1,4 @@
-import { Outlet, createFileRoute } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { DeleteCollection } from "../../httpverbs/DeleteCollection";
@@ -9,7 +9,7 @@ import { SingleLineForm } from "../../components/SingleLineForm";
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries"
 import { ICollection } from "../../Interfaces";
 
-import { Divider, Stack } from "@mui/joy"
+import { Divider, Stack, Typography } from "@mui/joy"
 import { CollectionCard } from "../../components/CollectionCard";
 
 export const Route = createFileRoute('/_mdc/collections')({
@@ -38,7 +38,7 @@ function Collections()
             (oldData: ICollection[]) => oldData.filter((coll: ICollection) => coll._id !== returnedCollection._id))
     })
 
-    if (collectionsQuery.isLoading) return <h1>Loading...</h1>
+    if (collectionsQuery.isLoading) return <Typography level="h1">Loading...</Typography>
     if (collectionsQuery.isError) return (
         <>
             <div>Oh no! Something went wrong...</div>
@@ -49,26 +49,30 @@ function Collections()
 
     return (
         <>
-            <h2>Collections {collectionsQuery.isFetching ? <span style={{ fontSize: "small" }}>Fetching...</span> : null}</h2>
-            <Divider />
-            <SingleLineForm
-                submitButtonText="Submit!"
-                labelText="Title"
-                onSubmit={async (title) => await newCollectionMutation.mutate(title)}
-            />
-            <Divider />
-            <Stack
-                spacing={2}
-            >
-                {collections.map((coll) => (
-                    <CollectionCard
-                        key={coll._id}
-                        title={coll.title}
-                        collId={coll._id}
-                        deleteFn={async () => await deleteCollectionMutation.mutate(coll._id)}
-                    >
-                    </CollectionCard>
-                ))}
+            <Stack gap={1}>
+                <Typography level="h1">Collections {` `}
+                    <Typography level="h4">{collectionsQuery.isFetching ? <span style={{ fontSize: "small" }}>Fetching...</span> : null}</Typography>
+                </Typography>
+                <Divider />
+                <SingleLineForm
+                    submitButtonText="Submit!"
+                    labelText="Title"
+                    onSubmit={async (title) => await newCollectionMutation.mutate(title)}
+                />
+                <Divider />
+                <Stack
+                    spacing={2}
+                >
+                    {collections.map((coll) => (
+                        <CollectionCard
+                            key={coll._id}
+                            title={coll.title}
+                            collId={coll._id}
+                            deleteFn={async () => await deleteCollectionMutation.mutate(coll._id)}
+                        >
+                        </CollectionCard>
+                    ))}
+                </Stack>
             </Stack>
         </>
     )

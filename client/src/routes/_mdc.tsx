@@ -1,15 +1,16 @@
 import { createFileRoute, Link as RouterLink, Outlet } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query';
 
-import { AccessTokenQueryOptions } from '../utilities/Queries';
+import { AccessTokenQueryOptions, CollectionsQueryOptions } from '../utilities/Queries';
 
-import { Sheet, Typography, ButtonGroup, Button, Link, Divider } from "@mui/joy"
-import { DarkModeToggle } from '../components/DarkModeToggle';
+import { Sheet, Typography, Link } from "@mui/joy";
+import { MdcAppbar } from '../components/MdcAppbar';
 
 export const Route = createFileRoute('/_mdc')({
     beforeLoad: async ({ context: { queryClient } }) =>
     {
-        queryClient.ensureQueryData(AccessTokenQueryOptions())
+        const data = await queryClient.ensureQueryData(AccessTokenQueryOptions())
+        await queryClient.ensureQueryData(CollectionsQueryOptions(data))
     },
     component: MDCComponent
 })
@@ -17,7 +18,7 @@ export const Route = createFileRoute('/_mdc')({
 function MDCComponent()
 {
     const tokenQuery = useQuery(AccessTokenQueryOptions())
-    const token: string | undefined = tokenQuery.data;
+    // const token: string | undefined = tokenQuery.data;
 
     if (tokenQuery.status === "error") return (
         <>
@@ -35,50 +36,45 @@ function MDCComponent()
         <>
             <Sheet
                 sx={{
-                    mx: 2,
-                    mt: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: "100%",
-                    overflow: "scroll"
-                }}>
-                <Sheet sx={{
-                    display: "flex",
+                    display: 'flex',
+                    flexDirection: 'column',
                     justifyContent: "space-between",
-                }}>
-                    <ButtonGroup variant="plain">
-                        <RouterLink to="/">
-                            <Button>Home</Button>
-                        </RouterLink>{` `}
-                        <RouterLink to="/logout">
-                            <Button>Logout</Button>
-                        </RouterLink>{` `}
-                        <RouterLink to="/collections">
-                            <Button>Collections</Button>
-                        </RouterLink>
-                    </ButtonGroup>
-                    <DarkModeToggle />
+                    gap: 0,
+                    height: "100dvh",
+                }}
+            >
+                <Sheet
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "100%",
+                        overflow: "scroll",
+                        mt: 2
+                    }}>
+                    {tokenQuery.isLoading ?
+                        <Sheet
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: "100%",
+                                gap: 2,
+                            }}>
+                            <Typography
+                                level="h1"
+                            >
+                                Loading...
+                            </Typography>
+                        </Sheet>
+                        :
+                        <Sheet sx={{ mx: 2 }}>
+                            <Outlet />
+                        </Sheet>
+                    }
                 </Sheet>
-                {tokenQuery.isLoading ?
-                    <Sheet
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            height: "100%",
-                            gap: 2,
-                        }}>
-                        <Typography
-                            level="h1"
-                        >
-                            Loading...
-                        </Typography>
-                    </Sheet>
-                    :
-                    <Outlet />
-                }
-            </Sheet>
+                <MdcAppbar />
+            </Sheet >
         </>
     )
 }
