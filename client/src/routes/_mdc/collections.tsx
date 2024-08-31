@@ -11,6 +11,7 @@ import { ICollection } from "../../Interfaces";
 
 import { Divider, Stack, Typography } from "@mui/joy"
 import { CollectionCard } from "../../components/CollectionCard";
+import { MdcWebcam } from "../../components/MdcWebcam";
 
 export const Route = createFileRoute('/_mdc/collections')({
     component: Collections
@@ -60,6 +61,7 @@ function Collections()
                     onSubmit={async (title) => await newCollectionMutation.mutate(title)}
                 />
                 <Divider />
+                <MdcWebcam />
                 <Stack
                     spacing={2}
                 >
