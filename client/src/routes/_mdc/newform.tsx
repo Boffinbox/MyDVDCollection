@@ -7,6 +7,9 @@ import { Divider, Select, Option, Typography, FormControl, FormLabel, FormHelper
 import { useState } from "react";
 import { PostBarcode } from "../../httpverbs/PostBarcode";
 
+import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
+import 'react-barcode-scanner/polyfill'
+
 export const Route = createFileRoute('/_mdc/newform')({
     component: NewForm
 })
@@ -23,6 +26,8 @@ function NewForm()
 
     const [formData, setFormData] = useState({ barcode: "" })
 
+    const [camera, setCamera] = useState({ isActive: true })
+
     const [snackBarState, setSnackBarState] = useState({ snackBarText: "", open: false })
     const { open, snackBarText } = snackBarState
 
@@ -35,6 +40,12 @@ function NewForm()
                 [evt.target.name]: evt.target.value
             }
         })
+    }
+
+    function handleCapture(detection: DetectedBarcode)
+    {
+        setFormData(() => ({ barcode: detection.rawValue }));
+        setCamera(() => ({ isActive: false }))
     }
 
     async function handleSubmit(evt: React.ChangeEvent<HTMLFormElement>)
@@ -117,6 +128,15 @@ function NewForm()
                         <Button type="submit">Add Disc</Button>
                     </Stack>
                 </form>
+                {
+                    camera.isActive ?
+                        <BarcodeScanner
+                            options={{ delay: 500, formats: ["ean_13", "ean_8", "upc_a", "upc_e"] }}
+                            onCapture={handleCapture}
+                        />
+                        :
+                        <></>
+                }
             </Stack>
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
