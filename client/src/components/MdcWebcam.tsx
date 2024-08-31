@@ -3,12 +3,15 @@ import 'react-barcode-scanner/polyfill'
 
 export function MdcWebcam()
 {
+    function onCapture(barcode: DetectedBarcode)
+    {
+        window.alert(barcode.rawValue);
+    }
+
     return (
         <BarcodeScanner
-            options={{ delay: 2000, formats: ["ean_13", "ean_8", "upc_a", "upc_e"] }}
-            onCapture={(barcode: DetectedBarcode) =>
-                console.log(`barcode get! the barcode is: ${barcode}`)
-            }
+            options={{ delay: 500, formats: ["ean_13", "ean_8", "upc_a", "upc_e"] }}
+            onCapture={onCapture}
         />
     )
 }
