@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
 
-import { Divider, Typography, FormControl, FormLabel, FormHelperText, Stack, Button, Input, Snackbar } from "@mui/joy"
+import { Divider, Typography, FormControl, FormLabel, FormHelperText, Stack, Button, Input, Snackbar, Sheet } from "@mui/joy"
 import { useState } from "react";
 
 import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
@@ -45,24 +45,19 @@ function NewForm()
 
     function handleCapture(detection: DetectedBarcode)
     {
-        setFormData(() => ({ barcode: detection.rawValue }));
+        // setFormData(() => ({ barcode: detection.rawValue }));
+        let barcode = detection.rawValue
         setCamera(() => ({ isActive: false }))
-    }
-
-    async function handleSubmit(evt: React.ChangeEvent<HTMLFormElement>)
-    {
-        evt.preventDefault();
-        console.log("barcode to check is: ", formData.barcode);
-        const duplicates: string[] = isOwnedBarcode(collections, formData.barcode)
+        console.log("barcode to check is: ", barcode);
+        const duplicates: string[] = isOwnedBarcode(collections, barcode)
         console.log(duplicates);
         setSnackBarState(prevData =>
         {
             return {
-                snackBarText: `This barcode (${formData.barcode}) was found ${duplicates[0]} times`,
+                snackBarText: `This barcode (${barcode}) was found ${duplicates[0]} times`,
                 open: true
             }
         })
-
     }
 
     function isOwnedBarcode(collections: ICollectionHydrated[], barcode: string): string[]
@@ -96,41 +91,31 @@ function NewForm()
 
     return (
         <>
-            <Stack gap={1}>
-                <Typography level="h1">Duplicate Checker</Typography>
-                <Divider />
-                <form
-                    onSubmit={handleSubmit}
-                >
-                    <Stack gap={3}>
-                        <FormControl>
-                            <FormLabel>
-                                Barcode
-                            </FormLabel>
-                            <Input
-                                placeholder="Type barcode here"
-                                name="barcode"
-                                required
-                                onChange={handleChange}
-                                value={formData.barcode}
+            <Sheet sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+                gap: 2,
+            }}>
+                <Sheet sx={{
+                    aspectRatio: 1,
+                    width: "100%",
+                    backgroundColor: "blue",
+                    overflow: "hidden"
+                }}>
+                    {
+                        camera.isActive ?
+                            <BarcodeScanner
+                                options={{ delay: 500, formats: ["ean_13", "ean_8", "upc_a", "upc_e"] }}
+                                onCapture={handleCapture}
                             />
-                            <FormHelperText>
-                                $TODO helper text barcode
-                            </FormHelperText>
-                        </FormControl>
-                        <Button type="submit">Check for duplicate...</Button>
-                    </Stack>
-                </form>
-                {
-                    camera.isActive ?
-                        <BarcodeScanner
-                            options={{ delay: 500, formats: ["ean_13", "ean_8", "upc_a", "upc_e"] }}
-                            onCapture={handleCapture}
-                        />
-                        :
-                        <></>
-                }
-            </Stack>
+                            :
+                            <></>
+                    }
+                </Sheet>
+            </Sheet>
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
                 open={open}

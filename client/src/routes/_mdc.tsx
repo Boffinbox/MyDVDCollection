@@ -68,7 +68,13 @@ function MDCComponent()
                             </Typography>
                         </Sheet>
                         :
-                        <Sheet sx={{ mx: 2 }}>
+                        <Sheet sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            height: "100%",
+                            mx: 2
+                        }}>
                             <Outlet />
                         </Sheet>
                     }

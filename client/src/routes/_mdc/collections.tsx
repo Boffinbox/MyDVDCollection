@@ -38,7 +38,7 @@ function Collections()
             (oldData: ICollection[]) => oldData.filter((coll: ICollection) => coll._id !== returnedCollection._id))
     })
 
-    if (collectionsQuery.isLoading) return <Typography level="h1">Loading...</Typography>
+    if (collectionsQuery.isLoading) return <Typography level="h1" sx={{ height: "100%" }}>Loading...</Typography>
     if (collectionsQuery.isError) return (
         <>
             <div>Oh no! Something went wrong...</div>
@@ -49,7 +49,7 @@ function Collections()
 
     return (
         <>
-            <Stack gap={1}>
+            <Stack gap={1} sx={{ height: "100%" }}>
                 <Typography level="h1">Collections {` `}
                     <Typography level="h4">{collectionsQuery.isFetching ? <span style={{ fontSize: "small" }}>Fetching...</span> : null}</Typography>
                 </Typography>
