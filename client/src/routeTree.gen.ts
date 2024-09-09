@@ -9,6 +9,7 @@ import { Route as NonauthLogoutImport } from './routes/_nonauth/logout'
 import { Route as NonauthLoginImport } from './routes/_nonauth/login'
 import { Route as NonauthHomeImport } from './routes/_nonauth/home'
 import { Route as MdcNewformImport } from './routes/_mdc/newform'
+import { Route as MdcDupecheckImport } from './routes/_mdc/dupecheck'
 import { Route as MdcCollectionsImport } from './routes/_mdc/collections'
 import { Route as MdcCollectionsCollectionIdImport } from './routes/_mdc/collections_.$collectionId'
 
@@ -44,6 +45,11 @@ const MdcNewformRoute = MdcNewformImport.update({
   getParentRoute: () => MdcRoute,
 } as any)
 
+const MdcDupecheckRoute = MdcDupecheckImport.update({
+  path: '/dupecheck',
+  getParentRoute: () => MdcRoute,
+} as any)
+
 const MdcCollectionsRoute = MdcCollectionsImport.update({
   path: '/collections',
   getParentRoute: () => MdcRoute,
@@ -70,6 +76,10 @@ declare module '@tanstack/react-router' {
     }
     '/_mdc/collections': {
       preLoaderRoute: typeof MdcCollectionsImport
+      parentRoute: typeof MdcImport
+    }
+    '/_mdc/dupecheck': {
+      preLoaderRoute: typeof MdcDupecheckImport
       parentRoute: typeof MdcImport
     }
     '/_mdc/newform': {
@@ -100,6 +110,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   MdcRoute.addChildren([
     MdcCollectionsRoute,
+    MdcDupecheckRoute,
     MdcNewformRoute,
     MdcCollectionsCollectionIdRoute,
   ]),
