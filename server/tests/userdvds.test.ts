@@ -71,3 +71,15 @@ test(`delete an existing dvd`, async () =>
     expect(collRes.status).toBe(200);
     expect(collRes.body.discs).toEqual([])
 })
+
+test(`read a dvd's barcode from only accessing the list of all collections`, async () =>
+{
+    const testSetup = await userDVDFunctions.testDVDSetup();
+    expect(testSetup.dvdRes.status).toBe(201);
+
+    const collRes = await request(app)
+        .get(`${api}/disccollections/`)
+        .set(`Authorization`, `Bearer ${testSetup.userToken}`)
+    expect(collRes.status).toBe(200);
+    expect(collRes.body[0].discs[0].referenceDVD.barcode).toEqual("7321905737437")
+})
