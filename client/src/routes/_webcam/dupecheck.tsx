@@ -29,8 +29,7 @@ function NewForm()
 
     const [camera, setCamera] = useState({ isActive: true })
 
-    const [snackBarState, setSnackBarState] = useState({ snackBarText: "", open: false })
-    const { open, snackBarText } = snackBarState
+    const [dupeText, setDupeText] = useState({ value: "" })
 
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
     {
@@ -51,13 +50,7 @@ function NewForm()
         console.log("barcode to check is: ", barcode);
         const duplicates: string[] = isOwnedBarcode(collections, barcode)
         console.log(duplicates);
-        setSnackBarState(prevData =>
-        {
-            return {
-                snackBarText: `This barcode (${barcode}) was found ${duplicates[0]} times`,
-                open: true
-            }
-        })
+        setDupeText(() => ({ value: generateDupeText(duplicates) }))
     }
 
     function isOwnedBarcode(collections: ICollectionHydrated[], barcode: string): string[]
@@ -79,6 +72,17 @@ function NewForm()
             collIndicies.push(collections[indicies[i][0]].title);
         }
         return [indicies.length.toString(), ...new Set(collIndicies)];
+    }
+
+    function generateDupeText(duplicates: string[]): string
+    {
+        const amount = duplicates[0];
+        let stringToReturn = `This barcode was found ${amount} times, in `
+        for (let i = 1; i < duplicates.length; i++)
+        {
+            stringToReturn += duplicates[i]
+        }
+        return stringToReturn;
     }
 
     if (collectionsQuery.isLoading) return <Typography level="h1">Loading...</Typography>
@@ -104,7 +108,7 @@ function NewForm()
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    justifyContent: "center"
+                    justifyContent: "center",
                 }}>
                     {
                         camera.isActive ?
@@ -142,28 +146,34 @@ function NewForm()
                             </>
                             :
                             <>
-                                <Button
-                                    sx={{
-                                        width: "80dvw",
-                                        height: "80%"
-                                    }}
-                                    onClick={() => { setCamera(() => ({ isActive: true })) }}>
-                                </Button>
+                                <Sheet sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    mx: "10dvw",
+                                    gap: 10
+                                }}>
+                                    <Typography
+                                        level="h3"
+                                        textAlign={"center"}
+                                    >
+                                        {dupeText.value}
+                                    </Typography>
+                                    <Button
+                                        sx={{}}
+                                        onClick={() => { setCamera(() => ({ isActive: true })) }}>
+                                        <Typography
+                                            level="h1"
+                                        >
+                                            Scan another
+                                        </Typography>
+                                    </Button>
+                                </Sheet>
                             </>
                     }
                 </Sheet>
             </Sheet>
-            <Snackbar
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                open={open}
-                color="success"
-                onClose={(event, reason) =>
-                {
-                    setSnackBarState(prevData => { return { ...prevData, open: false } })
-                }}
-            >
-                {snackBarText}
-            </Snackbar>
         </>
     )
 
