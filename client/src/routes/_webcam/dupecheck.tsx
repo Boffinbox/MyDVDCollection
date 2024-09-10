@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
 
-import { Divider, Typography, FormControl, FormLabel, FormHelperText, Stack, Button, Input, Snackbar, Sheet } from "@mui/joy"
+import { Typography, Snackbar, Sheet, Button } from "@mui/joy"
 import { useState } from "react";
 
 import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
@@ -11,7 +11,7 @@ import 'react-barcode-scanner/polyfill'
 
 import { ICollectionHydrated } from "../../Interfaces";
 
-export const Route = createFileRoute('/_mdc/dupecheck')({
+export const Route = createFileRoute('/_webcam/dupecheck')({
     component: NewForm
 })
 
@@ -96,23 +96,60 @@ function NewForm()
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                height: "100%",
-                gap: 2,
             }}>
                 <Sheet sx={{
-                    aspectRatio: 1,
+                    height: "92dvh",
                     width: "100%",
-                    backgroundColor: "blue",
-                    overflow: "hidden"
+                    overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center"
                 }}>
                     {
                         camera.isActive ?
-                            <BarcodeScanner
-                                options={{ delay: 500, formats: ["ean_13", "ean_8", "upc_a", "upc_e"] }}
-                                onCapture={handleCapture}
-                            />
+                            <>
+                                <BarcodeScanner
+                                    options={{ delay: 500, formats: ["ean_13", "ean_8", "upc_a", "upc_e"] }}
+                                    onCapture={handleCapture}
+                                />
+                                <Sheet
+                                    sx={{
+                                        position: "absolute",
+                                        width: "80%",
+                                        height: "60%",
+                                        borderRadius: "20dvw",
+                                        border: "1dvw solid grey",
+                                        borderLeft: "1dvw",
+                                        borderRight: "1dvw",
+                                        backgroundColor: "transparent"
+                                    }}
+                                >
+                                </Sheet>
+                                <Sheet
+                                    sx={{
+                                        position: "absolute",
+                                        width: "80%",
+                                        height: "59.5%",
+                                        borderRadius: "20dvw",
+                                        border: "0.8dvw solid dimgrey",
+                                        borderLeft: "1dvw",
+                                        borderRight: "1dvw",
+                                        backgroundColor: "transparent"
+                                    }}
+                                >
+                                </Sheet>
+                            </>
                             :
-                            <></>
+                            <>
+                                <Button
+                                    sx={{
+                                        width: "80dvw",
+                                        height: "80%"
+                                    }}
+                                    onClick={() => { setCamera(() => ({ isActive: true })) }}>
+                                </Button>
+                            </>
                     }
                 </Sheet>
             </Sheet>
