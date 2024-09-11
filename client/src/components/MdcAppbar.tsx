@@ -54,7 +54,7 @@ export function MdcAppbar()
                             display: "flex",
                             justifyContent: "space-evenly",
                         }}
-                        onClick={() => navigate({ to: "/dupecheck" })}
+                        onClick={() => navigate({ to: "/scanner" })}
                     >
                         <Quiz />
                         <Typography sx={{ display: { xs: "none", sm: "block" } }}>

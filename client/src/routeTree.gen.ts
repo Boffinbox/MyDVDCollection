@@ -6,7 +6,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as WebcamImport } from './routes/_webcam'
 import { Route as NonauthImport } from './routes/_nonauth'
 import { Route as MdcImport } from './routes/_mdc'
-import { Route as WebcamDupecheckImport } from './routes/_webcam/dupecheck'
+import { Route as WebcamScannerImport } from './routes/_webcam/scanner'
 import { Route as NonauthLogoutImport } from './routes/_nonauth/logout'
 import { Route as NonauthLoginImport } from './routes/_nonauth/login'
 import { Route as NonauthHomeImport } from './routes/_nonauth/home'
@@ -31,8 +31,8 @@ const MdcRoute = MdcImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const WebcamDupecheckRoute = WebcamDupecheckImport.update({
-  path: '/dupecheck',
+const WebcamScannerRoute = WebcamScannerImport.update({
+  path: '/scanner',
   getParentRoute: () => WebcamRoute,
 } as any)
 
@@ -104,8 +104,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NonauthLogoutImport
       parentRoute: typeof NonauthImport
     }
-    '/_webcam/dupecheck': {
-      preLoaderRoute: typeof WebcamDupecheckImport
+    '/_webcam/scanner': {
+      preLoaderRoute: typeof WebcamScannerImport
       parentRoute: typeof WebcamImport
     }
     '/_mdc/collections/$collectionId': {
@@ -128,5 +128,5 @@ export const routeTree = rootRoute.addChildren([
     NonauthLoginRoute,
     NonauthLogoutRoute,
   ]),
-  WebcamRoute.addChildren([WebcamDupecheckRoute]),
+  WebcamRoute.addChildren([WebcamScannerRoute]),
 ])
