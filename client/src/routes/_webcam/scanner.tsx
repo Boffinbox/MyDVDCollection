@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
 
-import { Typography, Sheet, Button } from "@mui/joy"
+import { Typography, Sheet, Button, ButtonGroup, Divider } from "@mui/joy"
 import { useState } from "react";
 
 import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
@@ -144,21 +144,67 @@ function Scanner()
                         <Sheet sx={{
                             display: "flex",
                             flexDirection: "column",
-                            alignItems: "center",
                             justifyContent: "space-between",
-                            mx: "10dvw",
-                            gap: 10
+                            alignItems: "center",
+                            height: "92dvh",
+                            mx: "10dvw"
                         }}>
-                            <Typography level="h3" textAlign={"center"}> {detection.value} </Typography>
-                            <Button
-                                onClick={() => { setCamera(() => ({ isActive: true })) }}>
-                                <Typography level="h1">Scan another</Typography>
-                            </Button>
+                            <Sheet sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                flexBasis: "46dvh",
+                            }}>
+                                pp
+                                logo goes here
+                                barcode: meh
+                            </Sheet>
+                            <Sheet sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                flexBasis: "23dvh",
+                            }}>
+                                <Sheet>
+                                    <Typography
+                                        level="body-lg"
+                                        textAlign={"center"}>
+                                        {detection.value}
+                                    </Typography>
+                                </Sheet>
+                            </Sheet>
+                            <Sheet sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                flexBasis: "23dvh"
+                            }}>
+                                <ButtonGroup
+                                    buttonFlex={1}
+                                    variant="soft"
+                                    size="lg"
+                                    spacing={1}
+                                >
+                                    <Button
+                                        onClick={() => { setCamera(() => ({ isActive: true })) }}
+                                        color="success"
+                                    >
+                                        <Typography level="h4">Add disc</Typography>
+                                    </Button>
+                                    <Button
+                                        onClick={() => { setCamera(() => ({ isActive: true })) }}
+                                    >
+                                        <Typography level="h4">Scan again</Typography>
+                                    </Button>
+                                </ButtonGroup>
+                            </Sheet>
                         </Sheet>
-                    </>
-                    }
+                    </>}
                 </Sheet>
-            </Sheet>
+            </Sheet >
         </>
     )
 
