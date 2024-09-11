@@ -1,15 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
 
-import { Typography, Sheet, Button, ButtonGroup, Divider } from "@mui/joy"
+import { Typography, Sheet, Button, ButtonGroup } from "@mui/joy"
 import { useState } from "react";
 
 import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
 import 'react-barcode-scanner/polyfill'
 
-import { ICollectionHydrated } from "../../Interfaces";
+import { ICollectionHydrated, IDisc } from "../../Interfaces";
+import { PostBarcode } from "../../httpverbs/PostBarcode";
 
 export const Route = createFileRoute('/_webcam/scanner')({
     component: Scanner
@@ -25,11 +26,31 @@ function Scanner()
     const collectionsQuery = useQuery(CollectionsQueryOptions(token))
     const collections: ICollectionHydrated[] = collectionsQuery.data;
 
-    const [formData, setFormData] = useState({ barcode: "" })
+    const [formData, setFormData] = useState({ barcode: "", collectionId: "" })
 
     const [camera, setCamera] = useState({ isActive: true })
+    const [addDisc, setAddDisc] = useState({ isActive: false });
 
     const [detection, setDetection] = useState({ value: "" })
+
+    const newDiscMutation = useMutation({
+        mutationFn: (barcode: string) => PostBarcode(token, formData.collectionId, barcode),
+        onSuccess: (returnedDisc: IDisc) =>
+        {
+            console.log("received data was: ", returnedDisc)
+            console.log("coll id is: ", formData.collectionId)
+            queryClient.setQueryData(["collection", formData.collectionId],
+                (oldData: ICollectionHydrated) =>
+                {
+                    console.log(oldData)
+                    return {
+                        ...oldData,
+                        discs: [...oldData.discs, returnedDisc]
+                    }
+                }
+            )
+        }
+    })
 
     function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
     {
@@ -44,12 +65,12 @@ function Scanner()
 
     async function handleCapture(detection: DetectedBarcode)
     {
-        await setFormData(() => ({ barcode: detection.rawValue }));
+        await setFormData(prevData => ({ ...prevData, barcode: detection.rawValue }));
         setCamera(() => ({ isActive: false }))
         console.log("barcode to check is: ", formData.barcode);
         const duplicates: string[] = isOwnedBarcode(collections, formData.barcode)
         console.log(duplicates);
-        setDetection(() => ({ value: genDetectionText(duplicates) }))
+        setDetection(() => ({ value: genText(duplicates) }))
     }
 
     function isOwnedBarcode(collections: ICollectionHydrated[], barcode: string): string[]
@@ -73,15 +94,28 @@ function Scanner()
         return [indicies.length.toString(), ...new Set(collIndicies)];
     }
 
-    function genDetectionText(duplicates: string[]): string
+    function genText(duplicates: string[]): string
     {
         const amount = duplicates[0];
         let stringToReturn = `This barcode (${formData.barcode}) was found ${amount} times, in `
+        if (duplicates.length <= 1) // if no duplicate found
+        {
+            stringToReturn = `You don't have this item yet! Would you like to add?`
+        }
+        else
+        {
+            stringToReturn = `This barcode was found ${amount} times, in `
+        }
         for (let i = 1; i < duplicates.length; i++)
         {
-            stringToReturn += duplicates[i]
+            stringToReturn += `${duplicates[i]}, `
         }
         return stringToReturn;
+    }
+
+    async function handleSubmit()
+    {
+        await newDiscMutation.mutate(formData.barcode)
     }
 
     if (collectionsQuery.isLoading) return <Typography level="h1">Loading...</Typography>
@@ -184,21 +218,50 @@ function Scanner()
                             }}>
                                 <ButtonGroup
                                     buttonFlex={1}
-                                    variant="soft"
+                                    variant="solid"
                                     size="lg"
                                     spacing={1}
                                 >
-                                    <Button
-                                        onClick={() => { setCamera(() => ({ isActive: true })) }}
-                                        color="success"
-                                    >
-                                        <Typography level="h4">Add disc</Typography>
-                                    </Button>
-                                    <Button
-                                        onClick={() => { setCamera(() => ({ isActive: true })) }}
-                                    >
-                                        <Typography level="h4">Scan again</Typography>
-                                    </Button>
+                                    {addDisc.isActive ? <>
+                                        <Button
+                                            onClick={() =>
+                                            {
+                                                setFormData(prevData => ({
+                                                    ...prevData, collectionId: "65beafa9155909905cc0bb01"
+                                                }))
+                                            }}
+                                            sx={{ width: "50dvw", height: "10dvh" }}
+                                        >
+                                            <Typography
+                                                level="title-lg"
+                                            >Choose Collection</Typography>
+                                        </Button>
+                                        <Button
+                                            onClick={handleSubmit}
+                                            color="success"
+                                        >
+                                            <Typography
+                                                level="title-lg"
+                                            >Save</Typography>
+                                        </Button>
+                                    </> : <>
+                                        <Button
+                                            onClick={() => { setCamera(() => ({ isActive: true })) }}
+                                            sx={{ width: "50dvw", height: "10dvh" }}
+                                        >
+                                            <Typography
+                                                level="title-lg"
+                                            >Scan again</Typography>
+                                        </Button>
+                                        <Button
+                                            onClick={() => { setAddDisc(() => ({ isActive: true })) }}
+                                            color="warning"
+                                        >
+                                            <Typography
+                                                level="title-lg"
+                                            >Add disc</Typography>
+                                        </Button>
+                                    </>}
                                 </ButtonGroup>
                             </Sheet>
                         </Sheet>
