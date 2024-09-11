@@ -1,6 +1,6 @@
 import { Link as RouterLink } from "@tanstack/react-router"
 
-import { AspectRatio, Button, Card, CardContent, CardOverflow, Link, Typography } from "@mui/joy"
+import { AspectRatio, Button, Card, CardContent, CardOverflow, Link, Sheet, Typography } from "@mui/joy"
 
 export function CollectionCard(
     {
@@ -15,7 +15,7 @@ export function CollectionCard(
 {
     return (
         <>
-            <Card variant="soft" sx={{}}>
+            <Card variant="soft" sx={{ mb: 2 }}>
                 <CardOverflow>
                     <AspectRatio ratio="4" flex>
                         <img src="/dev/collection.jpg" />

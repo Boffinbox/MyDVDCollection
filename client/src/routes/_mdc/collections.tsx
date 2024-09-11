@@ -61,7 +61,7 @@ function Collections()
                 />
                 <Divider />
                 <Stack
-                    spacing={2}
+                    spacing={0}
                 >
                     {collections.map((coll) => (
                         <CollectionCard

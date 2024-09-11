@@ -40,7 +40,7 @@ function MDCComponent()
                     flexDirection: 'column',
                     justifyContent: "space-between",
                     gap: 0,
-                    height: "100dvh",
+                    height: "100dvh"
                 }}
             >
                 <Sheet
@@ -48,8 +48,7 @@ function MDCComponent()
                         display: "flex",
                         flexDirection: "column",
                         height: "100%",
-                        overflow: "scroll",
-                        mt: 2
+                        overflow: "scroll"
                     }}>
                     {tokenQuery.isLoading ?
                         <Sheet
@@ -73,7 +72,7 @@ function MDCComponent()
                             flexDirection: "column",
                             justifyContent: "center",
                             height: "100%",
-                            mx: 2
+                            m: 2
                         }}>
                             <Outlet />
                         </Sheet>
