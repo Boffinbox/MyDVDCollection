@@ -39,8 +39,8 @@ function WebcamComponent()
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: "space-between",
-                    gap: 0,
                     height: "100dvh",
+                    overflow: "hidden"
                 }}
             >
                 {tokenQuery.isLoading ?

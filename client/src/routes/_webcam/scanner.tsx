@@ -28,7 +28,7 @@ function Scanner()
 
     const [formData, setFormData] = useState({ barcode: "", collectionId: "" })
 
-    const [camera, setCamera] = useState({ isActive: true })
+    const [camera, setCamera] = useState({ isActive: false })
     const [addDisc, setAddDisc] = useState({ isActive: false });
 
     const [detection, setDetection] = useState({ value: "" })
@@ -222,46 +222,22 @@ function Scanner()
                                     size="lg"
                                     spacing={1}
                                 >
-                                    {addDisc.isActive ? <>
-                                        <Button
-                                            onClick={() =>
-                                            {
-                                                setFormData(prevData => ({
-                                                    ...prevData, collectionId: "65beafa9155909905cc0bb01"
-                                                }))
-                                            }}
-                                            sx={{ width: "50dvw", height: "10dvh" }}
-                                        >
-                                            <Typography
-                                                level="title-lg"
-                                            >Choose Collection</Typography>
-                                        </Button>
-                                        <Button
-                                            onClick={handleSubmit}
-                                            color="success"
-                                        >
-                                            <Typography
-                                                level="title-lg"
-                                            >Save</Typography>
-                                        </Button>
-                                    </> : <>
-                                        <Button
-                                            onClick={() => { setCamera(() => ({ isActive: true })) }}
-                                            sx={{ width: "50dvw", height: "10dvh" }}
-                                        >
-                                            <Typography
-                                                level="title-lg"
-                                            >Scan again</Typography>
-                                        </Button>
-                                        <Button
-                                            onClick={() => { setAddDisc(() => ({ isActive: true })) }}
-                                            color="warning"
-                                        >
-                                            <Typography
-                                                level="title-lg"
-                                            >Add disc</Typography>
-                                        </Button>
-                                    </>}
+                                    <Button
+                                        onClick={() => { setCamera(() => ({ isActive: true })) }}
+                                        sx={{ width: "50dvw", height: "10dvh" }}
+                                    >
+                                        <Typography
+                                            level="title-lg"
+                                        >Scan again</Typography>
+                                    </Button>
+                                    <Button
+                                        onClick={() => { setAddDisc(() => ({ isActive: true })) }}
+                                        color="success"
+                                    >
+                                        <Typography
+                                            level="title-lg"
+                                        >Add disc</Typography>
+                                    </Button>
                                 </ButtonGroup>
                             </Sheet>
                         </Sheet>
