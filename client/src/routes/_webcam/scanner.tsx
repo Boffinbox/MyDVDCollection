@@ -197,9 +197,7 @@ function Scanner()
                                         color="success"
                                         sx={{ minWidth: "30dvw", height: "10dvh" }}
                                     >
-                                        <Typography
-                                            level="title-lg"
-                                        >Add to a collection</Typography>
+                                        Add to a collection
                                     </Button>
                                     <Button
                                         onClick={() =>
@@ -209,9 +207,7 @@ function Scanner()
                                         }}
                                         sx={{ minWidth: "30dvw", height: "10dvh" }}
                                     >
-                                        <Typography
-                                            level="title-lg"
-                                        >Re-scan</Typography>
+                                        Re-scan
                                     </Button>
                                 </ButtonGroup>
                             </Sheet>
@@ -271,9 +267,7 @@ function Scanner()
                                         sx={{ minWidth: "60dvw", height: "10dvh" }}
                                         color="primary"
                                     >
-                                        <Typography
-                                            level="title-lg"
-                                        >Check across all collections</Typography>
+                                        Check across all collections
                                     </Button>
                                 </ButtonGroup>
                             </Sheet>
