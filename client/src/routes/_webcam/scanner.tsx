@@ -68,18 +68,29 @@ function Scanner()
     function genText(duplicates: string[]): string
     {
         const amount = duplicates[0];
-        let stringToReturn = `This barcode (${formData.barcode}) was found ${amount} times, in `
-        if (duplicates.length <= 1) // if no duplicate found
+        let stringToReturn = `This barcode (${formData.barcode}) was found ${amount} time`
+        if (duplicates.length == 1) // barcode not found
         {
-            stringToReturn = `You don't have this item yet! Would you like to add?`
+            stringToReturn += `s.`
+        }
+        else if (duplicates.length == 2) // singular check, time vs times
+        {
+            stringToReturn += `, in ${duplicates[1]}.`
         }
         else
         {
-            stringToReturn = `This barcode was found ${amount} times, in `
-        }
-        for (let i = 1; i < duplicates.length; i++)
-        {
-            stringToReturn += `${duplicates[i]}, `
+            stringToReturn += `s, in `;
+            for (let i = 1; i < duplicates.length; i++)
+            {
+                if (i == duplicates.length - 1) // if we're at the last duplicate
+                {
+                    stringToReturn += `and ${duplicates[i]}.`
+                }
+                else
+                {
+                    stringToReturn += `${duplicates[i]}, `
+                }
+            }
         }
         return stringToReturn;
     }
@@ -151,9 +162,7 @@ function Scanner()
                                 alignItems: "center",
                                 flexBasis: "46dvh",
                             }}>
-                                pp
-                                logo goes here
-                                barcode: meh
+                                successful detection
                             </Sheet>
                             <Sheet sx={{
                                 display: "flex",
@@ -184,6 +193,15 @@ function Scanner()
                                     spacing={1}
                                 >
                                     <Button
+                                        onClick={() => setisCaptured(() => false)}
+                                        color="success"
+                                        sx={{ minWidth: "30dvw", height: "10dvh" }}
+                                    >
+                                        <Typography
+                                            level="title-lg"
+                                        >Add to a collection</Typography>
+                                    </Button>
+                                    <Button
                                         onClick={() =>
                                         {
                                             setCamera(() => ({ isActive: true }))
@@ -193,16 +211,7 @@ function Scanner()
                                     >
                                         <Typography
                                             level="title-lg"
-                                        >Scan again</Typography>
-                                    </Button>
-                                    <Button
-                                        onClick={() => setisCaptured(() => false)}
-                                        color="success"
-                                        sx={{ minWidth: "30dvw", height: "10dvh" }}
-                                    >
-                                        <Typography
-                                            level="title-lg"
-                                        >Add disc</Typography>
+                                        >Re-scan</Typography>
                                     </Button>
                                 </ButtonGroup>
                             </Sheet>
@@ -223,9 +232,7 @@ function Scanner()
                                 alignItems: "center",
                                 flexBasis: "46dvh",
                             }}>
-                                this screen is
-                                for when no
-                                barcode detected
+                                initial decision screen
                             </Sheet>
                             <Sheet sx={{
                                 display: "flex",
@@ -262,10 +269,11 @@ function Scanner()
                                             setisCaptured(() => false)
                                         }}
                                         sx={{ minWidth: "60dvw", height: "10dvh" }}
+                                        color="primary"
                                     >
                                         <Typography
                                             level="title-lg"
-                                        >Scan again</Typography>
+                                        >Check across all collections</Typography>
                                     </Button>
                                 </ButtonGroup>
                             </Sheet>
