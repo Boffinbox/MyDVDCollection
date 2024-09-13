@@ -1,16 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
 
 import { Typography, Sheet, Button, ButtonGroup } from "@mui/joy"
 import { useState } from "react";
 
-import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
+import { BarcodeScanner, DetectedBarcode, useTorch } from "react-barcode-scanner";
 import 'react-barcode-scanner/polyfill'
 
-import { ICollectionHydrated, IDisc } from "../../Interfaces";
-import { PostBarcode } from "../../httpverbs/PostBarcode";
+import { ICollectionHydrated } from "../../Interfaces";
 
 export const Route = createFileRoute('/_webcam/scanner')({
     component: Scanner
@@ -28,40 +27,11 @@ function Scanner()
 
     const [formData, setFormData] = useState({ barcode: "", collectionId: "" })
 
-    const [camera, setCamera] = useState({ isActive: false })
+    const [camera, setCamera] = useState({ isActive: true })
     const [addDisc, setAddDisc] = useState({ isActive: false });
 
     const [detection, setDetection] = useState({ value: "" })
-
-    const newDiscMutation = useMutation({
-        mutationFn: (barcode: string) => PostBarcode(token, formData.collectionId, barcode),
-        onSuccess: (returnedDisc: IDisc) =>
-        {
-            console.log("received data was: ", returnedDisc)
-            console.log("coll id is: ", formData.collectionId)
-            queryClient.setQueryData(["collection", formData.collectionId],
-                (oldData: ICollectionHydrated) =>
-                {
-                    console.log(oldData)
-                    return {
-                        ...oldData,
-                        discs: [...oldData.discs, returnedDisc]
-                    }
-                }
-            )
-        }
-    })
-
-    function handleChange(evt: React.ChangeEvent<HTMLInputElement>)
-    {
-        setFormData(currentData =>
-        {
-            return {
-                ...currentData,
-                [evt.target.name]: evt.target.value
-            }
-        })
-    }
+    // const [isSupportTorch, isOpen, onTorchSwitch] = useTorch()
 
     async function handleCapture(detection: DetectedBarcode)
     {
@@ -113,11 +83,6 @@ function Scanner()
         return stringToReturn;
     }
 
-    async function handleSubmit()
-    {
-        await newDiscMutation.mutate(formData.barcode)
-    }
-
     if (collectionsQuery.isLoading) return <Typography level="h1">Loading...</Typography>
     if (collectionsQuery.isError) return (
         <>
@@ -148,6 +113,19 @@ function Scanner()
                             options={{ delay: 500, formats: ["ean_13", "ean_8", "upc_a", "upc_e"] }}
                             onCapture={handleCapture}
                         />
+                        {camera.isActive ? <>
+                            <Button
+                                onClick={() => { window.alert("pp") }}
+                                sx={{
+                                    position: "absolute",
+                                    bottom: "5dvw",
+                                    right: "5dvw"
+                                }}
+                            >
+                                Torch
+                            </Button>
+                        </> : null}
+
                         <Sheet
                             sx={{
                                 position: "absolute",
