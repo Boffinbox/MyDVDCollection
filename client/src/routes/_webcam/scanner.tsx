@@ -6,7 +6,7 @@ import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilitie
 import { Typography, Sheet, Button, ButtonGroup } from "@mui/joy"
 import { useState } from "react";
 
-import { BarcodeScanner, DetectedBarcode, useTorch } from "react-barcode-scanner";
+import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
 import 'react-barcode-scanner/polyfill'
 
 import { ICollectionHydrated } from "../../Interfaces";
@@ -31,7 +31,6 @@ function Scanner()
     const [addDisc, setAddDisc] = useState({ isActive: false });
 
     const [detection, setDetection] = useState({ value: "" })
-    // const [isSupportTorch, isOpen, onTorchSwitch] = useTorch()
 
     async function handleCapture(detection: DetectedBarcode)
     {
@@ -113,19 +112,6 @@ function Scanner()
                             options={{ delay: 500, formats: ["ean_13", "ean_8", "upc_a", "upc_e"] }}
                             onCapture={handleCapture}
                         />
-                        {camera.isActive ? <>
-                            <Button
-                                onClick={() => { window.alert("pp") }}
-                                sx={{
-                                    position: "absolute",
-                                    bottom: "5dvw",
-                                    right: "5dvw"
-                                }}
-                            >
-                                Torch
-                            </Button>
-                        </> : null}
-
                         <Sheet
                             sx={{
                                 position: "absolute",
