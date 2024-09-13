@@ -25,21 +25,23 @@ function Scanner()
     const collectionsQuery = useQuery(CollectionsQueryOptions(token))
     const collections: ICollectionHydrated[] = collectionsQuery.data;
 
-    const [formData, setFormData] = useState({ barcode: "", collectionId: "" })
+    const [formData, setFormData] = useState({ barcode: "" })
 
-    const [camera, setCamera] = useState({ isActive: true })
+    const [camera, setCamera] = useState({ isActive: false })
     const [addDisc, setAddDisc] = useState({ isActive: false });
+    const [isCaptured, setisCaptured] = useState(false);
 
-    const [detection, setDetection] = useState({ value: "" })
+    const [genString, setGenString] = useState({ value: "" })
 
     async function handleCapture(detection: DetectedBarcode)
     {
         await setFormData(prevData => ({ ...prevData, barcode: detection.rawValue }));
         setCamera(() => ({ isActive: false }))
+        setisCaptured(() => (true))
         console.log("barcode to check is: ", formData.barcode);
         const duplicates: string[] = isOwnedBarcode(collections, formData.barcode)
         console.log(duplicates);
-        setDetection(() => ({ value: genText(duplicates) }))
+        setGenString(() => ({ value: genText(duplicates) }))
     }
 
     function isOwnedBarcode(collections: ICollectionHydrated[], barcode: string): string[]
@@ -93,52 +95,47 @@ function Scanner()
     return (
         <>
             <Sheet sx={{
+                height: "92dvh",
+                width: "100%",
+                overflow: "hidden",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "center",
+                justifyContent: "center"
             }}>
-                <Sheet sx={{
-                    height: "92dvh",
-                    width: "100%",
-                    overflow: "hidden",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}>
-                    {camera.isActive ? <>
-                        <BarcodeScanner
-                            options={{ delay: 500, formats: ["ean_13", "ean_8", "upc_a", "upc_e"] }}
-                            onCapture={handleCapture}
-                        />
-                        <Sheet
-                            sx={{
-                                position: "absolute",
-                                width: "80%",
-                                height: "60%",
-                                borderRadius: "20dvw",
-                                border: "1dvw solid grey",
-                                borderLeft: "1dvw",
-                                borderRight: "1dvw",
-                                backgroundColor: "transparent"
-                            }}
-                        >
-                        </Sheet>
-                        <Sheet
-                            sx={{
-                                position: "absolute",
-                                width: "80%",
-                                height: "59.5%",
-                                borderRadius: "20dvw",
-                                border: "0.8dvw solid dimgrey",
-                                borderLeft: "1dvw",
-                                borderRight: "1dvw",
-                                backgroundColor: "transparent"
-                            }}
-                        >
-                        </Sheet>
-                    </> : <>
+                {camera.isActive ? <>
+                    <BarcodeScanner
+                        options={{ delay: 500, formats: ["ean_13", "ean_8", "upc_a", "upc_e"] }}
+                        onCapture={handleCapture}
+                    />
+                    <Sheet
+                        sx={{
+                            position: "absolute",
+                            width: "80%",
+                            height: "50%",
+                            borderRadius: "15dvw",
+                            border: "0.5dvh solid grey",
+                            borderLeft: "1dvw",
+                            borderRight: "1dvw",
+                            backgroundColor: "transparent"
+                        }}
+                    >
+                    </Sheet>
+                    <Sheet
+                        sx={{
+                            position: "absolute",
+                            width: "80%",
+                            height: "49.4%",
+                            borderRadius: "15dvw",
+                            border: "0.5dvh solid dimgrey",
+                            borderLeft: "1dvw",
+                            borderRight: "1dvw",
+                            backgroundColor: "transparent"
+                        }}
+                    >
+                    </Sheet>
+                </> : <>
+                    {isCaptured ? <>
                         <Sheet sx={{
                             display: "flex",
                             flexDirection: "column",
@@ -169,7 +166,7 @@ function Scanner()
                                     <Typography
                                         level="body-lg"
                                         textAlign={"center"}>
-                                        {detection.value}
+                                        {genString.value}
                                     </Typography>
                                 </Sheet>
                             </Sheet>
@@ -187,16 +184,21 @@ function Scanner()
                                     spacing={1}
                                 >
                                     <Button
-                                        onClick={() => { setCamera(() => ({ isActive: true })) }}
-                                        sx={{ width: "50dvw", height: "10dvh" }}
+                                        onClick={() =>
+                                        {
+                                            setCamera(() => ({ isActive: true }))
+                                            setisCaptured(() => false)
+                                        }}
+                                        sx={{ minWidth: "30dvw", height: "10dvh" }}
                                     >
                                         <Typography
                                             level="title-lg"
                                         >Scan again</Typography>
                                     </Button>
                                     <Button
-                                        onClick={() => { setAddDisc(() => ({ isActive: true })) }}
+                                        onClick={() => setisCaptured(() => false)}
                                         color="success"
+                                        sx={{ minWidth: "30dvw", height: "10dvh" }}
                                     >
                                         <Typography
                                             level="title-lg"
@@ -205,9 +207,72 @@ function Scanner()
                                 </ButtonGroup>
                             </Sheet>
                         </Sheet>
+                    </> : <>
+                        <Sheet sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            height: "92dvh",
+                            mx: "10dvw"
+                        }}>
+                            <Sheet sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                flexBasis: "46dvh",
+                            }}>
+                                this screen is
+                                for when no
+                                barcode detected
+                            </Sheet>
+                            <Sheet sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                flexBasis: "23dvh",
+                            }}>
+                                <Sheet>
+                                    <Typography
+                                        level="body-lg"
+                                        textAlign={"center"}>
+                                        {"Choose a collection, or scan now!"}
+                                    </Typography>
+                                </Sheet>
+                            </Sheet>
+                            <Sheet sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                flexBasis: "23dvh"
+                            }}>
+                                <ButtonGroup
+                                    buttonFlex={1}
+                                    variant="solid"
+                                    size="lg"
+                                    spacing={1}
+                                >
+                                    <Button
+                                        onClick={() =>
+                                        {
+                                            setCamera(() => ({ isActive: true }))
+                                            setisCaptured(() => false)
+                                        }}
+                                        sx={{ minWidth: "60dvw", height: "10dvh" }}
+                                    >
+                                        <Typography
+                                            level="title-lg"
+                                        >Scan again</Typography>
+                                    </Button>
+                                </ButtonGroup>
+                            </Sheet>
+                        </Sheet>
                     </>}
-                </Sheet>
-            </Sheet >
+                </>}
+            </Sheet>
         </>
     )
 
