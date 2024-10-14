@@ -20,6 +20,7 @@ import { Route as NonauthLoginImport } from './routes/_nonauth/login'
 import { Route as NonauthHomeImport } from './routes/_nonauth/home'
 import { Route as MdcNewformImport } from './routes/_mdc/newform'
 import { Route as MdcCollectionsImport } from './routes/_mdc/collections'
+import { Route as WebcamScannerCollectionIdImport } from './routes/_webcam/scanner_.$collectionId'
 import { Route as MdcCollectionsCollectionIdImport } from './routes/_mdc/collections_.$collectionId'
 
 // Create/Update Routes
@@ -67,6 +68,11 @@ const MdcNewformRoute = MdcNewformImport.update({
 const MdcCollectionsRoute = MdcCollectionsImport.update({
   path: '/collections',
   getParentRoute: () => MdcRoute,
+} as any)
+
+const WebcamScannerCollectionIdRoute = WebcamScannerCollectionIdImport.update({
+  path: '/scanner/$collectionId',
+  getParentRoute: () => WebcamRoute,
 } as any)
 
 const MdcCollectionsCollectionIdRoute = MdcCollectionsCollectionIdImport.update(
@@ -150,6 +156,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MdcCollectionsCollectionIdImport
       parentRoute: typeof MdcImport
     }
+    '/_webcam/scanner/$collectionId': {
+      id: '/_webcam/scanner/$collectionId'
+      path: '/scanner/$collectionId'
+      fullPath: '/scanner/$collectionId'
+      preLoaderRoute: typeof WebcamScannerCollectionIdImport
+      parentRoute: typeof WebcamImport
+    }
   }
 }
 
@@ -186,10 +199,12 @@ const NonauthRouteWithChildren =
 
 interface WebcamRouteChildren {
   WebcamScannerRoute: typeof WebcamScannerRoute
+  WebcamScannerCollectionIdRoute: typeof WebcamScannerCollectionIdRoute
 }
 
 const WebcamRouteChildren: WebcamRouteChildren = {
   WebcamScannerRoute: WebcamScannerRoute,
+  WebcamScannerCollectionIdRoute: WebcamScannerCollectionIdRoute,
 }
 
 const WebcamRouteWithChildren =
@@ -204,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/logout': typeof NonauthLogoutRoute
   '/scanner': typeof WebcamScannerRoute
   '/collections/$collectionId': typeof MdcCollectionsCollectionIdRoute
+  '/scanner/$collectionId': typeof WebcamScannerCollectionIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -215,6 +231,7 @@ export interface FileRoutesByTo {
   '/logout': typeof NonauthLogoutRoute
   '/scanner': typeof WebcamScannerRoute
   '/collections/$collectionId': typeof MdcCollectionsCollectionIdRoute
+  '/scanner/$collectionId': typeof WebcamScannerCollectionIdRoute
 }
 
 export interface FileRoutesById {
@@ -229,6 +246,7 @@ export interface FileRoutesById {
   '/_nonauth/logout': typeof NonauthLogoutRoute
   '/_webcam/scanner': typeof WebcamScannerRoute
   '/_mdc/collections/$collectionId': typeof MdcCollectionsCollectionIdRoute
+  '/_webcam/scanner/$collectionId': typeof WebcamScannerCollectionIdRoute
 }
 
 export interface FileRouteTypes {
@@ -242,6 +260,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/scanner'
     | '/collections/$collectionId'
+    | '/scanner/$collectionId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
@@ -252,6 +271,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/scanner'
     | '/collections/$collectionId'
+    | '/scanner/$collectionId'
   id:
     | '__root__'
     | '/_mdc'
@@ -264,6 +284,7 @@ export interface FileRouteTypes {
     | '/_nonauth/logout'
     | '/_webcam/scanner'
     | '/_mdc/collections/$collectionId'
+    | '/_webcam/scanner/$collectionId'
   fileRoutesById: FileRoutesById
 }
 
@@ -315,7 +336,8 @@ export const routeTree = rootRoute
     "/_webcam": {
       "filePath": "_webcam.tsx",
       "children": [
-        "/_webcam/scanner"
+        "/_webcam/scanner",
+        "/_webcam/scanner/$collectionId"
       ]
     },
     "/_mdc/collections": {
@@ -345,6 +367,10 @@ export const routeTree = rootRoute
     "/_mdc/collections/$collectionId": {
       "filePath": "_mdc/collections_.$collectionId.tsx",
       "parent": "/_mdc"
+    },
+    "/_webcam/scanner/$collectionId": {
+      "filePath": "_webcam/scanner_.$collectionId.tsx",
+      "parent": "/_webcam"
     }
   }
 }

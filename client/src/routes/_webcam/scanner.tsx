@@ -71,7 +71,7 @@ function Scanner()
         let stringToReturn = `This barcode (${formData.barcode}) was found ${amount} time`
         if (duplicates.length == 1) // barcode not found
         {
-            stringToReturn += `s.`
+            stringToReturn = `You don't have this item yet! Would you like to add?`
         }
         else if (duplicates.length == 2) // singular check, time vs times
         {
