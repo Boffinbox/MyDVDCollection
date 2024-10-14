@@ -1,9 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
 
-import { Typography, Sheet, Button, ButtonGroup, ModalClose, ModalDialog, Modal, ModalDialogProps, ListItem, List } from "@mui/joy"
+import { Typography, Sheet, Button, ButtonGroup, ModalDialog, Modal, ListItem, List, ListItemButton } from "@mui/joy"
 import { useState } from "react";
 
 import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
@@ -18,6 +18,8 @@ export const Route = createFileRoute('/_webcam/scanner')({
 function Scanner()
 {
     const queryClient = useQueryClient();
+
+    const navigate = useNavigate();
 
     const tokenQuery = useQuery(AccessTokenQueryOptions())
     const token: string | undefined = tokenQuery.data;
@@ -273,7 +275,14 @@ function Scanner()
                                                 ]}
                                             >
                                                 {collections.map((item, index) => (
-                                                    <ListItem key={index}>{item.title}</ListItem>
+                                                    <ListItem key={index}>
+                                                        <ListItemButton
+                                                            variant="outlined"
+                                                            onClick={() => navigate({ to: "/scanner/$collectionId", params: { collectionId: item._id } })}
+                                                        >
+                                                            {item.title}
+                                                        </ListItemButton>
+                                                    </ListItem>
                                                 ))}
                                             </List>
                                         </ModalDialog>
