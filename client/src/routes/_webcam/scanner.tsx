@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
 
-import { Typography, Sheet, Button, ButtonGroup } from "@mui/joy"
+import { Typography, Sheet, Button, ButtonGroup, ModalClose, ModalDialog, Modal, ModalDialogProps, ListItem, List } from "@mui/joy"
 import { useState } from "react";
 
 import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
@@ -28,10 +28,11 @@ function Scanner()
     const [formData, setFormData] = useState({ barcode: "" })
 
     const [camera, setCamera] = useState({ isActive: false })
-    const [addDisc, setAddDisc] = useState({ isActive: false });
     const [isCaptured, setisCaptured] = useState(false);
 
     const [genString, setGenString] = useState({ value: "" })
+
+    const [openModal, setOpenModal] = useState<boolean>(false);
 
     async function handleCapture(detection: DetectedBarcode)
     {
@@ -241,8 +242,42 @@ function Scanner()
                                     <Typography
                                         level="body-lg"
                                         textAlign={"center"}>
-                                        {"Choose a collection, or scan now!"}
                                     </Typography>
+                                    <Button variant="outlined" color="neutral" onClick={() => setOpenModal(true)}>
+                                        Open modal
+                                    </Button>
+                                    <Modal
+                                        open={openModal}
+                                        onClose={() => setOpenModal(false)}
+                                        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                    >
+                                        <ModalDialog
+                                            variant="outlined"
+                                            sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
+                                        >
+                                            <Typography
+                                                component="h2"
+                                                level="h4"
+                                                textColor="inherit"
+                                                sx={{ fontWeight: 'lg', mb: 1 }}
+                                            >
+                                                Pick a collection
+                                            </Typography>
+                                            <List
+                                                sx={[
+                                                    {
+                                                        mx: 'calc(-1 * var(--ModalDialog-padding))',
+                                                        px: 'var(--ModalDialog-padding)',
+                                                        overflow: 'scroll'
+                                                    }
+                                                ]}
+                                            >
+                                                {collections.map((item, index) => (
+                                                    <ListItem key={index}>{item.title}</ListItem>
+                                                ))}
+                                            </List>
+                                        </ModalDialog>
+                                    </Modal>
                                 </Sheet>
                             </Sheet>
                             <Sheet sx={{
@@ -264,7 +299,7 @@ function Scanner()
                                             setCamera(() => ({ isActive: true }))
                                             setisCaptured(() => false)
                                         }}
-                                        sx={{ minWidth: "60dvw", height: "10dvh" }}
+                                        sx={{ minWidth: "30dvw", height: "10dvh" }}
                                         color="primary"
                                     >
                                         Check across all collections
@@ -274,7 +309,7 @@ function Scanner()
                         </Sheet>
                     </>}
                 </>}
-            </Sheet>
+            </Sheet >
         </>
     )
 

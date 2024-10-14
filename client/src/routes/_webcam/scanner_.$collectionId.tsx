@@ -34,8 +34,7 @@ function ScannerIndividualCollection()
 
     const [formData, setFormData] = useState({ barcode: '' })
 
-    const [camera, setCamera] = useState({ isActive: false })
-    const [addDisc, setAddDisc] = useState({ isActive: false })
+    const [camera, setCamera] = useState({ isActive: true })
     const [isCaptured, setisCaptured] = useState(false)
 
     const [genString, setGenString] = useState({ value: '' })
