@@ -81,25 +81,14 @@ function ScannerIndividualCollection()
         if (duplicates.length == 1)
         {
             // barcode not found
-            stringToReturn = `You don't have this item yet! Would you like to add?`
-        } else if (duplicates.length == 2)
+            stringToReturn = `Item not found in this collection. Would you like to add?`
+        } else if (amount === "1")
         {
             // singular check, time vs times
-            stringToReturn += `, in ${duplicates[1]}.`
+            stringToReturn += ` in ${duplicates[1]}.`
         } else
         {
-            stringToReturn += `s, in `
-            for (let i = 1; i < duplicates.length; i++)
-            {
-                if (i == duplicates.length - 1)
-                {
-                    // if we're at the last duplicate
-                    stringToReturn += `and ${duplicates[i]}.`
-                } else
-                {
-                    stringToReturn += `${duplicates[i]}, `
-                }
-            }
+            stringToReturn += `s in ${duplicates[1]}.`
         }
         return stringToReturn
     }
