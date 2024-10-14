@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import
 {
     AccessTokenQueryOptions,
@@ -13,7 +13,8 @@ import { useState } from 'react'
 import { BarcodeScanner, DetectedBarcode } from 'react-barcode-scanner'
 import 'react-barcode-scanner/polyfill'
 
-import { ICollectionHydrated } from '../../Interfaces'
+import { ICollectionHydrated, IDisc } from '../../Interfaces'
+import { PostBarcode } from '../../httpverbs/PostBarcode'
 
 export const Route = createFileRoute('/_webcam/scanner/$collectionId')({
     component: ScannerIndividualCollection,
@@ -38,6 +39,25 @@ function ScannerIndividualCollection()
     const [isCaptured, setisCaptured] = useState(false)
 
     const [genString, setGenString] = useState({ value: '' })
+
+    const newDiscMutation = useMutation({
+        mutationFn: (barcode: string) => PostBarcode(token, collectionId, barcode),
+        onSuccess: (returnedDisc: IDisc) =>
+        {
+            console.log("received data was: ", returnedDisc)
+            console.log("coll id is: ", collectionId)
+            queryClient.setQueryData(["collection", collectionId],
+                (oldData: ICollectionHydrated) =>
+                {
+                    console.log(oldData)
+                    return {
+                        ...oldData,
+                        discs: [...oldData.discs, returnedDisc]
+                    }
+                }
+            )
+        }
+    })
 
     async function handleCapture(detection: DetectedBarcode)
     {
@@ -206,7 +226,11 @@ function ScannerIndividualCollection()
                                             spacing={1}
                                         >
                                             <Button
-                                                onClick={() => setisCaptured(() => false)}
+                                                onClick={async () => 
+                                                {
+                                                    await newDiscMutation.mutate(formData.barcode)
+                                                    setisCaptured(() => false)
+                                                }}
                                                 color="success"
                                                 sx={{ minWidth: '30dvw', height: '10dvh' }}
                                             >
