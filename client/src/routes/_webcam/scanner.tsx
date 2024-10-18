@@ -27,7 +27,7 @@ function Scanner()
     const collectionsQuery = useQuery(CollectionsQueryOptions(token))
     const collections: ICollectionHydrated[] = collectionsQuery.data;
 
-    const [formData, setFormData] = useState({ barcode: "" })
+    const [formData, setFormData] = useState({ barcode: "", collectionId: "" })
 
     const [camera, setCamera] = useState({ isActive: false })
     const [isCaptured, setisCaptured] = useState(false);
@@ -149,6 +149,58 @@ function Scanner()
                     >
                     </Sheet>
                 </> : <>
+                    <Modal
+                        open={openModal}
+                        onClose={() => setOpenModal(false)}
+                        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    >
+                        <ModalDialog
+                            variant="outlined"
+                            sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
+                        >
+                            <Typography
+                                component="h2"
+                                level="h4"
+                                textColor="inherit"
+                                sx={{ fontWeight: 'lg', mb: 1 }}
+                            >
+                                Pick a collection
+                            </Typography>
+                            <List
+                                sx={[
+                                    {
+                                        mx: 'calc(-1 * var(--ModalDialog-padding))',
+                                        px: 'var(--ModalDialog-padding)',
+                                        overflow: 'scroll'
+                                    }
+                                ]}
+                            >
+                                {collections.map((item, index) => (
+                                    <ListItem key={index}>
+                                        <ListItemButton
+                                            variant="outlined"
+                                            // onClick={() => navigate({ to: "/scanner/$collectionId", params: { collectionId: item._id } })}
+                                            onClick={() =>
+                                            {
+                                                setFormData(currentData =>
+                                                {
+                                                    return {
+                                                        ...currentData,
+                                                        collectionId: item._id.toString()
+                                                    };
+                                                })
+                                                setOpenModal(false)
+                                                console.log(`formdata is: ${formData.collectionId}`)
+                                                // setCamera({ isActive: true })
+                                            }}
+                                        >
+                                            {item.title}
+                                        </ListItemButton>
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </ModalDialog>
+                    </Modal>
                     {isCaptured ? <>
                         <Sheet sx={{
                             display: "flex",
@@ -165,7 +217,7 @@ function Scanner()
                                 alignItems: "center",
                                 flexBasis: "46dvh",
                             }}>
-                                successful detection
+                                successful detection with id of: {formData.collectionId}
                             </Sheet>
                             <Sheet sx={{
                                 display: "flex",
@@ -196,7 +248,17 @@ function Scanner()
                                     spacing={1}
                                 >
                                     <Button
-                                        onClick={() => setisCaptured(() => false)}
+                                        onClick={() => 
+                                        {
+                                            if (formData.collectionId == "")
+                                            {
+                                                setOpenModal(true)
+                                            }
+                                            else
+                                            {
+                                                setisCaptured(() => false)
+                                            }
+                                        }}
                                         color="success"
                                         sx={{ minWidth: "30dvw", height: "10dvh" }}
                                     >
@@ -232,6 +294,9 @@ function Scanner()
                                 flexBasis: "46dvh",
                             }}>
                                 initial decision screen
+                                <Button variant="outlined" color="neutral" onClick={() => console.log(formData.collectionId)}>
+                                    current collId is {formData.collectionId}
+                                </Button>
                             </Sheet>
                             <Sheet sx={{
                                 display: "flex",
@@ -246,47 +311,8 @@ function Scanner()
                                         textAlign={"center"}>
                                     </Typography>
                                     <Button variant="outlined" color="neutral" onClick={() => setOpenModal(true)}>
-                                        Open modal
+                                        Choose a collection
                                     </Button>
-                                    <Modal
-                                        open={openModal}
-                                        onClose={() => setOpenModal(false)}
-                                        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                                    >
-                                        <ModalDialog
-                                            variant="outlined"
-                                            sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
-                                        >
-                                            <Typography
-                                                component="h2"
-                                                level="h4"
-                                                textColor="inherit"
-                                                sx={{ fontWeight: 'lg', mb: 1 }}
-                                            >
-                                                Pick a collection
-                                            </Typography>
-                                            <List
-                                                sx={[
-                                                    {
-                                                        mx: 'calc(-1 * var(--ModalDialog-padding))',
-                                                        px: 'var(--ModalDialog-padding)',
-                                                        overflow: 'scroll'
-                                                    }
-                                                ]}
-                                            >
-                                                {collections.map((item, index) => (
-                                                    <ListItem key={index}>
-                                                        <ListItemButton
-                                                            variant="outlined"
-                                                            onClick={() => navigate({ to: "/scanner/$collectionId", params: { collectionId: item._id } })}
-                                                        >
-                                                            {item.title}
-                                                        </ListItemButton>
-                                                    </ListItem>
-                                                ))}
-                                            </List>
-                                        </ModalDialog>
-                                    </Modal>
                                 </Sheet>
                             </Sheet>
                             <Sheet sx={{
