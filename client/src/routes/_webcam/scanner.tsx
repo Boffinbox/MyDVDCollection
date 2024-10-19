@@ -12,6 +12,7 @@ import 'react-barcode-scanner/polyfill'
 import { ICollectionHydrated, IDisc } from "../../Interfaces";
 import { PostBarcode } from "../../httpverbs/PostBarcode";
 import { ScannerFlairs } from "../../components/ScannerFlairs";
+import { ScannerCollectionModal } from "../../components/ScannerCollectionModal";
 
 export const Route = createFileRoute('/_webcam/scanner')({
     component: Scanner
@@ -138,58 +139,6 @@ function Scanner()
                 alignItems: "center",
                 justifyContent: "center"
             }}>
-                <Modal
-                    open={openModal}
-                    onClose={() => setOpenModal(false)}
-                    sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                >
-                    <ModalDialog
-                        variant="outlined"
-                        sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
-                    >
-                        <Typography
-                            component="h2"
-                            level="h4"
-                            textColor="inherit"
-                            sx={{ fontWeight: 'lg', mb: 1 }}
-                        >
-                            Pick a collection
-                        </Typography>
-                        <List
-                            sx={[
-                                {
-                                    mx: 'calc(-1 * var(--ModalDialog-padding))',
-                                    px: 'var(--ModalDialog-padding)',
-                                    overflow: 'scroll'
-                                }
-                            ]}
-                        >
-                            {collections.map((item, index) => (
-                                <ListItem key={index}>
-                                    <ListItemButton
-                                        variant="outlined"
-                                        // onClick={() => navigate({ to: "/scanner/$collectionId", params: { collectionId: item._id } })}
-                                        onClick={() =>
-                                        {
-                                            setFormData(currentData =>
-                                            {
-                                                return {
-                                                    ...currentData,
-                                                    collectionId: item._id.toString()
-                                                };
-                                            })
-                                            setOpenModal(false)
-                                            console.log(`formdata is: ${formData.collectionId}`)
-                                            // setCamera({ isActive: true })
-                                        }}
-                                    >
-                                        {item.title}
-                                    </ListItemButton>
-                                </ListItem>
-                            ))}
-                        </List>
-                    </ModalDialog>
-                </Modal>
                 {camera.isActive ? <>
                     <BarcodeScanner
                         options={{ delay: 500, formats: ["ean_13", "ean_8", "upc_a", "upc_e"] }}
@@ -321,7 +270,12 @@ function Scanner()
                     </Sheet>
                 </>}
             </Sheet >
+            <ScannerCollectionModal
+                isModalOpen={openModal}
+                closeModal={() => setOpenModal(false)}
+                collections={collections}
+                setFormData={setFormData}
+            />
         </>
     )
-
 }
