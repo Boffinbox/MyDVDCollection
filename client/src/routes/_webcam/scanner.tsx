@@ -11,6 +11,7 @@ import 'react-barcode-scanner/polyfill'
 
 import { ICollectionHydrated, IDisc } from "../../Interfaces";
 import { PostBarcode } from "../../httpverbs/PostBarcode";
+import { ScannerFlairs } from "../../components/ScannerFlairs";
 
 export const Route = createFileRoute('/_webcam/scanner')({
     component: Scanner
@@ -137,233 +138,187 @@ function Scanner()
                 alignItems: "center",
                 justifyContent: "center"
             }}>
+                <Modal
+                    open={openModal}
+                    onClose={() => setOpenModal(false)}
+                    sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                >
+                    <ModalDialog
+                        variant="outlined"
+                        sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
+                    >
+                        <Typography
+                            component="h2"
+                            level="h4"
+                            textColor="inherit"
+                            sx={{ fontWeight: 'lg', mb: 1 }}
+                        >
+                            Pick a collection
+                        </Typography>
+                        <List
+                            sx={[
+                                {
+                                    mx: 'calc(-1 * var(--ModalDialog-padding))',
+                                    px: 'var(--ModalDialog-padding)',
+                                    overflow: 'scroll'
+                                }
+                            ]}
+                        >
+                            {collections.map((item, index) => (
+                                <ListItem key={index}>
+                                    <ListItemButton
+                                        variant="outlined"
+                                        // onClick={() => navigate({ to: "/scanner/$collectionId", params: { collectionId: item._id } })}
+                                        onClick={() =>
+                                        {
+                                            setFormData(currentData =>
+                                            {
+                                                return {
+                                                    ...currentData,
+                                                    collectionId: item._id.toString()
+                                                };
+                                            })
+                                            setOpenModal(false)
+                                            console.log(`formdata is: ${formData.collectionId}`)
+                                            // setCamera({ isActive: true })
+                                        }}
+                                    >
+                                        {item.title}
+                                    </ListItemButton>
+                                </ListItem>
+                            ))}
+                        </List>
+                    </ModalDialog>
+                </Modal>
                 {camera.isActive ? <>
                     <BarcodeScanner
                         options={{ delay: 500, formats: ["ean_13", "ean_8", "upc_a", "upc_e"] }}
                         onCapture={handleCapture}
                     />
-                    <Sheet
-                        sx={{
-                            position: "absolute",
-                            width: "80%",
-                            height: "50%",
-                            borderRadius: "15dvw",
-                            border: "0.5dvh solid grey",
-                            borderLeft: "1dvw",
-                            borderRight: "1dvw",
-                            backgroundColor: "transparent"
-                        }}
-                    >
-                    </Sheet>
-                    <Sheet
-                        sx={{
-                            position: "absolute",
-                            width: "80%",
-                            height: "49.4%",
-                            borderRadius: "15dvw",
-                            border: "0.5dvh solid dimgrey",
-                            borderLeft: "1dvw",
-                            borderRight: "1dvw",
-                            backgroundColor: "transparent"
-                        }}
-                    >
-                    </Sheet>
+                    <ScannerFlairs />
                 </> : <>
-                    <Modal
-                        open={openModal}
-                        onClose={() => setOpenModal(false)}
-                        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                    >
-                        <ModalDialog
-                            variant="outlined"
-                            sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
-                        >
-                            <Typography
-                                component="h2"
-                                level="h4"
-                                textColor="inherit"
-                                sx={{ fontWeight: 'lg', mb: 1 }}
-                            >
-                                Pick a collection
-                            </Typography>
-                            <List
-                                sx={[
-                                    {
-                                        mx: 'calc(-1 * var(--ModalDialog-padding))',
-                                        px: 'var(--ModalDialog-padding)',
-                                        overflow: 'scroll'
-                                    }
-                                ]}
-                            >
-                                {collections.map((item, index) => (
-                                    <ListItem key={index}>
-                                        <ListItemButton
-                                            variant="outlined"
-                                            // onClick={() => navigate({ to: "/scanner/$collectionId", params: { collectionId: item._id } })}
+                    <Sheet sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        height: "92dvh",
+                        mx: "10dvw"
+                    }}>
+                        <Sheet sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexBasis: "46dvh",
+                        }}>
+                            {isCaptured ?
+                                <>
+                                    successful detection with id of: {formData.collectionId}
+                                </> : <>
+                                    initial decision screen
+                                    <Button variant="outlined" color="neutral" onClick={() => console.log(formData.collectionId)}>
+                                        current collId is {formData.collectionId}
+                                    </Button>
+                                </>
+                            }
+                        </Sheet>
+                        <Sheet sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexBasis: "23dvh",
+                        }}>
+                            {isCaptured ?
+                                <>
+                                    <Sheet>
+                                        <Typography
+                                            level="body-lg"
+                                            textAlign={"center"}>
+                                            {genString.value}
+                                        </Typography>
+                                    </Sheet>
+                                </> : <>
+                                    <Sheet>
+                                        <Typography
+                                            level="body-lg"
+                                            textAlign={"center"}>
+                                        </Typography>
+                                        <Button variant="outlined" color="neutral" onClick={() => setOpenModal(true)}>
+                                            Choose a collection
+                                        </Button>
+                                    </Sheet>
+                                </>
+                            }
+                        </Sheet>
+                        <Sheet sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexBasis: "23dvh"
+                        }}>
+                            {isCaptured ?
+                                <>
+                                    <ButtonGroup
+                                        buttonFlex={1}
+                                        variant="solid"
+                                        size="lg"
+                                        spacing={1}
+                                    >
+                                        <Button
+                                            onClick={async () => 
+                                            {
+                                                if (formData.collectionId == "")
+                                                {
+                                                    setOpenModal(true)
+                                                }
+                                                else
+                                                {
+                                                    await newDiscMutation.mutate(formData.barcode)
+                                                    setisCaptured(() => false)
+                                                }
+                                            }}
+                                            color="success"
+                                            sx={{ minWidth: "30dvw", height: "10dvh" }}
+                                        >
+                                            Add to a collection
+                                        </Button>
+                                        <Button
                                             onClick={() =>
                                             {
-                                                setFormData(currentData =>
-                                                {
-                                                    return {
-                                                        ...currentData,
-                                                        collectionId: item._id.toString()
-                                                    };
-                                                })
-                                                setOpenModal(false)
-                                                console.log(`formdata is: ${formData.collectionId}`)
-                                                // setCamera({ isActive: true })
-                                            }}
-                                        >
-                                            {item.title}
-                                        </ListItemButton>
-                                    </ListItem>
-                                ))}
-                            </List>
-                        </ModalDialog>
-                    </Modal>
-                    {isCaptured ? <>
-                        <Sheet sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            height: "92dvh",
-                            mx: "10dvw"
-                        }}>
-                            <Sheet sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                flexBasis: "46dvh",
-                            }}>
-                                successful detection with id of: {formData.collectionId}
-                            </Sheet>
-                            <Sheet sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                flexBasis: "23dvh",
-                            }}>
-                                <Sheet>
-                                    <Typography
-                                        level="body-lg"
-                                        textAlign={"center"}>
-                                        {genString.value}
-                                    </Typography>
-                                </Sheet>
-                            </Sheet>
-                            <Sheet sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                flexBasis: "23dvh"
-                            }}>
-                                <ButtonGroup
-                                    buttonFlex={1}
-                                    variant="solid"
-                                    size="lg"
-                                    spacing={1}
-                                >
-                                    <Button
-                                        onClick={async () => 
-                                        {
-                                            if (formData.collectionId == "")
-                                            {
-                                                setOpenModal(true)
-                                            }
-                                            else
-                                            {
-                                                await newDiscMutation.mutate(formData.barcode)
+                                                setCamera(() => ({ isActive: true }))
                                                 setisCaptured(() => false)
-                                            }
-                                        }}
-                                        color="success"
-                                        sx={{ minWidth: "30dvw", height: "10dvh" }}
+                                            }}
+                                            sx={{ minWidth: "30dvw", height: "10dvh" }}
+                                        >
+                                            Re-scan
+                                        </Button>
+                                    </ButtonGroup>
+                                </> : <>
+                                    <ButtonGroup
+                                        buttonFlex={1}
+                                        variant="solid"
+                                        size="lg"
+                                        spacing={1}
                                     >
-                                        Add to a collection
-                                    </Button>
-                                    <Button
-                                        onClick={() =>
-                                        {
-                                            setCamera(() => ({ isActive: true }))
-                                            setisCaptured(() => false)
-                                        }}
-                                        sx={{ minWidth: "30dvw", height: "10dvh" }}
-                                    >
-                                        Re-scan
-                                    </Button>
-                                </ButtonGroup>
-                            </Sheet>
+                                        <Button
+                                            onClick={() =>
+                                            {
+                                                setCamera(() => ({ isActive: true }))
+                                                setisCaptured(() => false)
+                                            }}
+                                            sx={{ minWidth: "30dvw", height: "10dvh" }}
+                                            color="primary"
+                                        >
+                                            Check across all collections
+                                        </Button>
+                                    </ButtonGroup>
+                                </>
+                            }
                         </Sheet>
-                    </> : <>
-                        <Sheet sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            height: "92dvh",
-                            mx: "10dvw"
-                        }}>
-                            <Sheet sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                flexBasis: "46dvh",
-                            }}>
-                                initial decision screen
-                                <Button variant="outlined" color="neutral" onClick={() => console.log(formData.collectionId)}>
-                                    current collId is {formData.collectionId}
-                                </Button>
-                            </Sheet>
-                            <Sheet sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                flexBasis: "23dvh",
-                            }}>
-                                <Sheet>
-                                    <Typography
-                                        level="body-lg"
-                                        textAlign={"center"}>
-                                    </Typography>
-                                    <Button variant="outlined" color="neutral" onClick={() => setOpenModal(true)}>
-                                        Choose a collection
-                                    </Button>
-                                </Sheet>
-                            </Sheet>
-                            <Sheet sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                flexBasis: "23dvh"
-                            }}>
-                                <ButtonGroup
-                                    buttonFlex={1}
-                                    variant="solid"
-                                    size="lg"
-                                    spacing={1}
-                                >
-                                    <Button
-                                        onClick={() =>
-                                        {
-                                            setCamera(() => ({ isActive: true }))
-                                            setisCaptured(() => false)
-                                        }}
-                                        sx={{ minWidth: "30dvw", height: "10dvh" }}
-                                        color="primary"
-                                    >
-                                        Check across all collections
-                                    </Button>
-                                </ButtonGroup>
-                            </Sheet>
-                        </Sheet>
-                    </>}
+                    </Sheet>
                 </>}
             </Sheet >
         </>
