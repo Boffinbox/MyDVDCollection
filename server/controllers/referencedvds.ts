@@ -29,13 +29,18 @@ export async function getReferenceDVD(barcode: string, title: string)
     {
         // const externalDVDInfo = exampleUPCItemDBData();
         const externalDVDInfo = await fetchExternalDVD(barcode);
-        if (!externalDVDInfo)
+        if (externalDVDInfo.items.length > 0)
         {
-            return null;
+            const { title } = externalDVDInfo.items[0]
+            const newRefDVD = await newReferenceDVD(barcode, title);
+            return newRefDVD;
         }
-        const { title } = externalDVDInfo.items[0]
-        const newRefDVD = await newReferenceDVD(barcode, title);
-        return newRefDVD;
+        else // if external db does not have it, make an unknown...
+        {
+            console.log("we didn't find it, rip");
+            const newRefDVD = await newReferenceDVD(barcode, "unknown");
+            return newRefDVD;
+        }
     }
 }
 
@@ -44,7 +49,7 @@ async function fetchExternalDVD(barcode: string = `7321905737437`)
     console.log(`WARNING - BURNING 1 API CALL, with barcode: ${barcode}`)
     const response = await axios.get(`https://api.upcitemdb.com/prod/trial/lookup?upc=${barcode}`)
         .then((res) => { return res; })
-        .catch((e) => { console.log(e); return null; })
+        .catch((e) => { return e.response })
     console.log(response.data);
     return response.data
 }
