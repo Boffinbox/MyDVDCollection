@@ -49,7 +49,7 @@ export function MdcQuickAddDrawer({ open, setOpen }: { open: boolean, setOpen: (
         }
         catch
         {
-            // todo disc no post
+            // todo barcode not found, or other errors
         }
     }
 

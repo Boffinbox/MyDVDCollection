@@ -56,7 +56,7 @@ function Collection()
             })
     })
 
-    if (collectionQuery.isLoading) return <Typography level="h1">Loading...</Typography>
+    if (collectionQuery.isLoading) return <Typography level="h1" sx={{ height: "100%" }}>Loading...</Typography>
     if (collectionQuery.isError) return (
         <>
             <div>Oh no! Something went wrong...</div>
@@ -66,7 +66,7 @@ function Collection()
 
     return (
         <>
-            <Stack gap={1}>
+            <Stack gap={1} sx={{ height: "100%" }}>
                 <Typography level="h1">{collection.title}{` `}
                     <Typography level="h4">{collectionQuery.isFetching ? <span style={{ fontSize: "small" }}>Fetching...</span> : null}</Typography>
                 </Typography>

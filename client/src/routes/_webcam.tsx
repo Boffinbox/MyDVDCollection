@@ -6,16 +6,16 @@ import { AccessTokenQueryOptions, CollectionsQueryOptions } from '../utilities/Q
 import { Sheet, Typography, Link } from "@mui/joy";
 import { MdcAppbar } from '../components/MdcAppbar';
 
-export const Route = createFileRoute('/_mdc')({
+export const Route = createFileRoute('/_webcam')({
     beforeLoad: async ({ context: { queryClient } }) =>
     {
         const data = await queryClient.ensureQueryData(AccessTokenQueryOptions())
         await queryClient.ensureQueryData(CollectionsQueryOptions(data))
     },
-    component: MDCComponent
+    component: WebcamComponent
 })
 
-function MDCComponent()
+function WebcamComponent()
 {
     const tokenQuery = useQuery(AccessTokenQueryOptions())
     // const token: string | undefined = tokenQuery.data;
@@ -39,45 +39,28 @@ function MDCComponent()
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: "space-between",
-                    gap: 0,
-                    height: "100dvh"
+                    height: "100dvh",
+                    overflow: "hidden"
                 }}
             >
-                <Sheet
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        height: "100%",
-                        overflow: "scroll"
-                    }}>
-                    {tokenQuery.isLoading ?
-                        <Sheet
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                height: "100%",
-                                gap: 2,
-                            }}>
-                            <Typography
-                                level="h1"
-                            >
-                                Loading...
-                            </Typography>
-                        </Sheet>
-                        :
-                        <Sheet sx={{
+                {tokenQuery.isLoading ?
+                    <Sheet
+                        sx={{
                             display: "flex",
                             flexDirection: "column",
+                            alignItems: "center",
                             justifyContent: "center",
-                            height: "100%",
-                            m: 2
+                            height: "100%"
                         }}>
-                            <Outlet />
-                        </Sheet>
-                    }
-                </Sheet>
+                        <Typography
+                            level="h1"
+                        >
+                            Loading...
+                        </Typography>
+                    </Sheet>
+                    :
+                    <Outlet />
+                }
                 <MdcAppbar />
             </Sheet >
         </>

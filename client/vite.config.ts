@@ -18,5 +18,8 @@ export default defineConfig({
             key: "certs/localhost-key.pem",
             cert: "certs/localhost.pem"
         }
+    },
+    optimizeDeps: {
+        exclude: ['@preflower/barcode-detector-polyfill']
     }
 })

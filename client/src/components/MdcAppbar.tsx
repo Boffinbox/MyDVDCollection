@@ -15,6 +15,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { useState } from "react";
 import { MdcSettingsDrawer } from './MdcSettingsDrawer';
 import { MdcQuickAddDrawer } from "./MdcQuickAddDrawer";
+import { Quiz } from "@mui/icons-material";
 
 export function MdcAppbar()
 {
@@ -46,6 +47,18 @@ export function MdcAppbar()
                         <VideoLibraryIcon />
                         <Typography sx={{ display: { xs: "none", sm: "block" } }}>
                             Collections
+                        </Typography>
+                    </Button>
+                    <Button
+                        sx={{
+                            display: "flex",
+                            justifyContent: "space-evenly",
+                        }}
+                        onClick={() => navigate({ to: "/scanner" })}
+                    >
+                        <Quiz />
+                        <Typography sx={{ display: { xs: "none", sm: "block" } }}>
+                            Dupe Check
                         </Typography>
                     </Button>
                     <Button
