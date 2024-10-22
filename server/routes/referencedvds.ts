@@ -10,4 +10,6 @@ const referencedvds = require("../controllers/referencedvds");
 // reference dvd logic
 router.get("/", TryCatchAsync(referencedvds.getAllReferenceDVDs))
 
+router.post("/", TryCatchAsync(referencedvds.updateReferenceDVD))
+
 module.exports = router;

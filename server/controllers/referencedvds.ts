@@ -65,6 +65,24 @@ async function newReferenceDVD(barcode: string, title: string)
     return newRefDVD
 }
 
+export async function updateReferenceDVD(req, res)
+{
+    const { barcode, title } = req.body
+    if (!barcode || !title)
+    {
+        return res.status(400).json({ message: "bad format" });
+    }
+    const referenceDVDToUpdate = await ReferenceDVDModel.findOne({ barcode });
+    if (!referenceDVDToUpdate)
+    {
+        return res.status(404).json({ message: "barcode not found in references" });
+    }
+    referenceDVDToUpdate.title = title
+    await referenceDVDToUpdate.save()
+    console.log(referenceDVDToUpdate)
+    res.status(200).json({ message: "it worked" });
+}
+
 function exampleUPCItemDBData()
 {
     const data =
