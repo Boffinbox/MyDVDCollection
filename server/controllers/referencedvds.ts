@@ -80,7 +80,7 @@ export async function updateReferenceDVD(req, res)
     referenceDVDToUpdate.title = title
     await referenceDVDToUpdate.save()
     console.log(referenceDVDToUpdate)
-    res.status(200).json({ message: "it worked" });
+    res.status(200).json(referenceDVDToUpdate);
 }
 
 function exampleUPCItemDBData()
