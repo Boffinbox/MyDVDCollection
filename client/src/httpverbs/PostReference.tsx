@@ -15,7 +15,7 @@ export async function PostReference(
     console.log("reached postreference")
     if (token == undefined)
     {
-        throw new Error("No access token supplied to post barcode.");
+        throw new Error("No access token supplied to post reference.");
     }
     const userData =
     {

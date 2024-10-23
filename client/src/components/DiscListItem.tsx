@@ -10,6 +10,8 @@ import
     AspectRatio,
     IconButton,
     Divider,
+    Modal,
+    ModalDialog,
 
 } from "@mui/joy";
 
@@ -18,6 +20,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useState } from "react";
 import { Edit } from "@mui/icons-material";
+import { SingleLineForm } from "./SingleLineForm";
 
 export function DiscListItem(
     {
@@ -35,6 +38,9 @@ export function DiscListItem(
     })
 {
     const [open, setOpen] = useState(false);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
 
     return (
         <>
@@ -77,7 +83,11 @@ export function DiscListItem(
                             <ListItemButton>Here's</ListItemButton>
                             <ListItemButton>Some</ListItemButton>
                             <Divider />
-                            <ListItemButton onClick={() => updateRefFn("unknown")} color="warning" sx={{ fontWeight: "lg" }}>
+                            <ListItemButton
+                                // onClick={() => updateRefFn()}
+                                onClick={() => setIsModalOpen(true)}
+                                color="warning"
+                                sx={{ fontWeight: "lg" }}>
                                 <ListItemDecorator>
                                     <Edit />
                                 </ListItemDecorator>
@@ -97,6 +107,30 @@ export function DiscListItem(
                     </Drawer>
                 </ListItemButton>
             </ListItem>
+            <Modal
+                open={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+                <ModalDialog
+                    variant="outlined"
+                    sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
+                >
+                    <Typography
+                        component="h2"
+                        level="h4"
+                        textColor="inherit"
+                        sx={{ fontWeight: 'lg', mb: 1 }}
+                    >
+                        Rename Item
+                    </Typography>
+                    <SingleLineForm
+                        submitButtonText="Update!"
+                        labelText="New Title"
+                        onSubmit={(title: string) => updateRefFn(title)}
+                    />
+                </ModalDialog>
+            </Modal>
         </>
     )
 }
