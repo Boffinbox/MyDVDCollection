@@ -1,12 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { DeleteDisc } from "../../httpverbs/DeleteDisc";
 import { PostBarcode } from "../../httpverbs/PostBarcode";
+import { PostReference } from "../../httpverbs/PostReference";
 import { SingleLineForm } from "../../components/SingleLineForm";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionQueryOptions } from "../../utilities/Queries";
-import { ICollectionHydrated, IDisc } from "../../Interfaces";
+import { ICollectionHydrated, IDisc, IReferenceDisc } from "../../Interfaces";
 import { DiscListItem } from "../../components/DiscListItem";
 import { Divider, List, Stack, Typography } from "@mui/joy";
+
 
 export const Route = createFileRoute('/_mdc/collections/$collectionId')({
     component: Collection
@@ -37,6 +39,32 @@ function Collection()
                     return {
                         ...oldData,
                         discs: [...oldData.discs, returnedDisc]
+                    }
+                }
+            )
+        }
+    })
+
+    const updateRefDiscMutation = useMutation({
+        mutationFn: ({ barcode, title }: { barcode: string, title: string }) => PostReference({ token, barcode, title }),
+        onSuccess: (returnedRef: IReferenceDisc) =>
+        {
+            queryClient.setQueryData(["collection", collectionId],
+                (oldData: ICollectionHydrated) =>
+                {
+                    console.log(oldData)
+                    console.log(`modified ${returnedRef.barcode}`)
+                    const discs: IDisc[] = oldData.discs;
+                    for (let i = 0; i < discs.length; i++)
+                    {
+                        if (discs[i].referenceDVD.barcode === returnedRef.barcode)
+                        {
+                            discs[i].referenceDVD.title = returnedRef.title
+                        }
+                    }
+                    return {
+                        ...oldData,
+                        discs: [...discs]
                     }
                 }
             )
@@ -83,7 +111,8 @@ function Collection()
                             title={disc.referenceDVD.title}
                             barcode={disc.referenceDVD.barcode}
                             discId={disc._id}
-                            deleteFn={async () => await deleteDiscMutation.mutate(disc._id)} />
+                            deleteFn={async () => await deleteDiscMutation.mutate(disc._id)}
+                            updateRefFn={async (title: string) => await updateRefDiscMutation.mutate({ barcode: disc.referenceDVD.barcode, title })} />
                     ))}
                 </List>
             </Stack>

@@ -17,18 +17,21 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useState } from "react";
+import { Edit } from "@mui/icons-material";
 
 export function DiscListItem(
     {
         title = "notitle",
         barcode = "0000000000000",
         discId,
-        deleteFn
+        deleteFn,
+        updateRefFn
     }: {
         title: string,
         barcode: string,
         discId: string,
         deleteFn: (...args: any[]) => void,
+        updateRefFn: (...args: any[]) => void,
     })
 {
     const [open, setOpen] = useState(false);
@@ -73,6 +76,14 @@ export function DiscListItem(
                             <ListItemButton>And</ListItemButton>
                             <ListItemButton>Here's</ListItemButton>
                             <ListItemButton>Some</ListItemButton>
+                            <Divider />
+                            <ListItemButton onClick={() => updateRefFn("unknown")} color="warning" sx={{ fontWeight: "lg" }}>
+                                <ListItemDecorator>
+                                    <Edit />
+                                </ListItemDecorator>
+                                Edit Title
+                            </ListItemButton>
+                            <Divider />
                             <ListItemButton>Other</ListItemButton>
                             <ListItemButton>Actions</ListItemButton>
                             <Divider />

@@ -17,10 +17,12 @@ export interface IDisc
     _id: string;
     rating: number;
     watched: boolean;
-    referenceDVD:
-    {
-        _id: string;
-        title: string;
-        barcode: string;
-    }
+    referenceDVD: IReferenceDisc
+}
+
+export interface IReferenceDisc
+{
+    _id: string;
+    title: string;
+    barcode: string;
 }
