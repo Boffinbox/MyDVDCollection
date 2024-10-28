@@ -18,6 +18,7 @@ import { Route as WebcamScannerImport } from './routes/_webcam/scanner'
 import { Route as NonauthLogoutImport } from './routes/_nonauth/logout'
 import { Route as NonauthLoginImport } from './routes/_nonauth/login'
 import { Route as NonauthHomeImport } from './routes/_nonauth/home'
+import { Route as MdcUnknownsImport } from './routes/_mdc/unknowns'
 import { Route as MdcNewformImport } from './routes/_mdc/newform'
 import { Route as MdcCollectionsImport } from './routes/_mdc/collections'
 import { Route as WebcamScannerCollectionIdImport } from './routes/_webcam/scanner_.$collectionId'
@@ -58,6 +59,11 @@ const NonauthLoginRoute = NonauthLoginImport.update({
 const NonauthHomeRoute = NonauthHomeImport.update({
   path: '/home',
   getParentRoute: () => NonauthRoute,
+} as any)
+
+const MdcUnknownsRoute = MdcUnknownsImport.update({
+  path: '/unknowns',
+  getParentRoute: () => MdcRoute,
 } as any)
 
 const MdcNewformRoute = MdcNewformImport.update({
@@ -121,6 +127,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MdcNewformImport
       parentRoute: typeof MdcImport
     }
+    '/_mdc/unknowns': {
+      id: '/_mdc/unknowns'
+      path: '/unknowns'
+      fullPath: '/unknowns'
+      preLoaderRoute: typeof MdcUnknownsImport
+      parentRoute: typeof MdcImport
+    }
     '/_nonauth/home': {
       id: '/_nonauth/home'
       path: '/home'
@@ -171,12 +184,14 @@ declare module '@tanstack/react-router' {
 interface MdcRouteChildren {
   MdcCollectionsRoute: typeof MdcCollectionsRoute
   MdcNewformRoute: typeof MdcNewformRoute
+  MdcUnknownsRoute: typeof MdcUnknownsRoute
   MdcCollectionsCollectionIdRoute: typeof MdcCollectionsCollectionIdRoute
 }
 
 const MdcRouteChildren: MdcRouteChildren = {
   MdcCollectionsRoute: MdcCollectionsRoute,
   MdcNewformRoute: MdcNewformRoute,
+  MdcUnknownsRoute: MdcUnknownsRoute,
   MdcCollectionsCollectionIdRoute: MdcCollectionsCollectionIdRoute,
 }
 
@@ -214,6 +229,7 @@ export interface FileRoutesByFullPath {
   '': typeof WebcamRouteWithChildren
   '/collections': typeof MdcCollectionsRoute
   '/newform': typeof MdcNewformRoute
+  '/unknowns': typeof MdcUnknownsRoute
   '/home': typeof NonauthHomeRoute
   '/login': typeof NonauthLoginRoute
   '/logout': typeof NonauthLogoutRoute
@@ -226,6 +242,7 @@ export interface FileRoutesByTo {
   '': typeof WebcamRouteWithChildren
   '/collections': typeof MdcCollectionsRoute
   '/newform': typeof MdcNewformRoute
+  '/unknowns': typeof MdcUnknownsRoute
   '/home': typeof NonauthHomeRoute
   '/login': typeof NonauthLoginRoute
   '/logout': typeof NonauthLogoutRoute
@@ -241,6 +258,7 @@ export interface FileRoutesById {
   '/_webcam': typeof WebcamRouteWithChildren
   '/_mdc/collections': typeof MdcCollectionsRoute
   '/_mdc/newform': typeof MdcNewformRoute
+  '/_mdc/unknowns': typeof MdcUnknownsRoute
   '/_nonauth/home': typeof NonauthHomeRoute
   '/_nonauth/login': typeof NonauthLoginRoute
   '/_nonauth/logout': typeof NonauthLogoutRoute
@@ -255,6 +273,7 @@ export interface FileRouteTypes {
     | ''
     | '/collections'
     | '/newform'
+    | '/unknowns'
     | '/home'
     | '/login'
     | '/logout'
@@ -266,6 +285,7 @@ export interface FileRouteTypes {
     | ''
     | '/collections'
     | '/newform'
+    | '/unknowns'
     | '/home'
     | '/login'
     | '/logout'
@@ -279,6 +299,7 @@ export interface FileRouteTypes {
     | '/_webcam'
     | '/_mdc/collections'
     | '/_mdc/newform'
+    | '/_mdc/unknowns'
     | '/_nonauth/home'
     | '/_nonauth/login'
     | '/_nonauth/logout'
@@ -322,6 +343,7 @@ export const routeTree = rootRoute
       "children": [
         "/_mdc/collections",
         "/_mdc/newform",
+        "/_mdc/unknowns",
         "/_mdc/collections/$collectionId"
       ]
     },
@@ -346,6 +368,10 @@ export const routeTree = rootRoute
     },
     "/_mdc/newform": {
       "filePath": "_mdc/newform.tsx",
+      "parent": "/_mdc"
+    },
+    "/_mdc/unknowns": {
+      "filePath": "_mdc/unknowns.tsx",
       "parent": "/_mdc"
     },
     "/_nonauth/home": {
