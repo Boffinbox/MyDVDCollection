@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { DeleteDisc } from '../../httpverbs/DeleteDisc'
 import { PostReference } from '../../httpverbs/PostReference'
-import { SingleLineForm } from '../../components/SingleLineForm'
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query'
+import { useState } from "react";
 import
 {
     AccessTokenQueryOptions,
@@ -10,7 +10,6 @@ import
 } from '../../utilities/Queries'
 import
 {
-    ICollection,
     ICollectionHydrated,
     IDisc,
     IReferenceDisc,
@@ -30,17 +29,24 @@ function UnknownCollection()
     const token: string | undefined = tokenQuery.data
 
     const collectionsQuery = useQuery(CollectionsQueryOptions(token))
-    const allDiscs: ICollectionHydrated[] = collectionsQuery.data
-    let unknowns: IDisc[] = []
-    for (let i = 0; i < allDiscs.length; i++)
+    const collections: ICollectionHydrated[] = collectionsQuery.data
+
+    const [unknowns, setUnknowns] = useState(getCurrentUnknowns(collections))
+
+    function getCurrentUnknowns(collections: ICollectionHydrated[]): IDisc[]
     {
-        for (let j = 0; j < allDiscs[i].discs.length; j++)
+        let unknowns: IDisc[] = []
+        for (let i = 0; i < collections.length; i++)
         {
-            if (allDiscs[i].discs[j].referenceDVD.title === 'unknown')
+            for (let j = 0; j < collections[i].discs.length; j++)
             {
-                unknowns.push(allDiscs[i].discs[j])
+                if (collections[i].discs[j].referenceDVD.title === 'unknown')
+                {
+                    unknowns.push(collections[i].discs[j])
+                }
             }
         }
+        return unknowns
     }
 
     const updateRefDiscMutation = useMutation({
@@ -48,26 +54,17 @@ function UnknownCollection()
             PostReference({ token, barcode, title }),
         onSuccess: (returnedRef: IReferenceDisc) =>
         {
-            // queryClient.setQueryData(
-            //     ['collection', collectionId],
-            //     (oldData: ICollectionHydrated) =>
-            //     {
-            //         console.log(oldData)
-            //         console.log(`modified ${returnedRef.barcode}`)
-            //         const discs: IDisc[] = oldData.discs
-            //         for (let i = 0; i < discs.length; i++)
-            //         {
-            //             if (discs[i].referenceDVD.barcode === returnedRef.barcode)
-            //             {
-            //                 discs[i].referenceDVD.title = returnedRef.title
-            //             }
-            //         }
-            //         return {
-            //             ...oldData,
-            //             discs: [...discs],
-            //         }
-            //     },
-            // )
+            setUnknowns((oldData) =>
+            {
+                for (let i = 0; i < oldData.length; i++)
+                {
+                    if (oldData[i].referenceDVD.barcode === returnedRef.barcode)
+                    {
+                        oldData[i].referenceDVD.title = returnedRef.title
+                    }
+                }
+                return oldData
+            })
         },
     })
 

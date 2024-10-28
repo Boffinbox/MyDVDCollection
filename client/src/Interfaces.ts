@@ -2,14 +2,14 @@ export interface ICollection
 {
     _id: string;
     title: string;
-    discs: [string];
+    discs: string[];
 }
 
 export interface ICollectionHydrated
 {
     _id: string;
     title: string;
-    discs: [IDisc]
+    discs: IDisc[];
 }
 
 export interface IDisc
