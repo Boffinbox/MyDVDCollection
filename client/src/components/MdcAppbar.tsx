@@ -15,7 +15,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { useState } from "react";
 import { MdcSettingsDrawer } from './MdcSettingsDrawer';
 import { MdcQuickAddDrawer } from "./MdcQuickAddDrawer";
-import { Quiz } from "@mui/icons-material";
+import { CenterFocusStrong, Quiz } from "@mui/icons-material";
 
 export function MdcAppbar()
 {
@@ -56,9 +56,9 @@ export function MdcAppbar()
                         }}
                         onClick={() => navigate({ to: "/scanner" })}
                     >
-                        <Quiz />
+                        <CenterFocusStrong />
                         <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                            Dupe Check
+                            Scanner
                         </Typography>
                     </Button>
                     <Button
@@ -67,11 +67,12 @@ export function MdcAppbar()
                             justifyContent: "space-evenly"
                         }}
                         // onClick={() => navigate({ to: "/newform" })}
-                        onClick={() => { setOpenQuickAdd(true) }}
+                        onClick={() => navigate({ to: "/unknowns" })}
                     >
-                        <AddCircleIcon />
+
+                        <Quiz />
                         <Typography sx={{ display: { xs: "none", sm: "block" } }}>
-                            Quick Add
+                            Unknowns
                         </Typography>
                     </Button>
                     <Button
@@ -87,7 +88,7 @@ export function MdcAppbar()
                         </Typography>
                     </Button>
                 </ButtonGroup>
-                <MdcQuickAddDrawer open={openQuickAdd} setOpen={setOpenQuickAdd} />
+                {/* <MdcQuickAddDrawer open={openQuickAdd} setOpen={setOpenQuickAdd} /> */}
                 <MdcSettingsDrawer open={openSettings} setOpen={setOpenSettings} />
             </Sheet >
         </>
