@@ -13,6 +13,7 @@ import { ICollectionHydrated, IDisc } from "../../Interfaces";
 import { PostBarcode } from "../../httpverbs/PostBarcode";
 import { ScannerFlairs } from "../../components/ScannerFlairs";
 import { ScannerCollectionModal } from "../../components/ScannerCollectionModal";
+import { Checkmark } from "../../components/Checkmark";
 
 export const Route = createFileRoute('/_webcam/scanner')({
     component: Scanner
@@ -163,12 +164,10 @@ function Scanner()
                         }}>
                             {isCaptured ?
                                 <>
-                                    successful detection with id of: {formData.collectionId}
+                                    symbol logic here
                                 </> : <>
                                     initial decision screen
-                                    <Button variant="outlined" color="neutral" onClick={() => console.log(formData.collectionId)}>
-                                        current collId is {formData.collectionId}
-                                    </Button>
+                                    <Checkmark />
                                 </>
                             }
                         </Sheet>
@@ -195,7 +194,16 @@ function Scanner()
                                             textAlign={"center"}>
                                         </Typography>
                                         <Button variant="outlined" color="neutral" onClick={() => setOpenModal(true)}>
-                                            Choose a collection
+                                            {
+                                                !formData.collectionId ?
+                                                    <>
+                                                        Choose a collection
+                                                    </>
+                                                    :
+                                                    <>
+                                                        Selected: {collections.find((e) => e._id == formData.collectionId)!.title}
+                                                    </>
+                                            }
                                         </Button>
                                     </Sheet>
                                 </>
@@ -261,7 +269,7 @@ function Scanner()
                                             sx={{ minWidth: "30dvw", height: "10dvh" }}
                                             color="primary"
                                         >
-                                            Check across all collections
+                                            Start scanning!
                                         </Button>
                                     </ButtonGroup>
                                 </>
