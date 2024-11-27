@@ -1,7 +1,7 @@
 import { Sheet } from "@mui/joy";
 import { keyframes } from "@mui/system"
 
-export function ScannerCheckmark()
+export function ScannerTempMark()
 {
     const spin = keyframes`
     0% {

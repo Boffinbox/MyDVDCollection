@@ -13,7 +13,7 @@ import { ICollectionHydrated, IDisc } from "../../Interfaces";
 import { PostBarcode } from "../../httpverbs/PostBarcode";
 import { ScannerFlairs } from "../../components/ScannerFlairs";
 import { ScannerCollectionModal } from "../../components/ScannerCollectionModal";
-import { ScannerCheckmark } from "../../components/ScannerCheckmark";
+import { ScannerTempMark } from "../../components/ScannerTempMark";
 
 export const Route = createFileRoute('/_webcam/scanner')({
     component: Scanner
@@ -168,7 +168,7 @@ function Scanner()
                                 </> : <>
                                     initial decision screen
                                     <Sheet sx={{ height: "40dvh" }}>
-                                        <ScannerCheckmark />
+                                        <ScannerTempMark />
                                     </Sheet>
                                 </>
                             }
