@@ -42,7 +42,8 @@ export function ScannerCheckMark()
         clip-path: rect(0% 100% 100% 0%);
     }`;
 
-    const duration = `400ms`
+    const duration = `4000ms`
+    const color = `#00aa00`
 
     return (
         <>
@@ -62,7 +63,7 @@ export function ScannerCheckMark()
                         position: "absolute",
                         height: "100%",
                         width: "100%",
-                        backgroundColor: "#008800",
+                        backgroundColor: `${color}`,
                         borderRadius: "50%",
                         clipPath: "rect(0% 50% 100% 0%)",
                         animation: `${spin} ${duration} ease-in-out 1 forwards`,
@@ -80,7 +81,7 @@ export function ScannerCheckMark()
                         position: "absolute",
                         height: "100%",
                         width: "100%",
-                        backgroundColor: "#008800",
+                        backgroundColor: `${color}`,
                         borderRadius: "50%",
                         clipPath: "rect(0% 50% 100% 0%)",
                         animation: `${spin} ${duration} ease-in-out 1 forwards`,
@@ -100,7 +101,7 @@ export function ScannerCheckMark()
                     position: "absolute",
                     height: "10%",
                     width: "25%",
-                    backgroundColor: "#008800",
+                    backgroundColor: `${color}`,
                     top: "50%",
                     left: "50%",
                     clipPath: "rect(0% 100% 100% 0%)",
@@ -111,7 +112,7 @@ export function ScannerCheckMark()
                     position: "absolute",
                     height: "10%",
                     width: "50%",
-                    backgroundColor: "#008800",
+                    backgroundColor: `${color}`,
                     top: "50%",
                     left: "50%",
                     clipPath: "rect(0% 100% 100% 0%)",

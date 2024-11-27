@@ -1,5 +1,5 @@
 import { Modal, ModalDialog, Typography, List, ListItem, ListItemButton } from "@mui/joy";
-import { ICollectionHydrated } from "../Interfaces";
+import { ICollectionHydrated } from "../../Interfaces";
 
 export function ScannerCollectionModal(
     {

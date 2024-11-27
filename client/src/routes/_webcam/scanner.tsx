@@ -11,9 +11,10 @@ import 'react-barcode-scanner/polyfill'
 
 import { ICollectionHydrated, IDisc } from "../../Interfaces";
 import { PostBarcode } from "../../httpverbs/PostBarcode";
-import { ScannerFlairs } from "../../components/ScannerFlairs";
-import { ScannerCollectionModal } from "../../components/ScannerCollectionModal";
-import { ScannerCheckMark } from "../../components/ScannerCheckMark";
+import { ScannerFlairs } from "../../components/scanner/ScannerFlairs";
+import { ScannerCollectionModal } from "../../components/scanner/ScannerCollectionModal";
+import { ScannerCheckMark } from "../../components/scanner/ScannerCheckMark";
+import { ScannerQuestionMark } from "../../components/scanner/ScannerQuestionMark";
 
 export const Route = createFileRoute('/_webcam/scanner')({
     component: Scanner
@@ -167,7 +168,8 @@ function Scanner()
                                     symbol logic here
                                 </> : <>
                                     initial decision screen
-                                    <Sheet sx={{ height: "40dvh" }}>
+                                    <Sheet sx={{ height: "10dvh" }}>
+                                        <ScannerQuestionMark />
                                         <ScannerCheckMark />
                                     </Sheet>
                                 </>
