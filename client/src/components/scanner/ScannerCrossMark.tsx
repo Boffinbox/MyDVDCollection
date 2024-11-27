@@ -1,8 +1,8 @@
 import { Sheet } from "@mui/joy";
 
-export function ScannerExclamationMark()
+export function ScannerCrossMark()
 {
-    const color = `#de28a5`
+    const color = `#ff8400`
 
     return (
         <>
@@ -36,45 +36,68 @@ export function ScannerExclamationMark()
                     height: "40%",
                     width: "10%",
                     backgroundColor: `${color}`,
-                    borderRadius: "10%",
                     top: "50%",
                     left: "50%",
                     clipPath: "rect(0% 100% 100% 0%)",
-                    transform: "translate(-50%, -75%)",
+                    transform: "translate(-50%, -50%) rotate(45deg)",
+                }}></Sheet>
+                <Sheet sx={{
+                    position: "absolute",
+                    height: "40%",
+                    width: "10%",
+                    backgroundColor: `${color}`,
+                    top: "50%",
+                    left: "50%",
+                    clipPath: "rect(0% 100% 100% 0%)",
+                    transform: "translate(-50%, -50%) rotate(135deg)",
                 }}></Sheet>
                 <Sheet sx={{
                     position: "absolute",
                     height: "10%",
                     width: "10%",
                     backgroundColor: `${color}`,
-                    borderRadius: "10%",
+                    borderTopLeftRadius: "40%",
+                    borderTopRightRadius: "40%",
                     top: "50%",
                     left: "50%",
                     clipPath: "rect(0% 100% 100% 0%)",
-                    transform: "translate(-50%, -300%)",
+                    transform: "translate(-200%, -200%) rotate(-45deg)",
                 }}></Sheet>
                 <Sheet sx={{
                     position: "absolute",
                     height: "10%",
                     width: "10%",
                     backgroundColor: `${color}`,
-                    borderRadius: "10%",
+                    borderTopLeftRadius: "40%",
+                    borderTopRightRadius: "40%",
                     top: "50%",
                     left: "50%",
                     clipPath: "rect(0% 100% 100% 0%)",
-                    transform: "translate(-50%, 0%)",
+                    transform: "translate(100%, -200%) rotate(45deg)",
                 }}></Sheet>
-
                 <Sheet sx={{
                     position: "absolute",
                     height: "10%",
                     width: "10%",
                     backgroundColor: `${color}`,
-                    borderRadius: "10%",
+                    borderTopLeftRadius: "40%",
+                    borderTopRightRadius: "40%",
                     top: "50%",
                     left: "50%",
                     clipPath: "rect(0% 100% 100% 0%)",
-                    transform: "translate(-50%, 180%)",
+                    transform: "translate(100%, 100%) rotate(135deg)",
+                }}></Sheet>
+                <Sheet sx={{
+                    position: "absolute",
+                    height: "10%",
+                    width: "10%",
+                    backgroundColor: `${color}`,
+                    borderTopLeftRadius: "40%",
+                    borderTopRightRadius: "40%",
+                    top: "50%",
+                    left: "50%",
+                    clipPath: "rect(0% 100% 100% 0%)",
+                    transform: "translate(-200%, 100%) rotate(-135deg)",
                 }}></Sheet>
             </Sheet >
         </>
