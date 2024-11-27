@@ -42,8 +42,8 @@ export function ScannerCheckMark()
         clip-path: rect(0% 100% 100% 0%);
     }`;
 
-    const duration = `4000ms`
-    const color = `#00aa00`
+    const duration = `400ms`
+    const color = `#42e308`
 
     return (
         <>

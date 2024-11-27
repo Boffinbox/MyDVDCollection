@@ -1,49 +1,8 @@
 import { Sheet } from "@mui/joy";
-import { keyframes } from "@mui/system"
 
 export function ScannerQuestionMark()
 {
-    const spin = keyframes`
-    0% {
-        transform: rotate(180deg);
-    }
-    1% {
-        transform: rotate(0deg);
-    }
-    100%
-    {
-        transform: rotate(180deg);
-    }`;
-
-    const check1 = keyframes`
-    0% {
-        clip-path: rect(0% 100% 100% 0%);
-    }
-    1% {
-        clip-path: rect(0% 100% 100% 100%);
-    }
-    50%
-    {
-        clip-path: rect(0% 100% 100% 0%);
-    }`;
-
-    const check2 = keyframes`
-    0% {
-        clip-path: rect(0% 100% 100% 0%);
-    }
-    1% {
-        clip-path: rect(0% 100% 100% 100%);
-    }
-    50% {
-        clip-path: rect(0% 100% 100% 100%);
-    }
-    100%
-    {
-        clip-path: rect(0% 100% 100% 0%);
-    }`;
-
-    const duration = `400ms`
-    const color = `#0000ff`
+    const color = `#1c4eff`
 
     return (
         <>
@@ -88,7 +47,7 @@ export function ScannerQuestionMark()
                         width: "100%",
                         top: "50%",
                         left: "50%",
-                        clipPath: "rect(0% 100% 100% 40%)",
+                        clipPath: "rect(0% 100% 100% 30%)",
                         transform: "translate(-90%, -0%)",
                     }}></Sheet>
                     <Sheet sx={{

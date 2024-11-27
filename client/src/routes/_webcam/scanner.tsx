@@ -15,6 +15,7 @@ import { ScannerFlairs } from "../../components/scanner/ScannerFlairs";
 import { ScannerCollectionModal } from "../../components/scanner/ScannerCollectionModal";
 import { ScannerCheckMark } from "../../components/scanner/ScannerCheckMark";
 import { ScannerQuestionMark } from "../../components/scanner/ScannerQuestionMark";
+import { ScannerExclamationMark } from "../../components/scanner/ScannerExclamationMark";
 
 export const Route = createFileRoute('/_webcam/scanner')({
     component: Scanner
@@ -168,9 +169,14 @@ function Scanner()
                                     symbol logic here
                                 </> : <>
                                     initial decision screen
-                                    <Sheet sx={{ height: "10dvh" }}>
-                                        <ScannerQuestionMark />
+                                    <Sheet sx={{
+                                        height: "30dvh",
+                                        display: "flex",
+                                        flexDirection: "row",
+                                    }}>
                                         <ScannerCheckMark />
+                                        <ScannerQuestionMark />
+                                        <ScannerExclamationMark />
                                     </Sheet>
                                 </>
                             }
