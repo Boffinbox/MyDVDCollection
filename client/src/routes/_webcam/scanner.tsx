@@ -100,45 +100,54 @@ function Scanner()
         {
             return `You don't have this item yet! Would you like to add?`
         }
-        let indicies = []
+        let titles = []
+        let discCount = 0;
         for (let i = 0; i < collections.length; i++)
         {
+            let wasFound = false;
             for (let j = 0; j < collections[i].discs.length; j++)
             {
                 if (collections[i].discs[j].referenceDVD.barcode === barcode)
                 {
-                    indicies.push([i, j]);
+                    wasFound = true;
+                    discCount++
+                }
+            }
+            if (wasFound)
+            {
+                titles.push(collections[i].title);
+            }
+        }
+        let collCount = titles.length
+        let stringToReturn = `Barcode [${barcode}] was found ${discCount} time`
+        if (discCount == 1)
+        {
+            stringToReturn += ` `
+        }
+        else
+        {
+            stringToReturn += `s `
+        }
+        if (collCount == 1) // singular check, time vs times
+        {
+            stringToReturn += `in [${titles[0]}].`
+        }
+        else
+        {
+            stringToReturn += `across ${collCount} collections: in `;
+            for (let i = 0; i < titles.length; i++)
+            {
+                if (i == titles.length - 1) // if we're at the last duplicate
+                {
+                    stringToReturn += `and in [${titles[i]}].`
+                }
+                else
+                {
+                    stringToReturn += `[${titles[i]}], `
                 }
             }
         }
-        let amount = indicies.length
-        let stringToReturn = `This barcode (${barcode}) was found ${amount} time`
-        return stringToReturn
-        // let collIndicies = []
-        // for (let i = 0; i < indicies.length; i++)
-        // {
-        //     collIndicies.push(collections[indicies[i][0]].title);
-        // }
-        // else if (amount >= 1) // singular check, time vs times
-        // {
-        //     stringToReturn += `, in ${duplicates[1]}.`
-        // }
-        // else
-        // {
-        //     stringToReturn += `s, in `;
-        //     for (let i = 1; i < duplicates.length; i++)
-        //     {
-        //         if (i == duplicates.length - 1) // if we're at the last duplicate
-        //         {
-        //             stringToReturn += `and ${duplicates[i]}.`
-        //         }
-        //         else
-        //         {
-        //             stringToReturn += `${duplicates[i]}, `
-        //         }
-        //     }
-        // }
-        // return stringToReturn;
+        return stringToReturn;
     }
 
     if (collectionsQuery.isLoading) return <Typography level="h1">Loading...</Typography>
@@ -175,8 +184,6 @@ function Scanner()
                         height: "92dvh",
                         mx: "10dvw"
                     }}>
-                        {`barcode is: ${formData.barcode}`},
-                        {`isOwnedBarcode is: ${isOwnedBarcode}`}
                         <Sheet sx={{
                             display: "flex",
                             flexDirection: "column",
