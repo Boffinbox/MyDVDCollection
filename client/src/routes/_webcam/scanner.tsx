@@ -164,80 +164,65 @@ function Scanner()
                             flexDirection: "column",
                             justifyContent: "center",
                             alignItems: "center",
-                            flexBasis: "46dvh",
+                            flexBasis: "46dvh"
                         }}>
-                            {isCaptured ?
-                                <>
-                                    symbol logic here
-                                </> : <>
-                                    initial decision screen
-                                    <Sheet sx={{
-                                        height: "18dvh",
-                                        display: "flex",
-                                        flexDirection: "row",
-                                    }}>
+                            <Sheet sx={{ height: "40dvh", my: "6dvh" }}>
+                                {isCaptured ?
+                                    // actual scanner logic
+                                    <>
                                         <ScannerCheckMark />
+                                    </> :
+                                    // pre scanner logic
+                                    <>
                                         <ScannerQuestionMark />
-                                        <ScannerExclamationMark />
-                                        <ScannerCrossMark />
-                                        <ScannerCheckMarkA />
-                                    </Sheet>
-                                </>
-                            }
+                                    </>
+                                }
+                            </Sheet>
                         </Sheet>
                         <Sheet sx={{
                             display: "flex",
                             flexDirection: "column",
                             justifyContent: "center",
                             alignItems: "center",
-                            flexBasis: "23dvh",
+                            flexBasis: "13dvh",
                         }}>
-                            {isCaptured ?
-                                <>
-                                    <Sheet>
-                                        <Typography
-                                            level="body-lg"
-                                            textAlign={"center"}>
-                                            {genString.value}
-                                        </Typography>
-                                    </Sheet>
-                                </> : <>
-                                    <Sheet>
-                                        <Typography
-                                            level="body-lg"
-                                            textAlign={"center"}>
-                                        </Typography>
-                                        <Button variant="outlined" color="neutral" onClick={() => setOpenModal(true)}>
-                                            {
-                                                !formData.collectionId ?
-                                                    <>
-                                                        Choose a collection
-                                                    </>
-                                                    :
-                                                    <>
-                                                        Selected: {collections.find((e) => e._id == formData.collectionId)!.title}
-                                                    </>
+                            <Sheet>
+                                <Typography
+                                    level="body-lg"
+                                    textAlign={"center"}>
+                                    {isCaptured ?
+                                        <>{genString.value}
+                                        </> : <>
+                                            {!formData.collectionId ?
+                                                <>
+                                                    Choose a collection to scan against, or press "Scan all collections!" to check across all collections.
+                                                </> : <>
+                                                    You have selected: {collections.find((e) => e._id == formData.collectionId)!.title}
+                                                </>
                                             }
-                                        </Button>
-                                    </Sheet>
-                                </>
-                            }
+
+                                        </>
+                                    }
+                                </Typography>
+                            </Sheet>
+
                         </Sheet>
                         <Sheet sx={{
                             display: "flex",
                             flexDirection: "column",
                             justifyContent: "center",
                             alignItems: "center",
-                            flexBasis: "23dvh"
+                            flexBasis: "33dvh"
                         }}>
-                            {isCaptured ?
-                                <>
-                                    <ButtonGroup
-                                        buttonFlex={1}
-                                        variant="solid"
-                                        size="lg"
-                                        spacing={1}
-                                    >
+                            <ButtonGroup
+                                buttonFlex={1}
+                                variant="solid"
+                                size="lg"
+                                spacing={1}
+                            >
+                                {isCaptured ?
+                                    <>
+                                        {/* if after scan */}
                                         <Button
                                             onClick={async () => 
                                             {
@@ -252,7 +237,7 @@ function Scanner()
                                                 }
                                             }}
                                             color="success"
-                                            sx={{ minWidth: "30dvw", height: "10dvh" }}
+                                            sx={{ minWidth: "30dvw", height: "15dvh" }}
                                         >
                                             Add to a collection
                                         </Button>
@@ -262,32 +247,44 @@ function Scanner()
                                                 setCamera(() => ({ isActive: true }))
                                                 setisCaptured(() => false)
                                             }}
-                                            sx={{ minWidth: "30dvw", height: "10dvh" }}
+                                            sx={{ minWidth: "30dvw", height: "15dvh" }}
                                         >
                                             Re-scan
                                         </Button>
-                                    </ButtonGroup>
-                                </> : <>
-                                    <ButtonGroup
-                                        buttonFlex={1}
-                                        variant="solid"
-                                        size="lg"
-                                        spacing={1}
-                                    >
+                                    </> : <>
+                                        {/* if before scan */}
+                                        <Button
+                                            onClick={() => setOpenModal(true)}
+                                            color="success"
+                                            sx={{ minWidth: "30dvw", height: "15dvh" }}
+                                        >
+                                            {!formData.collectionId ?
+                                                <>
+                                                    Choose a collection
+                                                </> : <>
+                                                    Re-select collection
+                                                </>
+                                            }
+                                        </Button>
                                         <Button
                                             onClick={() =>
                                             {
                                                 setCamera(() => ({ isActive: true }))
                                                 setisCaptured(() => false)
                                             }}
-                                            sx={{ minWidth: "30dvw", height: "10dvh" }}
+                                            sx={{ minWidth: "30dvw", height: "15dvh" }}
                                             color="primary"
                                         >
-                                            Start scanning!
+                                            {!formData.collectionId ?
+                                                <>
+                                                    Scan all collections!
+                                                </> : <>
+                                                    Scan your {collections.find((e) => e._id == formData.collectionId)!.title} collection!
+                                                </>
+                                            }
                                         </Button>
-                                    </ButtonGroup>
-                                </>
-                            }
+                                    </>}
+                            </ButtonGroup>
                         </Sheet>
                     </Sheet>
                 </>}

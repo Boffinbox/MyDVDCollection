@@ -31,7 +31,7 @@ export function ScannerCollectionModal(
                         textColor="inherit"
                         sx={{ fontWeight: 'lg', mb: 1 }}
                     >
-                        Pick a collection
+                        Pick a collection to scan:
                     </Typography>
                     <List
                         sx={[
