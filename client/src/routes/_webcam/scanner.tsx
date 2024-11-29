@@ -38,7 +38,8 @@ function Scanner()
     const [formData, setFormData] = useState({ barcode: "", collectionId: "" })
 
     const [camera, setCamera] = useState({ isActive: false })
-    const [isCaptured, setisCaptured] = useState(false);
+    const [isCaptured, setIsCaptured] = useState(false);
+    const [isOwnedBarcode, setIsOwnedBarcode] = useState(true);
 
     const [genString, setGenString] = useState({ value: "" })
 
@@ -65,18 +66,41 @@ function Scanner()
 
     async function handleCapture(detection: DetectedBarcode)
     {
-        await setFormData(prevData => ({ ...prevData, barcode: detection.rawValue }));
+        const barcode = detection.rawValue
+        setFormData(prevData => ({ ...prevData, barcode }));
+        console.log("barcode to check is: ", barcode);
+        const owned = isOwned(collections, barcode)
+        setIsOwnedBarcode(owned)
+        console.log("is this barcode owned? : " + owned)
+        let text = genText(collections, barcode, owned)
+        console.log("generated text is: " + text)
+        setGenString(() => ({ value: text }))
+        setIsCaptured(() => (true))
         setCamera(() => ({ isActive: false }))
-        setisCaptured(() => (true))
-        console.log("barcode to check is: ", formData.barcode);
-        const duplicates: string[] = isOwnedBarcode(collections, formData.barcode)
-        console.log(duplicates);
-        setGenString(() => ({ value: genText(duplicates) }))
     }
 
-    function isOwnedBarcode(collections: ICollectionHydrated[], barcode: string): string[]
+    function isOwned(collections: ICollectionHydrated[], barcode: string): boolean
     {
-        let indicies = [];
+        for (let i = 0; i < collections.length; i++)
+        {
+            for (let j = 0; j < collections[i].discs.length; j++)
+            {
+                if (collections[i].discs[j].referenceDVD.barcode === barcode)
+                {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    function genText(collections: ICollectionHydrated[], barcode: string, isOwnedBarcode: boolean): string
+    {
+        if (isOwnedBarcode === false)
+        {
+            return `You don't have this item yet! Would you like to add?`
+        }
+        let indicies = []
         for (let i = 0; i < collections.length; i++)
         {
             for (let j = 0; j < collections[i].discs.length; j++)
@@ -87,42 +111,34 @@ function Scanner()
                 }
             }
         }
-        let collIndicies = []
-        for (let i = 0; i < indicies.length; i++)
-        {
-            collIndicies.push(collections[indicies[i][0]].title);
-        }
-        return [indicies.length.toString(), ...new Set(collIndicies)];
-    }
-
-    function genText(duplicates: string[]): string
-    {
-        const amount = duplicates[0];
-        let stringToReturn = `This barcode (${formData.barcode}) was found ${amount} time`
-        if (duplicates.length == 1) // barcode not found
-        {
-            stringToReturn = `You don't have this item yet! Would you like to add?`
-        }
-        else if (duplicates.length == 2) // singular check, time vs times
-        {
-            stringToReturn += `, in ${duplicates[1]}.`
-        }
-        else
-        {
-            stringToReturn += `s, in `;
-            for (let i = 1; i < duplicates.length; i++)
-            {
-                if (i == duplicates.length - 1) // if we're at the last duplicate
-                {
-                    stringToReturn += `and ${duplicates[i]}.`
-                }
-                else
-                {
-                    stringToReturn += `${duplicates[i]}, `
-                }
-            }
-        }
-        return stringToReturn;
+        let amount = indicies.length
+        let stringToReturn = `This barcode (${barcode}) was found ${amount} time`
+        return stringToReturn
+        // let collIndicies = []
+        // for (let i = 0; i < indicies.length; i++)
+        // {
+        //     collIndicies.push(collections[indicies[i][0]].title);
+        // }
+        // else if (amount >= 1) // singular check, time vs times
+        // {
+        //     stringToReturn += `, in ${duplicates[1]}.`
+        // }
+        // else
+        // {
+        //     stringToReturn += `s, in `;
+        //     for (let i = 1; i < duplicates.length; i++)
+        //     {
+        //         if (i == duplicates.length - 1) // if we're at the last duplicate
+        //         {
+        //             stringToReturn += `and ${duplicates[i]}.`
+        //         }
+        //         else
+        //         {
+        //             stringToReturn += `${duplicates[i]}, `
+        //         }
+        //     }
+        // }
+        // return stringToReturn;
     }
 
     if (collectionsQuery.isLoading) return <Typography level="h1">Loading...</Typography>
@@ -159,6 +175,8 @@ function Scanner()
                         height: "92dvh",
                         mx: "10dvw"
                     }}>
+                        {`barcode is: ${formData.barcode}`},
+                        {`isOwnedBarcode is: ${isOwnedBarcode}`}
                         <Sheet sx={{
                             display: "flex",
                             flexDirection: "column",
@@ -170,7 +188,17 @@ function Scanner()
                                 {isCaptured ?
                                     // actual scanner logic
                                     <>
-                                        <ScannerCheckMark />
+                                        {(isOwnedBarcode) ?
+                                            // if a duplicate
+                                            <>
+                                                <ScannerCheckMark />
+                                            </> :
+                                            // if not a duplicate
+                                            <>
+                                                <ScannerExclamationMark />
+                                            </>
+                                        }
+
                                     </> :
                                     // pre scanner logic
                                     <>
@@ -228,12 +256,12 @@ function Scanner()
                                             {
                                                 if (formData.collectionId == "")
                                                 {
-                                                    setOpenModal(true)
+                                                    setOpenModal(() => true)
                                                 }
                                                 else
                                                 {
                                                     await newDiscMutation.mutate(formData.barcode)
-                                                    setisCaptured(() => false)
+                                                    setIsCaptured(() => false)
                                                 }
                                             }}
                                             color="success"
@@ -245,7 +273,7 @@ function Scanner()
                                             onClick={() =>
                                             {
                                                 setCamera(() => ({ isActive: true }))
-                                                setisCaptured(() => false)
+                                                setIsCaptured(() => false)
                                             }}
                                             sx={{ minWidth: "30dvw", height: "15dvh" }}
                                         >
@@ -254,7 +282,7 @@ function Scanner()
                                     </> : <>
                                         {/* if before scan */}
                                         <Button
-                                            onClick={() => setOpenModal(true)}
+                                            onClick={() => setOpenModal(() => true)}
                                             color="success"
                                             sx={{ minWidth: "30dvw", height: "15dvh" }}
                                         >
@@ -270,7 +298,7 @@ function Scanner()
                                             onClick={() =>
                                             {
                                                 setCamera(() => ({ isActive: true }))
-                                                setisCaptured(() => false)
+                                                setIsCaptured(() => false)
                                             }}
                                             sx={{ minWidth: "30dvw", height: "15dvh" }}
                                             color="primary"
