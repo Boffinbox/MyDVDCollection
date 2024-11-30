@@ -55,15 +55,13 @@ function Scanner()
             queryClient.setQueryData(["collections"],
                 (oldData: ICollectionHydrated[]) =>
                 {
-                    console.log(oldData)
-                    let coll = oldData.find(coll => coll._id === formData.collectionId)
+                    let newData = oldData;
+                    let coll = newData.find(coll => coll._id === formData.collectionId)
                     if (coll == undefined)
                     {
-                        setIsError(true)
-                        return
+                        return [...oldData]
                     }
-                    let index = oldData.indexOf(coll)
-                    let newData = oldData;
+                    let index = newData.indexOf(coll)
                     coll = {
                         ...coll,
                         discs: [...coll.discs, returnedDisc]

@@ -4,7 +4,7 @@ import { PostBarcode } from "../../httpverbs/PostBarcode";
 import { PostReference } from "../../httpverbs/PostReference";
 import { SingleLineForm } from "../../components/SingleLineForm";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
-import { AccessTokenQueryOptions, CollectionQueryOptions } from "../../utilities/Queries";
+import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
 import { ICollectionHydrated, IDisc, IReferenceDisc } from "../../Interfaces";
 import { DiscListItem } from "../../components/DiscListItem";
 import { Divider, List, Stack, Typography } from "@mui/joy";
@@ -23,8 +23,9 @@ function Collection()
     const tokenQuery = useQuery(AccessTokenQueryOptions())
     const token: string | undefined = tokenQuery.data;
 
-    const collectionQuery = useQuery(CollectionQueryOptions(token, collectionId))
-    const collection: ICollectionHydrated = collectionQuery.data;
+    const collectionsQuery = useQuery(CollectionsQueryOptions(token))
+    const collections: ICollectionHydrated[] = collectionsQuery.data;
+    const collection: ICollectionHydrated = collections.find(coll => coll._id === collectionId)!
 
     const newDiscMutation = useMutation({
         mutationFn: (barcode: string) => PostBarcode(token, collectionId, barcode),
@@ -32,14 +33,22 @@ function Collection()
         {
             console.log("received data was: ", returnedDisc)
             console.log("coll id is: ", collectionId)
-            queryClient.setQueryData(["collection", collectionId],
-                (oldData: ICollectionHydrated) =>
+            queryClient.setQueryData(["collections"],
+                (oldData: ICollectionHydrated[]) =>
                 {
-                    console.log(oldData)
-                    return {
-                        ...oldData,
-                        discs: [...oldData.discs, returnedDisc]
+                    let newData = oldData;
+                    let coll = newData.find(coll => coll._id === collectionId)
+                    if (coll == undefined)
+                    {
+                        return [...oldData]
                     }
+                    let index = newData.indexOf(coll)
+                    coll = {
+                        ...coll,
+                        discs: [...coll.discs, returnedDisc]
+                    }
+                    newData[index] = coll
+                    return [...newData]
                 }
             )
         }
@@ -49,12 +58,19 @@ function Collection()
         mutationFn: ({ barcode, title }: { barcode: string, title: string }) => PostReference({ token, barcode, title }),
         onSuccess: (returnedRef: IReferenceDisc) =>
         {
-            queryClient.setQueryData(["collection", collectionId],
-                (oldData: ICollectionHydrated) =>
+            queryClient.setQueryData(["collections"],
+                (oldData: ICollectionHydrated[]) =>
                 {
                     console.log(oldData)
                     console.log(`modified ${returnedRef.barcode}`)
-                    const discs: IDisc[] = oldData.discs;
+                    let newData = oldData;
+                    let coll = newData.find(coll => coll._id === collectionId)
+                    if (coll == undefined)
+                    {
+                        return [...oldData]
+                    }
+                    let index = newData.indexOf(coll)
+                    const discs: IDisc[] = coll.discs;
                     for (let i = 0; i < discs.length; i++)
                     {
                         if (discs[i].referenceDVD.barcode === returnedRef.barcode)
@@ -62,10 +78,9 @@ function Collection()
                             discs[i].referenceDVD.title = returnedRef.title
                         }
                     }
-                    return {
-                        ...oldData,
-                        discs: [...discs]
-                    }
+                    coll.discs = discs
+                    newData[index] = coll
+                    return [...newData]
                 }
             )
         }
@@ -73,22 +88,30 @@ function Collection()
 
     const deleteDiscMutation = useMutation({
         mutationFn: (discId: string) => DeleteDisc(token, collectionId, discId),
-        onSuccess: (returnedDisc: IDisc) => queryClient.setQueryData(["collection", collectionId],
-            (oldData: ICollectionHydrated) =>
+        onSuccess: (returnedDisc: IDisc) => queryClient.setQueryData(["collections"],
+            (oldData: ICollectionHydrated[]) =>
             {
-                return {
-                    ...oldData,
-                    discs: oldData.discs.filter((disc: IDisc) => disc._id !== returnedDisc._id)
+                let newData = oldData;
+                let coll = newData.find(coll => coll._id === collectionId)
+                if (coll == undefined)
+                {
+                    return [...oldData]
                 }
-
+                let index = newData.indexOf(coll)
+                coll = {
+                    ...coll,
+                    discs: coll.discs.filter((disc: IDisc) => disc._id !== returnedDisc._id)
+                }
+                newData[index] = coll
+                return [...newData]
             })
     })
 
-    if (collectionQuery.isLoading) return <Typography level="h1" sx={{ height: "100%" }}>Loading...</Typography>
-    if (collectionQuery.isError) return (
+    if (collectionsQuery.isLoading) return <Typography level="h1" sx={{ height: "100%" }}>Loading...</Typography>
+    if (collectionsQuery.isError) return (
         <>
             <div>Oh no! Something went wrong...</div>
-            <pre>{JSON.stringify(collectionQuery.error.message)}</pre>
+            <pre>{JSON.stringify(collectionsQuery.error.message)}</pre>
         </>
     )
 
@@ -96,7 +119,7 @@ function Collection()
         <>
             <Stack gap={1} sx={{ height: "100%" }}>
                 <Typography level="h1">{collection.title}{` `}
-                    <Typography level="h4">{collectionQuery.isFetching ? <span style={{ fontSize: "small" }}>Fetching...</span> : null}</Typography>
+                    <Typography level="h4">{collectionsQuery.isFetching ? <span style={{ fontSize: "small" }}>Fetching...</span> : null}</Typography>
                 </Typography>
                 <Divider />
                 <SingleLineForm
