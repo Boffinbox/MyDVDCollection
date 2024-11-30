@@ -40,6 +40,7 @@ function Scanner()
     const [camera, setCamera] = useState({ isActive: false })
     const [isCaptured, setIsCaptured] = useState(false);
     const [isOwnedBarcode, setIsOwnedBarcode] = useState(true);
+    const [isError, setIsError] = useState(false);
 
     const [genString, setGenString] = useState({ value: "" })
 
@@ -51,14 +52,24 @@ function Scanner()
         {
             console.log("received data was: ", returnedDisc)
             console.log("coll id is: ", formData.collectionId)
-            queryClient.setQueryData(["collection", formData.collectionId],
-                (oldData: ICollectionHydrated) =>
+            queryClient.setQueryData(["collections"],
+                (oldData: ICollectionHydrated[]) =>
                 {
                     console.log(oldData)
-                    return {
-                        ...oldData,
-                        discs: [...oldData.discs, returnedDisc]
+                    let coll = oldData.find(coll => coll._id === formData.collectionId)
+                    if (coll == undefined)
+                    {
+                        setIsError(true)
+                        return
                     }
+                    let index = oldData.indexOf(coll)
+                    let newData = oldData;
+                    coll = {
+                        ...coll,
+                        discs: [...coll.discs, returnedDisc]
+                    }
+                    newData[index] = coll
+                    return [...newData]
                 }
             )
         }
