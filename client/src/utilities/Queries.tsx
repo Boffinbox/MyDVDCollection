@@ -20,10 +20,10 @@ export function CollectionsQueryOptions(token: string | undefined)
     })
 }
 
-export function CollectionQueryOptions(token: string | undefined, id: string)
-{
-    return queryOptions({
-        queryKey: ["collection", id],
-        queryFn: () => GetCollection(token, id)
-    })
-}
+// export function CollectionQueryOptions(token: string | undefined, id: string)
+// {
+//     return queryOptions({
+//         queryKey: ["collection", id],
+//         queryFn: () => GetCollection(token, id)
+//     })
+// }

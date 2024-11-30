@@ -41,6 +41,8 @@ function Scanner()
     const [isCaptured, setIsCaptured] = useState(false);
     const [isOwnedBarcode, setIsOwnedBarcode] = useState(true);
     const [isError, setIsError] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [isUnknown, setIsUnknown] = useState(false);
 
     const [genString, setGenString] = useState({ value: "" })
 
@@ -56,20 +58,23 @@ function Scanner()
                 (oldData: ICollectionHydrated[]) =>
                 {
                     let newData = oldData;
-                    let coll = newData.find(coll => coll._id === formData.collectionId)
-                    if (coll == undefined)
-                    {
-                        return [...oldData]
-                    }
+                    let coll = newData.find(coll => coll._id === formData.collectionId)!
                     let index = newData.indexOf(coll)
                     coll = {
                         ...coll,
                         discs: [...coll.discs, returnedDisc]
                     }
                     newData[index] = coll
+                    setIsSuccess(true)
+                    setGenString(() => ({ value: "Added successfully!" }))
                     return [...newData]
                 }
             )
+        },
+        onError: () => 
+        {
+            setIsError(true);
+            return
         }
     })
 
@@ -204,17 +209,25 @@ function Scanner()
                                 {isCaptured ?
                                     // actual scanner logic
                                     <>
-                                        {(isOwnedBarcode) ?
-                                            // if a duplicate
+                                        {(isSuccess) ?
+                                            // if added
                                             <>
-                                                <ScannerCheckMark />
+                                                <ScannerCheckMarkA />
                                             </> :
-                                            // if not a duplicate
+                                            // if not yet added
                                             <>
-                                                <ScannerExclamationMark />
+                                                {(isOwnedBarcode) ?
+                                                    // if a duplicate
+                                                    <>
+                                                        <ScannerCheckMark />
+                                                    </> :
+                                                    // if not a duplicate
+                                                    <>
+                                                        <ScannerExclamationMark />
+                                                    </>
+                                                }
                                             </>
                                         }
-
                                     </> :
                                     // pre scanner logic
                                     <>
@@ -241,7 +254,11 @@ function Scanner()
                                                 <>
                                                     Choose a collection to scan against, or press "Scan all collections!" to check across all collections.
                                                 </> : <>
-                                                    You have selected: {collections.find((e) => e._id == formData.collectionId)!.title}
+                                                    You have selected your<> </>
+                                                    <Typography color="warning" variant="solid">
+                                                        {collections.find((e) => e._id == formData.collectionId)!.title}
+                                                    </Typography>
+                                                    <> </>collection.
                                                 </>
                                             }
 
@@ -267,29 +284,44 @@ function Scanner()
                                 {isCaptured ?
                                     <>
                                         {/* if after scan */}
-                                        <Button
-                                            onClick={async () => 
-                                            {
-                                                if (formData.collectionId == "")
-                                                {
-                                                    setOpenModal(() => true)
-                                                }
-                                                else
-                                                {
-                                                    await newDiscMutation.mutate(formData.barcode)
-                                                    setIsCaptured(() => false)
-                                                }
-                                            }}
-                                            color="success"
-                                            sx={{ minWidth: "30dvw", height: "15dvh" }}
-                                        >
-                                            Add to a collection
-                                        </Button>
+                                        {isSuccess ?
+                                            <>
+                                            </>
+                                            :
+                                            <>
+                                                <Button
+                                                    onClick={async () => 
+                                                    {
+                                                        if (formData.collectionId == "")
+                                                        {
+                                                            setOpenModal(() => true)
+                                                        }
+                                                        else
+                                                        {
+                                                            await newDiscMutation.mutate(formData.barcode)
+                                                            // setIsCaptured(() => false)
+                                                        }
+                                                    }}
+                                                    color="success"
+                                                    sx={{ minWidth: "30dvw", height: "15dvh" }}
+                                                >
+                                                    {!formData.collectionId ?
+                                                        <>
+                                                            Add to a collection
+                                                        </> : <>
+                                                            Add to your {collections.find((e) => e._id == formData.collectionId)!.title} collection!
+                                                        </>
+                                                    }
+                                                </Button>
+                                            </>
+                                        }
                                         <Button
                                             onClick={() =>
                                             {
-                                                setCamera(() => ({ isActive: true }))
                                                 setIsCaptured(() => false)
+                                                setIsError(false)
+                                                setIsUnknown(false)
+                                                setIsSuccess(false)
                                             }}
                                             sx={{ minWidth: "30dvw", height: "15dvh" }}
                                         >
