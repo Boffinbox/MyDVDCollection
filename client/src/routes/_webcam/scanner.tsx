@@ -261,12 +261,10 @@ function Scanner()
                                                     <> </>collection.
                                                 </>
                                             }
-
                                         </>
                                     }
                                 </Typography>
                             </Sheet>
-
                         </Sheet>
                         <Sheet sx={{
                             display: "flex",
@@ -286,6 +284,19 @@ function Scanner()
                                         {/* if after scan */}
                                         {isSuccess ?
                                             <>
+                                                <Button
+                                                    color="success"
+                                                    sx={{ minWidth: "30dvw", height: "15dvh" }}
+                                                    disabled
+                                                >
+                                                    {!formData.collectionId ?
+                                                        <>
+                                                            Add to a collection
+                                                        </> : <>
+                                                            Add to your {collections.find((e) => e._id == formData.collectionId)!.title} collection!
+                                                        </>
+                                                    }
+                                                </Button>
                                             </>
                                             :
                                             <>
