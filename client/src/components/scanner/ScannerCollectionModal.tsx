@@ -1,4 +1,4 @@
-import { Modal, ModalDialog, Typography, List, ListItem, ListItemButton } from "@mui/joy";
+import { Modal, ModalDialog, Typography, List, ListItem, ListItemButton, ListDivider } from "@mui/joy";
 import { ICollectionHydrated } from "../../Interfaces";
 
 export function ScannerCollectionModal(
@@ -62,6 +62,25 @@ export function ScannerCollectionModal(
                                 </ListItemButton>
                             </ListItem>
                         ))}
+                        <ListDivider />
+                        <ListItem>
+                            <ListItemButton
+                                variant="outlined"
+                                onClick={() =>
+                                {
+                                    setFormData(currentData =>
+                                    {
+                                        return {
+                                            ...currentData,
+                                            collectionId: ""
+                                        };
+                                    })
+                                    closeModal()
+                                }}
+                            >
+                                Scan all collections
+                            </ListItemButton>
+                        </ListItem>
                     </List>
                 </ModalDialog>
             </Modal>
