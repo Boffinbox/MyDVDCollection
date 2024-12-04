@@ -78,6 +78,7 @@ export function ScannerCollectionModal(
                                             collectionId: ""
                                         };
                                     })
+                                    handleCollChange("")
                                     closeModal()
                                 }}
                             >
