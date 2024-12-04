@@ -111,6 +111,33 @@ function Scanner()
         setCamera(() => ({ isActive: false }))
     }
 
+    function handleCollChange(collectionId: string)
+    {
+        let barcode = formData.barcode
+        let owned = false;
+        let coll: ICollectionHydrated | undefined = collections.find(coll => coll._id === collectionId)
+        if (coll === undefined)
+        {
+            for (let i = 0; i < collections.length; i++)
+            {
+                if (isOwned(collections[i], barcode))
+                {
+                    owned = true
+                    break
+                }
+            }
+        }
+        else
+        {
+            owned = isOwned(coll, barcode)
+        }
+        setIsOwnedBarcode(owned)
+        console.log("is this barcode owned? : " + owned)
+        let text = genText(coll, barcode, owned)
+        console.log("generated text is: " + text)
+        setGenString(() => ({ value: text }))
+    }
+
     function isOwned(collection: ICollectionHydrated, barcode: string): boolean
     {
         for (let i = 0; i < collection.discs.length; i++)
@@ -322,7 +349,7 @@ function Scanner()
                                             <>
                                                 <Button
                                                     color="success"
-                                                    sx={{ minWidth: "30dvw", height: "10dvh" }}
+                                                    sx={{ minWidth: "30dvw", height: "12dvh" }}
                                                     disabled
                                                 >
                                                     {!formData.collectionId ?
@@ -343,7 +370,7 @@ function Scanner()
                                                             setOpenModal(() => true)
                                                         }}
                                                         color="success"
-                                                        sx={{ maxWidth: "5dvw", height: "12dvh" }}
+                                                        sx={{ minWidth: "5dvw", height: "12dvh" }}
                                                     >
                                                         <KeyboardArrowDown />
                                                     </Button>
@@ -429,6 +456,7 @@ function Scanner()
                 closeModal={() => setOpenModal(false)}
                 collections={collections}
                 setFormData={setFormData}
+                handleCollChange={handleCollChange}
             />
         </>
     )

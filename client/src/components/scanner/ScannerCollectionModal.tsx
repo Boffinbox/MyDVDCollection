@@ -6,12 +6,14 @@ export function ScannerCollectionModal(
         isModalOpen,
         closeModal,
         collections,
-        setFormData
+        setFormData,
+        handleCollChange
     }: {
         isModalOpen: boolean
         closeModal: (...args: any[]) => void,
         collections: ICollectionHydrated[]
         setFormData: (...args: any[]) => void,
+        handleCollChange: (collectionId: string) => void
     })
 {
     return (
@@ -55,6 +57,7 @@ export function ScannerCollectionModal(
                                                 collectionId: item._id.toString()
                                             };
                                         })
+                                        handleCollChange(item._id.toString())
                                         closeModal()
                                     }}
                                 >
