@@ -18,7 +18,7 @@ import { ScannerQuestionMark } from "../../components/scanner/ScannerQuestionMar
 import { ScannerExclamationMark } from "../../components/scanner/ScannerExclamationMark";
 import { ScannerCrossMark } from "../../components/scanner/ScannerCrossMark";
 import { ScannerCheckMarkA } from "../../components/scanner/ScannerCheckMarkA";
-import { KeyboardArrowDown, TroubleshootRounded } from "@mui/icons-material";
+import { ArrowDropDown, KeyboardArrowDown, TroubleshootRounded } from "@mui/icons-material";
 
 export const Route = createFileRoute('/_webcam/scanner')({
     component: Scanner
@@ -305,6 +305,10 @@ function Scanner()
                             justifyContent: "center",
                             alignItems: "center",
                             flexBasis: "13dvh",
+                            width: {
+                                xs: "80dvw",
+                                md: 720
+                            }
                         }}>
                             <Sheet>
                                 <Typography
@@ -336,43 +340,62 @@ function Scanner()
                             alignItems: "center",
                             flexBasis: "33dvh"
                         }}>
-                            <ButtonGroup
-                                buttonFlex={1}
-                                variant="solid"
-                                size="lg"
-                                spacing={1}
-                            >
+                            <Sheet sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "space-evenly",
+                                alignItems: "center",
+                                width: {
+                                    xs: "100dvw",
+                                    md: 900
+                                }
+                            }}>
                                 {isCaptured ?
                                     <>
                                         {/* if after scan */}
                                         {isSuccess ?
                                             <>
-                                                <Button
-                                                    color="success"
-                                                    sx={{ minWidth: "30dvw", height: "12dvh" }}
-                                                    disabled
+                                                <ButtonGroup
+                                                    variant="solid"
+                                                    sx={{ width: "40%" }}
                                                 >
-                                                    {!formData.collectionId ?
-                                                        <>
-                                                            Add to a collection
-                                                        </> : <>
-                                                            Add to your {collections.find((e) => e._id == formData.collectionId)!.title} collection!
-                                                        </>
-                                                    }
-                                                </Button>
+                                                    <Button
+                                                        color="success"
+                                                        sx={{ width: "20%", height: "12dvh" }}
+                                                        disabled
+                                                    >
+                                                        <ArrowDropDown />
+                                                    </Button>
+                                                    <Button
+                                                        color="success"
+                                                        sx={{ width: "80%", height: "12dvh" }}
+                                                        disabled
+                                                    >
+                                                        {!formData.collectionId ?
+                                                            <>
+                                                                Add to a collection
+                                                            </> : <>
+                                                                Add to your {collections.find((e) => e._id == formData.collectionId)!.title} collection!
+                                                            </>
+                                                        }
+                                                    </Button>
+                                                </ButtonGroup>
                                             </>
                                             :
                                             <>
-                                                <ButtonGroup variant="solid">
+                                                <ButtonGroup
+                                                    variant="solid"
+                                                    sx={{ width: "40%" }}
+                                                >
                                                     <Button
                                                         onClick={async () => 
                                                         {
                                                             setOpenModal(() => true)
                                                         }}
                                                         color="success"
-                                                        sx={{ minWidth: "5dvw", height: "12dvh" }}
+                                                        sx={{ width: "20%", height: "12dvh" }}
                                                     >
-                                                        <KeyboardArrowDown />
+                                                        <ArrowDropDown />
                                                     </Button>
                                                     <Button
                                                         onClick={async () => 
@@ -388,7 +411,7 @@ function Scanner()
                                                             }
                                                         }}
                                                         color="success"
-                                                        sx={{ minWidth: "25dvw", height: "12dvh" }}
+                                                        sx={{ width: "80%", height: "12dvh" }}
                                                     >
                                                         {!formData.collectionId ?
                                                             <>
@@ -409,32 +432,44 @@ function Scanner()
                                                 setIsUnknown(false)
                                                 setIsSuccess(false)
                                             }}
-                                            sx={{ minWidth: "5dvw", height: "12dvh" }}
+                                            sx={{ width: "40%", height: "12dvh" }}
                                         >
                                             Re-scan
                                         </Button>
                                     </> : <>
                                         {/* if before scan */}
-                                        <Button
-                                            onClick={() => setOpenModal(() => true)}
-                                            color="success"
-                                            sx={{ minWidth: "30dvw", height: "12dvh" }}
+                                        <ButtonGroup
+                                            variant="solid"
+                                            sx={{ width: "40%" }}
                                         >
-                                            {!formData.collectionId ?
-                                                <>
-                                                    Choose a collection
-                                                </> : <>
-                                                    Re-select collection
-                                                </>
-                                            }
-                                        </Button>
+                                            <Button
+                                                onClick={() => setOpenModal(() => true)}
+                                                color="success"
+                                                sx={{ width: "20%", height: "12dvh" }}
+                                            >
+                                                <ArrowDropDown />
+                                            </Button>
+                                            <Button
+                                                onClick={() => setOpenModal(() => true)}
+                                                color="success"
+                                                sx={{ width: "80%", height: "12dvh" }}
+                                            >
+                                                {!formData.collectionId ?
+                                                    <>
+                                                        Choose a collection
+                                                    </> : <>
+                                                        Re-select collection
+                                                    </>
+                                                }
+                                            </Button>
+                                        </ButtonGroup>
                                         <Button
                                             onClick={() =>
                                             {
                                                 setCamera(() => ({ isActive: true }))
                                                 setIsCaptured(() => false)
                                             }}
-                                            sx={{ minWidth: "30dvw", height: "12dvh" }}
+                                            sx={{ width: "40%", height: "12dvh" }}
                                             color="primary"
                                         >
                                             {!formData.collectionId ?
@@ -446,7 +481,7 @@ function Scanner()
                                             }
                                         </Button>
                                     </>}
-                            </ButtonGroup>
+                            </Sheet>
                         </Sheet>
                     </Sheet>
                 </>}
