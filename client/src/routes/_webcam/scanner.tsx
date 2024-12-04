@@ -18,6 +18,7 @@ import { ScannerQuestionMark } from "../../components/scanner/ScannerQuestionMar
 import { ScannerExclamationMark } from "../../components/scanner/ScannerExclamationMark";
 import { ScannerCrossMark } from "../../components/scanner/ScannerCrossMark";
 import { ScannerCheckMarkA } from "../../components/scanner/ScannerCheckMarkA";
+import { KeyboardArrowDown, TroubleshootRounded } from "@mui/icons-material";
 
 export const Route = createFileRoute('/_webcam/scanner')({
     component: Scanner
@@ -40,8 +41,9 @@ function Scanner()
     const [camera, setCamera] = useState({ isActive: false })
     const [isCaptured, setIsCaptured] = useState(false);
     const [isOwnedBarcode, setIsOwnedBarcode] = useState(true);
-    const [isError, setIsError] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+
+    const [isError, setIsError] = useState(false);
     const [isUnknown, setIsUnknown] = useState(false);
 
     const [genString, setGenString] = useState({ value: "" })
@@ -78,59 +80,93 @@ function Scanner()
         }
     })
 
-    async function handleCapture(detection: DetectedBarcode)
+    function handleCapture(detection: DetectedBarcode)
     {
         const barcode = detection.rawValue
         setFormData(prevData => ({ ...prevData, barcode }));
         console.log("barcode to check is: ", barcode);
-        const owned = isOwned(collections, barcode)
+        let owned = false;
+        let coll: ICollectionHydrated | undefined = collections.find(coll => coll._id === formData.collectionId)
+        if (coll === undefined)
+        {
+            for (let i = 0; i < collections.length; i++)
+            {
+                if (isOwned(collections[i], barcode))
+                {
+                    owned = true
+                    break
+                }
+            }
+        }
+        else
+        {
+            owned = isOwned(coll, barcode)
+        }
         setIsOwnedBarcode(owned)
         console.log("is this barcode owned? : " + owned)
-        let text = genText(collections, barcode, owned)
+        let text = genText(coll, barcode, owned)
         console.log("generated text is: " + text)
         setGenString(() => ({ value: text }))
         setIsCaptured(() => (true))
         setCamera(() => ({ isActive: false }))
     }
 
-    function isOwned(collections: ICollectionHydrated[], barcode: string): boolean
+    function isOwned(collection: ICollectionHydrated, barcode: string): boolean
     {
-        for (let i = 0; i < collections.length; i++)
+        for (let i = 0; i < collection.discs.length; i++)
         {
-            for (let j = 0; j < collections[i].discs.length; j++)
+            if (collection.discs[i].referenceDVD.barcode === barcode)
             {
-                if (collections[i].discs[j].referenceDVD.barcode === barcode)
-                {
-                    return true
-                }
+                return true
             }
         }
         return false
     }
 
-    function genText(collections: ICollectionHydrated[], barcode: string, isOwnedBarcode: boolean): string
+    function genText(coll: ICollectionHydrated | undefined = undefined, barcode: string, isOwnedBarcode: boolean): string
     {
         if (isOwnedBarcode === false)
         {
-            return `You don't have this item yet! Would you like to add?`
+            if (coll === undefined)
+            {
+                return `You don't have this item yet! Would you like to add?`
+            }
+            else
+            {
+                return `You don't have this item in your ${coll.title} collection yet! Would you like to add?`
+            }
         }
         let titles = []
         let discCount = 0;
-        for (let i = 0; i < collections.length; i++)
+        if (coll === undefined)
         {
-            let wasFound = false;
-            for (let j = 0; j < collections[i].discs.length; j++)
+            for (let i = 0; i < collections.length; i++)
             {
-                if (collections[i].discs[j].referenceDVD.barcode === barcode)
+                let wasFound = false;
+                for (let j = 0; j < collections[i].discs.length; j++)
                 {
-                    wasFound = true;
+                    if (collections[i].discs[j].referenceDVD.barcode === barcode)
+                    {
+                        wasFound = true;
+                        discCount++
+                    }
+                }
+                if (wasFound)
+                {
+                    titles.push(collections[i].title);
+                }
+            }
+        }
+        else
+        {
+            for (let j = 0; j < coll.discs.length; j++)
+            {
+                if (coll.discs[j].referenceDVD.barcode === barcode)
+                {
                     discCount++
                 }
             }
-            if (wasFound)
-            {
-                titles.push(collections[i].title);
-            }
+            titles.push(coll.title);
         }
         let collCount = titles.length
         let stringToReturn = `Barcode [${barcode}] was found ${discCount} time`
@@ -286,7 +322,7 @@ function Scanner()
                                             <>
                                                 <Button
                                                     color="success"
-                                                    sx={{ minWidth: "30dvw", height: "15dvh" }}
+                                                    sx={{ minWidth: "30dvw", height: "10dvh" }}
                                                     disabled
                                                 >
                                                     {!formData.collectionId ?
@@ -300,30 +336,42 @@ function Scanner()
                                             </>
                                             :
                                             <>
-                                                <Button
-                                                    onClick={async () => 
-                                                    {
-                                                        if (formData.collectionId == "")
+                                                <ButtonGroup variant="solid">
+                                                    <Button
+                                                        onClick={async () => 
                                                         {
                                                             setOpenModal(() => true)
-                                                        }
-                                                        else
+                                                        }}
+                                                        color="success"
+                                                        sx={{ maxWidth: "5dvw", height: "12dvh" }}
+                                                    >
+                                                        <KeyboardArrowDown />
+                                                    </Button>
+                                                    <Button
+                                                        onClick={async () => 
                                                         {
-                                                            await newDiscMutation.mutate(formData.barcode)
-                                                            // setIsCaptured(() => false)
+                                                            if (formData.collectionId == "")
+                                                            {
+                                                                setOpenModal(() => true)
+                                                            }
+                                                            else
+                                                            {
+                                                                await newDiscMutation.mutate(formData.barcode)
+                                                                // setIsCaptured(() => false)
+                                                            }
+                                                        }}
+                                                        color="success"
+                                                        sx={{ minWidth: "25dvw", height: "12dvh" }}
+                                                    >
+                                                        {!formData.collectionId ?
+                                                            <>
+                                                                Add to a collection
+                                                            </> : <>
+                                                                Add to your {collections.find((e) => e._id == formData.collectionId)!.title} collection!
+                                                            </>
                                                         }
-                                                    }}
-                                                    color="success"
-                                                    sx={{ minWidth: "30dvw", height: "15dvh" }}
-                                                >
-                                                    {!formData.collectionId ?
-                                                        <>
-                                                            Add to a collection
-                                                        </> : <>
-                                                            Add to your {collections.find((e) => e._id == formData.collectionId)!.title} collection!
-                                                        </>
-                                                    }
-                                                </Button>
+                                                    </Button>
+                                                </ButtonGroup>
                                             </>
                                         }
                                         <Button
@@ -334,7 +382,7 @@ function Scanner()
                                                 setIsUnknown(false)
                                                 setIsSuccess(false)
                                             }}
-                                            sx={{ minWidth: "30dvw", height: "15dvh" }}
+                                            sx={{ minWidth: "5dvw", height: "12dvh" }}
                                         >
                                             Re-scan
                                         </Button>
@@ -343,7 +391,7 @@ function Scanner()
                                         <Button
                                             onClick={() => setOpenModal(() => true)}
                                             color="success"
-                                            sx={{ minWidth: "30dvw", height: "15dvh" }}
+                                            sx={{ minWidth: "30dvw", height: "12dvh" }}
                                         >
                                             {!formData.collectionId ?
                                                 <>
@@ -359,7 +407,7 @@ function Scanner()
                                                 setCamera(() => ({ isActive: true }))
                                                 setIsCaptured(() => false)
                                             }}
-                                            sx={{ minWidth: "30dvw", height: "15dvh" }}
+                                            sx={{ minWidth: "30dvw", height: "12dvh" }}
                                             color="primary"
                                         >
                                             {!formData.collectionId ?
