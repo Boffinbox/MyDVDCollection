@@ -19,6 +19,7 @@ import { ScannerExclamationMark } from "../../components/scanner/ScannerExclamat
 import { ScannerCrossMark } from "../../components/scanner/ScannerCrossMark";
 import { ScannerCheckMarkA } from "../../components/scanner/ScannerCheckMarkA";
 import { ArrowDropDown, KeyboardArrowDown, TroubleshootRounded } from "@mui/icons-material";
+import { ScannerCameraMark } from "../../components/scanner/ScannerCameraMark";
 
 export const Route = createFileRoute('/_webcam/scanner')({
     component: Scanner
@@ -312,7 +313,7 @@ function Scanner()
                                     </> :
                                     // pre scanner logic
                                     <>
-                                        <ScannerQuestionMark />
+                                        <ScannerCameraMark />
                                     </>
                                 }
                             </Sheet>
