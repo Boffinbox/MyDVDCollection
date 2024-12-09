@@ -66,9 +66,18 @@ function Scanner()
                         ...coll,
                         discs: [...coll.discs, returnedDisc]
                     }
-                    newData[index] = coll
+                    // if unknown logic
                     setIsSuccess(true)
-                    setGenString(() => ({ value: "Added successfully!" }))
+                    if (returnedDisc.referenceDVD.title == "unknown")
+                    {
+                        setIsUnknown(true)
+                        setGenString(() => ({ value: "Added to your collection, but this disc is not in our database. Set it aside and update the name later!" }))
+                    }
+                    else
+                    {
+                        setGenString(() => ({ value: "Added successfully!" }))
+                    }
+                    newData[index] = coll
                     return [...newData]
                 }
             )
@@ -275,7 +284,16 @@ function Scanner()
                                         {(isSuccess) ?
                                             // if added
                                             <>
-                                                <ScannerCheckMarkA />
+                                                {(isUnknown) ?
+                                                    // if unknown
+                                                    <>
+                                                        <ScannerQuestionMark />
+                                                    </> :
+                                                    // if not unknown
+                                                    <>
+                                                        <ScannerCheckMarkA />
+                                                    </>
+                                                }
                                             </> :
                                             // if not yet added
                                             <>
