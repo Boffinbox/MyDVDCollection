@@ -18,7 +18,7 @@ import { ScannerQuestionMark } from "../../components/scanner/ScannerQuestionMar
 import { ScannerExclamationMark } from "../../components/scanner/ScannerExclamationMark";
 import { ScannerCrossMark } from "../../components/scanner/ScannerCrossMark";
 import { ScannerCheckMarkA } from "../../components/scanner/ScannerCheckMarkA";
-import { ArrowDropDown, KeyboardArrowDown, TroubleshootRounded } from "@mui/icons-material";
+import { ArrowDropDown } from "@mui/icons-material";
 import { ScannerCameraMark } from "../../components/scanner/ScannerCameraMark";
 
 export const Route = createFileRoute('/_webcam/scanner')({
@@ -42,7 +42,7 @@ function Scanner()
     const [camera, setCamera] = useState({ isActive: false })
     const [isCaptured, setIsCaptured] = useState(false);
     const [isOwnedBarcode, setIsOwnedBarcode] = useState(true);
-    const [isSuccess, setIsSuccess] = useState(false);
+    const [isAddAttempt, setIsAddAttempt] = useState(false);
 
     const [isError, setIsError] = useState(false);
     const [isUnknown, setIsUnknown] = useState(false);
@@ -67,8 +67,8 @@ function Scanner()
                         ...coll,
                         discs: [...coll.discs, returnedDisc]
                     }
+                    setIsAddAttempt(true)
                     // if unknown logic
-                    setIsSuccess(true)
                     if (returnedDisc.referenceDVD.title == "unknown")
                     {
                         setIsUnknown(true)
@@ -85,7 +85,9 @@ function Scanner()
         },
         onError: () => 
         {
+            setIsAddAttempt(true)
             setIsError(true);
+            setGenString(() => ({ value: "Oh no! Something went wrong 🙁 Please scan again." }))
             return
         }
     })
@@ -282,17 +284,26 @@ function Scanner()
                                 {isCaptured ?
                                     // actual scanner logic
                                     <>
-                                        {(isSuccess) ?
-                                            // if added
+                                        {(isAddAttempt) ?
+                                            // if add attempt made
                                             <>
-                                                {(isUnknown) ?
-                                                    // if unknown
+                                                {(isError) ?
+                                                    // if something went wrong...
                                                     <>
-                                                        <ScannerQuestionMark />
+                                                        <ScannerCrossMark />
                                                     </> :
-                                                    // if not unknown
+                                                    // if all good
                                                     <>
-                                                        <ScannerCheckMarkA />
+                                                        {(isUnknown) ?
+                                                            // if unknown
+                                                            <>
+                                                                <ScannerQuestionMark />
+                                                            </> :
+                                                            // if not unknown (i.e, full success)
+                                                            <>
+                                                                <ScannerCheckMarkA />
+                                                            </>
+                                                        }
                                                     </>
                                                 }
                                             </> :
@@ -372,7 +383,7 @@ function Scanner()
                                 {isCaptured ?
                                     <>
                                         {/* if after scan */}
-                                        {isSuccess ?
+                                        {isAddAttempt ?
                                             <>
                                                 <ButtonGroup
                                                     variant="solid"
@@ -449,7 +460,7 @@ function Scanner()
                                                 setIsCaptured(() => false)
                                                 setIsError(false)
                                                 setIsUnknown(false)
-                                                setIsSuccess(false)
+                                                setIsAddAttempt(false)
                                             }}
                                             sx={{ width: "40%", height: "12dvh" }}
                                         >
