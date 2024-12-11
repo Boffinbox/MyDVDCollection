@@ -7,6 +7,13 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
 import { CssBaseline, Sheet } from '@mui/joy';
 
+declare module '@mui/joy/Drawer' {
+    interface DrawerPropsSizeOverrides
+    {
+        xs: true;
+    }
+}
+
 export const Route = createRootRouteWithContext<{
     queryClient: QueryClient
 }>()({
@@ -22,6 +29,16 @@ const mdcTheme = extendTheme({
                     borderRadius: "6px"
                 }
             }
+        },
+        JoyDrawer: {
+            styleOverrides: {
+                root: ({ ownerState, theme }) => ({
+                    ...(ownerState.size === 'xs' &&
+                    {
+                        // literally just a blank size, so typescript stops crying about the drawer height...
+                    })
+                }),
+            },
         }
     }
 })

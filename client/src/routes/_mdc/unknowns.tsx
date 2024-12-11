@@ -15,7 +15,7 @@ import
     IReferenceDisc,
 } from '../../Interfaces'
 import { DiscListItem } from '../../components/DiscListItem'
-import { Divider, List, Stack, Typography } from '@mui/joy'
+import { Button, Divider, List, Stack, Typography } from '@mui/joy'
 
 export const Route = createFileRoute('/_mdc/unknowns')({
     component: UnknownCollection,
@@ -31,43 +31,36 @@ function UnknownCollection()
     const collectionsQuery = useQuery(CollectionsQueryOptions(token))
     const collections: ICollectionHydrated[] = collectionsQuery.data
 
-    const [unknowns, setUnknowns] = useState(getCurrentUnknowns(collections))
-
-    function getCurrentUnknowns(collections: ICollectionHydrated[]): [ICollectionHydrated, IDisc][]
-    {
-        let unknowns: [ICollectionHydrated, IDisc][] = []
-        for (let i = 0; i < collections.length; i++)
-        {
-            for (let j = 0; j < collections[i].discs.length; j++)
-            {
-                if (collections[i].discs[j].referenceDVD.title === 'unknown')
-                {
-                    let coll = collections[i]
-                    let disc = coll.discs[j]
-                    unknowns.push([coll, disc])
-                }
-            }
-        }
-        return unknowns
-    }
-
     const updateRefDiscMutation = useMutation({
-        mutationFn: ({ barcode, title }: { barcode: string; title: string }) =>
-            PostReference({ token, barcode, title }),
+        mutationFn: ({ barcode, title }: { barcode: string, title: string }) => PostReference({ token, barcode, title }),
         onSuccess: (returnedRef: IReferenceDisc) =>
         {
-            setUnknowns((oldData) =>
-            {
-                for (let i = 0; i < oldData.length; i++)
+            queryClient.setQueryData(["collections"],
+                (oldData: ICollectionHydrated[]) =>
                 {
-                    if (oldData[i].referenceDVD.barcode === returnedRef.barcode)
+                    console.log(oldData)
+                    console.log(`modified ${returnedRef.barcode}`)
+                    let newData = oldData;
+                    let coll = newData.find(coll => coll.discs.find(disc => disc.referenceDVD._id === returnedRef._id))
+                    if (coll == undefined)
                     {
-                        oldData[i].referenceDVD.title = returnedRef.title
+                        return [...oldData]
                     }
+                    let index = newData.indexOf(coll)
+                    const discs: IDisc[] = coll.discs;
+                    for (let i = 0; i < discs.length; i++)
+                    {
+                        if (discs[i].referenceDVD.barcode === returnedRef.barcode)
+                        {
+                            discs[i].referenceDVD.title = returnedRef.title
+                        }
+                    }
+                    coll.discs = discs
+                    newData[index] = coll
+                    return [...newData]
                 }
-                return oldData
-            })
-        },
+            )
+        }
     })
 
     const deleteDiscMutation = useMutation({
@@ -119,7 +112,44 @@ function UnknownCollection()
                 </Typography>
                 <Divider />
                 <List>
-                    {unknowns.map((colldisc: [ICollectionHydrated, IDisc], idx: number) => (
+                    {collections.map((coll: ICollectionHydrated, idx: number) =>
+                    (
+                        <>
+                            {coll.title}
+                            <Divider />
+                            {coll.discs.map((disc: IDisc, idx: number) =>
+                            (
+                                <>
+                                    {disc.referenceDVD.title === "unknown" ?
+                                        <>
+                                            <DiscListItem
+                                                key={disc._id}
+                                                title={disc.referenceDVD.title}
+                                                barcode={disc.referenceDVD.barcode}
+                                                discId={disc._id}
+                                                deleteFn={async () => 
+                                                {
+                                                    await deleteDiscMutation.mutate({
+                                                        discId: disc._id,
+                                                        collectionId: coll._id
+                                                    })
+                                                }}
+                                                updateRefFn={async (title: string) =>
+                                                    await updateRefDiscMutation.mutate({
+                                                        barcode: disc.referenceDVD.barcode,
+                                                        title,
+                                                    })
+                                                }
+                                            />
+                                        </> : <></>}
+                                </>
+                            ))}
+                        </>
+                    ))}
+
+
+
+                    {/* {unknowns.map((colldisc: [ICollectionHydrated, IDisc], idx: number) => (
                         <DiscListItem
                             key={colldisc[1]._id}
                             title={colldisc[1].referenceDVD.title}
@@ -128,7 +158,6 @@ function UnknownCollection()
                             deleteFn={async () => 
                             {
                                 await deleteDiscMutation.mutate({ discId: colldisc[1]._id, collectionId: colldisc[0]._id })
-                                getCurrentUnknowns(collections)
                             }}
                             updateRefFn={async (title: string) =>
                                 await updateRefDiscMutation.mutate({
@@ -137,7 +166,7 @@ function UnknownCollection()
                                 })
                             }
                         />
-                    ))}
+                    ))} */}
                 </List>
             </Stack>
         </>
