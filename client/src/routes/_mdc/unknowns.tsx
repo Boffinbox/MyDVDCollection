@@ -41,23 +41,17 @@ function UnknownCollection()
                     console.log(oldData)
                     console.log(`modified ${returnedRef.barcode}`)
                     let newData = oldData;
-                    let coll = newData.find(coll => coll.discs.find(disc => disc.referenceDVD._id === returnedRef._id))
-                    if (coll == undefined)
+                    for (let coll of newData)
                     {
-                        return [...oldData]
-                    }
-                    let index = newData.indexOf(coll)
-                    const discs: IDisc[] = coll.discs;
-                    for (let i = 0; i < discs.length; i++)
-                    {
-                        if (discs[i].referenceDVD.barcode === returnedRef.barcode)
+                        for (let j = 0; j < coll.discs.length; j++)
                         {
-                            discs[i].referenceDVD.title = returnedRef.title
+                            if (coll.discs[j].referenceDVD.barcode === returnedRef.barcode)
+                            {
+                                coll.discs[j].referenceDVD.title = returnedRef.title
+                            }
                         }
                     }
-                    coll.discs = discs
-                    newData[index] = coll
-                    return [...newData]
+                    return newData
                 }
             )
         }
@@ -131,7 +125,7 @@ function UnknownCollection()
                                                 <>
                                                     <DiscListItem
                                                         key={disc._id}
-                                                        title={`unknown (in your ${coll.title} collection)`}
+                                                        title={disc.referenceDVD.title}
                                                         barcode={disc.referenceDVD.barcode}
                                                         discId={disc._id}
                                                         deleteFn={async () => 
@@ -160,27 +154,6 @@ function UnknownCollection()
                                 </>}
                         </>
                     ))}
-
-
-
-                    {/* {unknowns.map((colldisc: [ICollectionHydrated, IDisc], idx: number) => (
-                        <DiscListItem
-                            key={colldisc[1]._id}
-                            title={colldisc[1].referenceDVD.title}
-                            barcode={colldisc[1].referenceDVD.barcode}
-                            discId={colldisc[1]._id}
-                            deleteFn={async () => 
-                            {
-                                await deleteDiscMutation.mutate({ discId: colldisc[1]._id, collectionId: colldisc[0]._id })
-                            }}
-                            updateRefFn={async (title: string) =>
-                                await updateRefDiscMutation.mutate({
-                                    barcode: colldisc[1].referenceDVD.barcode,
-                                    title,
-                                })
-                            }
-                        />
-                    ))} */}
                 </List>
             </Stack>
         </>
