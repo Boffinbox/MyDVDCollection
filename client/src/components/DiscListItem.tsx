@@ -66,7 +66,7 @@ export function DiscListItem(
                         open={open}
                         onClose={() => setOpen(false)}
                         anchor="bottom"
-                        size="sm"
+                        size="xs"
                     >
                         <List
                             size="lg"
@@ -79,10 +79,6 @@ export function DiscListItem(
                         >
                             <ListItem>{title}</ListItem>
                             <Divider />
-                            <ListItemButton>And</ListItemButton>
-                            <ListItemButton>Here's</ListItemButton>
-                            <ListItemButton>Some</ListItemButton>
-                            <Divider />
                             <ListItemButton
                                 // onClick={() => updateRefFn()}
                                 onClick={() => setIsModalOpen(true)}
@@ -93,9 +89,6 @@ export function DiscListItem(
                                 </ListItemDecorator>
                                 Edit Title
                             </ListItemButton>
-                            <Divider />
-                            <ListItemButton>Other</ListItemButton>
-                            <ListItemButton>Actions</ListItemButton>
                             <Divider />
                             <ListItemButton onClick={deleteFn} color="danger" sx={{ fontWeight: "lg" }}>
                                 <ListItemDecorator>
