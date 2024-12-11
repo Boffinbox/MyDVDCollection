@@ -15,7 +15,7 @@ import
     IReferenceDisc,
 } from '../../Interfaces'
 import { DiscListItem } from '../../components/DiscListItem'
-import { Button, Divider, List, Stack, Typography } from '@mui/joy'
+import { Button, Divider, List, Sheet, Stack, Typography } from '@mui/joy'
 
 export const Route = createFileRoute('/_mdc/unknowns')({
     component: UnknownCollection,
@@ -115,35 +115,49 @@ function UnknownCollection()
                     {collections.map((coll: ICollectionHydrated, idx: number) =>
                     (
                         <>
-                            {coll.title}
-                            <Divider />
-                            {coll.discs.map((disc: IDisc, idx: number) =>
-                            (
+                            {coll.discs.find(disc => disc.referenceDVD.title === "unknown") ?
                                 <>
-                                    {disc.referenceDVD.title === "unknown" ?
+                                    <Typography level="body-md" noWrap
+                                    >
+                                        <i>{coll.title}</i>
+                                    </Typography>
+                                    <Sheet sx={{ height: "5px" }} />
+                                    <Divider />
+                                    <Sheet sx={{ height: "5px" }} />
+                                    {coll.discs.map((disc: IDisc, idx: number) =>
+                                    (
                                         <>
-                                            <DiscListItem
-                                                key={disc._id}
-                                                title={disc.referenceDVD.title}
-                                                barcode={disc.referenceDVD.barcode}
-                                                discId={disc._id}
-                                                deleteFn={async () => 
-                                                {
-                                                    await deleteDiscMutation.mutate({
-                                                        discId: disc._id,
-                                                        collectionId: coll._id
-                                                    })
-                                                }}
-                                                updateRefFn={async (title: string) =>
-                                                    await updateRefDiscMutation.mutate({
-                                                        barcode: disc.referenceDVD.barcode,
-                                                        title,
-                                                    })
-                                                }
-                                            />
-                                        </> : <></>}
+                                            {disc.referenceDVD.title === "unknown" ?
+                                                <>
+                                                    <DiscListItem
+                                                        key={disc._id}
+                                                        title={`unknown (in your ${coll.title} collection)`}
+                                                        barcode={disc.referenceDVD.barcode}
+                                                        discId={disc._id}
+                                                        deleteFn={async () => 
+                                                        {
+                                                            await deleteDiscMutation.mutate({
+                                                                discId: disc._id,
+                                                                collectionId: coll._id
+                                                            })
+                                                        }}
+                                                        updateRefFn={async (title: string) =>
+                                                            await updateRefDiscMutation.mutate({
+                                                                barcode: disc.referenceDVD.barcode,
+                                                                title,
+                                                            })
+                                                        }
+                                                    />
+                                                </> : <></>}
+                                        </>
+                                    ))}
+                                    <Sheet sx={{ height: "5px" }} />
+                                    <Divider />
+                                    <Sheet sx={{ height: "5px" }} />
                                 </>
-                            ))}
+                                :
+                                <>
+                                </>}
                         </>
                     ))}
 
