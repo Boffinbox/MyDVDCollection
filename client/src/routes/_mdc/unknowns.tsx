@@ -33,16 +33,18 @@ function UnknownCollection()
 
     const [unknowns, setUnknowns] = useState(getCurrentUnknowns(collections))
 
-    function getCurrentUnknowns(collections: ICollectionHydrated[]): IDisc[]
+    function getCurrentUnknowns(collections: ICollectionHydrated[]): [ICollectionHydrated, IDisc][]
     {
-        let unknowns: IDisc[] = []
+        let unknowns: [ICollectionHydrated, IDisc][] = []
         for (let i = 0; i < collections.length; i++)
         {
             for (let j = 0; j < collections[i].discs.length; j++)
             {
                 if (collections[i].discs[j].referenceDVD.title === 'unknown')
                 {
-                    unknowns.push(collections[i].discs[j])
+                    let coll = collections[i]
+                    let disc = coll.discs[j]
+                    unknowns.push([coll, disc])
                 }
             }
         }
@@ -69,28 +71,24 @@ function UnknownCollection()
     })
 
     const deleteDiscMutation = useMutation({
-        mutationFn: ({
-            collectionId,
-            discId,
-        }: {
-            collectionId: string
-            discId: string
-        }) => DeleteDisc(token, collectionId, discId),
-        onSuccess: (returnedDisc: IDisc) =>
-        {
-            // queryClient.setQueryData(
-            //     ['collection', collectionId],
-            //     (oldData: ICollectionHydrated) =>
-            //     {
-            //         return {
-            //             ...oldData,
-            //             discs: oldData.discs.filter(
-            //                 (disc: IDisc) => disc._id !== returnedDisc._id,
-            //             ),
-            //         }
-            //     },
-            // )
-        },
+        mutationFn: ({ discId, collectionId }: { discId: string, collectionId: string }) => DeleteDisc(token, collectionId, discId),
+        onSuccess: (returnedDisc: IDisc) => queryClient.setQueryData(["collections"],
+            (oldData: ICollectionHydrated[]) =>
+            {
+                let newData = oldData;
+                let coll = newData.find(coll => coll.discs.find(disc => disc._id === returnedDisc._id))
+                if (coll == undefined)
+                {
+                    return [...oldData]
+                }
+                let index = newData.indexOf(coll)
+                coll = {
+                    ...coll,
+                    discs: coll.discs.filter((disc: IDisc) => disc._id !== returnedDisc._id)
+                }
+                newData[index] = coll
+                return [...newData]
+            })
     })
 
     if (collectionsQuery.isLoading)
@@ -121,16 +119,20 @@ function UnknownCollection()
                 </Typography>
                 <Divider />
                 <List>
-                    {unknowns.map((disc: IDisc, idx: number) => (
+                    {unknowns.map((colldisc: [ICollectionHydrated, IDisc], idx: number) => (
                         <DiscListItem
-                            key={disc._id}
-                            title={disc.referenceDVD.title}
-                            barcode={disc.referenceDVD.barcode}
-                            discId={disc._id}
-                            deleteFn={() => console.log("not deleted")}
+                            key={colldisc[1]._id}
+                            title={colldisc[1].referenceDVD.title}
+                            barcode={colldisc[1].referenceDVD.barcode}
+                            discId={colldisc[1]._id}
+                            deleteFn={async () => 
+                            {
+                                await deleteDiscMutation.mutate({ discId: colldisc[1]._id, collectionId: colldisc[0]._id })
+                                getCurrentUnknowns(collections)
+                            }}
                             updateRefFn={async (title: string) =>
                                 await updateRefDiscMutation.mutate({
-                                    barcode: disc.referenceDVD.barcode,
+                                    barcode: colldisc[1].referenceDVD.barcode,
                                     title,
                                 })
                             }
