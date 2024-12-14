@@ -19,6 +19,9 @@ router.get("/:collectionId", verifyUser, validateCollectionId, TryCatchAsync(dis
 // create new disc collection
 router.post("/", verifyUser, validateNewCollection, TryCatchAsync(disccollections.newCollection));
 
+// update disc collection name
+router.patch("/:collectionId", verifyUser, validateNewCollection, validateCollectionId, TryCatchAsync(disccollections.updateCollection));
+
 // delete route, to nuke a collection from orbit
 router.delete("/:collectionId", verifyUser, validateCollectionId, TryCatchAsync(disccollections.deleteCollection));
 

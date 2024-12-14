@@ -56,6 +56,25 @@ export async function newCollection(req, res)
     res.status(201).json(newDiscCollection);
 }
 
+export async function updateCollection(req, res)
+{
+    const user = await getUserDocument(req, res);
+    const title = req.body.title
+    const { collectionId } = req.params
+    if (!user.collections.includes(collectionId))
+    {
+        return res.status(401).send("Unauthorized");
+    }
+    const collectionToModify = await DiscCollectionModel.findById(collectionId)
+    if (!collectionToModify)
+    {
+        return res.status(503).json({ message: "couldn't find collection" });
+    }
+    collectionToModify.title = title
+    await collectionToModify.save()
+    res.status(200).json(collectionToModify);
+}
+
 export async function deleteCollection(req, res)
 {
     const user = await getUserDocument(req, res);
