@@ -8,7 +8,7 @@ import { PatchCollection } from "../../httpverbs/PatchCollection";
 import { SingleLineForm } from "../../components/SingleLineForm";
 
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries"
-import { ICollection } from "../../Interfaces";
+import { ICollection, ICollectionHydrated } from "../../Interfaces";
 
 import { Divider, Stack, Typography } from "@mui/joy"
 import { CollectionCard } from "../../components/CollectionCard";
@@ -25,7 +25,7 @@ function Collections()
     const token: string | undefined = tokenQuery.data;
 
     const collectionsQuery = useQuery(CollectionsQueryOptions(token))
-    const collections: [{ _id: string, title: string }] = collectionsQuery.data;
+    const collections: ICollectionHydrated[] = collectionsQuery.data;
 
     const newCollectionMutation = useMutation({
         mutationFn: (title: string) => PostCollection(token, title),
@@ -87,6 +87,7 @@ function Collections()
                             collId={coll._id}
                             deleteFn={async () => await deleteCollectionMutation.mutate(coll._id)}
                             updateCollTitleFn={async (title: string) => await updateCollectionMutation.mutate({ collectionId: coll._id, title: title })}
+                            discCount={coll.discs.length}
                         >
                         </CollectionCard>
                     ))}

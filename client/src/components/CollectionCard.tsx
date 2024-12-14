@@ -1,6 +1,6 @@
 import { Link as RouterLink } from "@tanstack/react-router"
 
-import { AspectRatio, Button, Card, CardContent, CardOverflow, Divider, Drawer, IconButton, Link, List, ListItem, ListItemButton, ListItemDecorator, Modal, ModalDialog, Typography } from "@mui/joy"
+import { AspectRatio, Button, Card, CardContent, CardOverflow, Divider, Drawer, IconButton, Link, List, ListItem, ListItemButton, ListItemDecorator, Modal, ModalDialog, Sheet, Typography } from "@mui/joy"
 import { useState } from "react";
 import { SingleLineForm } from "./SingleLineForm";
 import { Edit, InfoOutlined } from "@mui/icons-material";
@@ -12,12 +12,14 @@ export function CollectionCard(
         title = "My Default Collection",
         collId,
         deleteFn,
-        updateCollTitleFn
+        updateCollTitleFn,
+        discCount = 0
     }: {
         title: string,
         collId: string,
         deleteFn: (...args: any[]) => void,
         updateCollTitleFn: (...args: any[]) => void,
+        discCount: number
     })
 {
     const [open, setOpen] = useState(false);
@@ -34,21 +36,30 @@ export function CollectionCard(
                         <img src="/dev/collection.jpg" />
                     </AspectRatio>
                 </CardOverflow>
-                <CardContent orientation="horizontal">
-                    <Typography>
-                        <Link
-                            component={RouterLink}
-                            overlay
-                            to={`/collections/${collId}`}
-                        >{title}
-                        </Link>
-                    </Typography>
-                    <Typography level="body-sm">
-                        Collection info $TODO
-                    </Typography>
+                <CardContent orientation="horizontal"
+                    sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}>
+                    <div>
+                        <Typography color="primary">
+                            {title}
+                        </Typography>
+                        <Typography level="body-sm">
+                            Contains {discCount} discs
+                        </Typography>
+                    </div>
+                    <Link
+                        component={RouterLink}
+                        overlay
+                        to={`/collections/${collId}`}
+                    ></Link>
                     <IconButton onClick={() => setOpen(true)}>
                         <MoreVertIcon />
                     </IconButton>
+
                     <Drawer
                         open={open}
                         onClose={() => setOpen(false)}
