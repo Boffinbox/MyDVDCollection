@@ -1,9 +1,9 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
 
-import { Typography, Sheet, Button, ButtonGroup, ModalDialog, Modal, ListItem, List, ListItemButton } from "@mui/joy"
+import { Typography, Sheet, Button, ButtonGroup } from "@mui/joy"
 import { useState } from "react";
 
 import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
@@ -28,8 +28,6 @@ export const Route = createFileRoute('/_webcam/scanner')({
 function Scanner()
 {
     const queryClient = useQueryClient();
-
-    const navigate = useNavigate();
 
     const tokenQuery = useQuery(AccessTokenQueryOptions())
     const token: string | undefined = tokenQuery.data;

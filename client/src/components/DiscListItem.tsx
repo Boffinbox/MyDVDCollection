@@ -22,17 +22,20 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from "react";
 import { Edit, InfoOutlined } from "@mui/icons-material";
 import { SingleLineForm } from "./SingleLineForm";
+import { useNavigate } from "@tanstack/react-router";
 
 export function DiscListItem(
     {
         title = "notitle",
         barcode = "0000000000000",
+        collectionId,
         discId,
         deleteFn,
         updateRefFn
     }: {
         title: string,
         barcode: string,
+        collectionId: string,
         discId: string,
         deleteFn: (...args: any[]) => void,
         updateRefFn: (...args: any[]) => void,
@@ -44,24 +47,30 @@ export function DiscListItem(
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
+    const navigate = useNavigate();
+
 
     return (
         <>
             <ListItem>
                 <ListItemButton sx={{ px: 0 }}>
-                    <ListItemDecorator sx={{ mx: "auto" }}>
-                        <AspectRatio ratio="135 / 190" flex>
-                            <img src="/dev/dvd.jpg" />
-                        </AspectRatio>
-                    </ListItemDecorator>
-                    <ListItemContent>
-                        <Typography level="title-sm" noWrap>
-                            {title}
-                        </Typography>
-                        <Typography level="body-sm" noWrap>
-                            Barcode: {barcode}
-                        </Typography>
-                    </ListItemContent>
+                    <ListItemButton
+                        onClick={() => navigate({ to: `/collections/${collectionId}/${discId}` })}
+                    >
+                        <ListItemDecorator sx={{ mx: "auto" }}>
+                            <AspectRatio ratio="135 / 190" flex>
+                                <img src="/dev/dvd.jpg" />
+                            </AspectRatio>
+                        </ListItemDecorator>
+                        <ListItemContent>
+                            <Typography level="title-sm" noWrap>
+                                {title}
+                            </Typography>
+                            <Typography level="body-sm" noWrap>
+                                Barcode: {barcode}
+                            </Typography>
+                        </ListItemContent>
+                    </ListItemButton>
                     <IconButton onClick={() => setOpen(true)}>
                         <MoreVertIcon />
                     </IconButton>

@@ -133,6 +133,7 @@ function Collection()
                             key={disc._id}
                             title={disc.referenceDVD.title}
                             barcode={disc.referenceDVD.barcode}
+                            collectionId={collection._id}
                             discId={disc._id}
                             deleteFn={async () => await deleteDiscMutation.mutate(disc._id)}
                             updateRefFn={async (title: string) => await updateRefDiscMutation.mutate({ barcode: disc.referenceDVD.barcode, title })} />

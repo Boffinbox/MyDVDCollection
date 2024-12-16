@@ -22,6 +22,7 @@ import { Route as MdcUnknownsImport } from './routes/_mdc/unknowns'
 import { Route as MdcNewformImport } from './routes/_mdc/newform'
 import { Route as MdcCollectionsImport } from './routes/_mdc/collections'
 import { Route as MdcCollectionsCollectionIdImport } from './routes/_mdc/collections_.$collectionId'
+import { Route as MdcCollectionsCollectionIdDiscIdImport } from './routes/_mdc/collections_.$collectionId_.$discId'
 
 // Create/Update Routes
 
@@ -81,6 +82,12 @@ const MdcCollectionsCollectionIdRoute = MdcCollectionsCollectionIdImport.update(
     getParentRoute: () => MdcRoute,
   } as any,
 )
+
+const MdcCollectionsCollectionIdDiscIdRoute =
+  MdcCollectionsCollectionIdDiscIdImport.update({
+    path: '/collections/$collectionId/$discId',
+    getParentRoute: () => MdcRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -163,6 +170,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MdcCollectionsCollectionIdImport
       parentRoute: typeof MdcImport
     }
+    '/_mdc/collections/$collectionId/$discId': {
+      id: '/_mdc/collections/$collectionId/$discId'
+      path: '/collections/$collectionId/$discId'
+      fullPath: '/collections/$collectionId/$discId'
+      preLoaderRoute: typeof MdcCollectionsCollectionIdDiscIdImport
+      parentRoute: typeof MdcImport
+    }
   }
 }
 
@@ -173,6 +187,7 @@ interface MdcRouteChildren {
   MdcNewformRoute: typeof MdcNewformRoute
   MdcUnknownsRoute: typeof MdcUnknownsRoute
   MdcCollectionsCollectionIdRoute: typeof MdcCollectionsCollectionIdRoute
+  MdcCollectionsCollectionIdDiscIdRoute: typeof MdcCollectionsCollectionIdDiscIdRoute
 }
 
 const MdcRouteChildren: MdcRouteChildren = {
@@ -180,6 +195,7 @@ const MdcRouteChildren: MdcRouteChildren = {
   MdcNewformRoute: MdcNewformRoute,
   MdcUnknownsRoute: MdcUnknownsRoute,
   MdcCollectionsCollectionIdRoute: MdcCollectionsCollectionIdRoute,
+  MdcCollectionsCollectionIdDiscIdRoute: MdcCollectionsCollectionIdDiscIdRoute,
 }
 
 const MdcRouteWithChildren = MdcRoute._addFileChildren(MdcRouteChildren)
@@ -220,6 +236,7 @@ export interface FileRoutesByFullPath {
   '/logout': typeof NonauthLogoutRoute
   '/scanner': typeof WebcamScannerRoute
   '/collections/$collectionId': typeof MdcCollectionsCollectionIdRoute
+  '/collections/$collectionId/$discId': typeof MdcCollectionsCollectionIdDiscIdRoute
 }
 
 export interface FileRoutesByTo {
@@ -232,6 +249,7 @@ export interface FileRoutesByTo {
   '/logout': typeof NonauthLogoutRoute
   '/scanner': typeof WebcamScannerRoute
   '/collections/$collectionId': typeof MdcCollectionsCollectionIdRoute
+  '/collections/$collectionId/$discId': typeof MdcCollectionsCollectionIdDiscIdRoute
 }
 
 export interface FileRoutesById {
@@ -247,6 +265,7 @@ export interface FileRoutesById {
   '/_nonauth/logout': typeof NonauthLogoutRoute
   '/_webcam/scanner': typeof WebcamScannerRoute
   '/_mdc/collections/$collectionId': typeof MdcCollectionsCollectionIdRoute
+  '/_mdc/collections/$collectionId/$discId': typeof MdcCollectionsCollectionIdDiscIdRoute
 }
 
 export interface FileRouteTypes {
@@ -261,6 +280,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/scanner'
     | '/collections/$collectionId'
+    | '/collections/$collectionId/$discId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
@@ -272,6 +292,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/scanner'
     | '/collections/$collectionId'
+    | '/collections/$collectionId/$discId'
   id:
     | '__root__'
     | '/_mdc'
@@ -285,6 +306,7 @@ export interface FileRouteTypes {
     | '/_nonauth/logout'
     | '/_webcam/scanner'
     | '/_mdc/collections/$collectionId'
+    | '/_mdc/collections/$collectionId/$discId'
   fileRoutesById: FileRoutesById
 }
 
@@ -323,7 +345,8 @@ export const routeTree = rootRoute
         "/_mdc/collections",
         "/_mdc/newform",
         "/_mdc/unknowns",
-        "/_mdc/collections/$collectionId"
+        "/_mdc/collections/$collectionId",
+        "/_mdc/collections/$collectionId/$discId"
       ]
     },
     "/_nonauth": {
@@ -370,6 +393,10 @@ export const routeTree = rootRoute
     },
     "/_mdc/collections/$collectionId": {
       "filePath": "_mdc/collections_.$collectionId.tsx",
+      "parent": "/_mdc"
+    },
+    "/_mdc/collections/$collectionId/$discId": {
+      "filePath": "_mdc/collections_.$collectionId_.$discId.tsx",
       "parent": "/_mdc"
     }
   }
