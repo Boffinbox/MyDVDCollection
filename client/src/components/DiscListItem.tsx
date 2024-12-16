@@ -30,6 +30,7 @@ export function DiscListItem(
         barcode = "0000000000000",
         collectionId,
         discId,
+        imageLink,
         deleteFn,
         updateRefFn
     }: {
@@ -37,6 +38,7 @@ export function DiscListItem(
         barcode: string,
         collectionId: string,
         discId: string,
+        imageLink: string,
         deleteFn: (...args: any[]) => void,
         updateRefFn: (...args: any[]) => void,
     })
@@ -59,7 +61,7 @@ export function DiscListItem(
                     >
                         <ListItemDecorator sx={{ mx: "auto" }}>
                             <AspectRatio ratio="135 / 190" flex>
-                                <img src="/dev/dvd.jpg" />
+                                <img src={imageLink} />
                             </AspectRatio>
                         </ListItemDecorator>
                         <ListItemContent>

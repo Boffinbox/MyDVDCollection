@@ -10,7 +10,7 @@ import
     CollectionsQueryOptions,
 } from '../../utilities/Queries'
 import { ICollectionHydrated, IDisc, IReferenceDisc } from '../../Interfaces'
-import { Button, Divider, List, Sheet, Stack, Table, Typography } from '@mui/joy'
+import { AspectRatio, Button, Divider, List, Sheet, Stack, Table, Typography } from '@mui/joy'
 
 export const Route = createFileRoute('/_mdc/collections/$collectionId/$discId')({
     component: Disc,
@@ -64,9 +64,10 @@ function Disc()
                     </Button>
                 </Sheet>
                 <Divider />
-                <Stack
-                    spacing={0}
-                >
+                <Sheet>
+                    <AspectRatio objectFit="contain">
+                        <img src={`${refDisc.images[0]}`} />
+                    </AspectRatio>
                     <Table sx={{ '& thead th:nth-child(1)': { width: { xs: '40%', sm: "30%", md: "20%" } } }}>
                         <thead>
                             <tr>
@@ -137,7 +138,7 @@ function Disc()
                             </tr>
                         </tbody>
                     </Table>
-                </Stack>
+                </Sheet>
             </Stack>
         </>
     )
