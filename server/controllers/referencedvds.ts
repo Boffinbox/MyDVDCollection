@@ -32,7 +32,7 @@ export async function getReferenceDVD(barcode: string, title: string)
         if (externalDVDInfo.items.length > 0)
         {
             const { title } = externalDVDInfo.items[0]
-            const newRefDVD = await newReferenceDVD(barcode, title);
+            const newRefDVD = await newReferenceDVD(barcode, title, externalDVDInfo.items[0]);
             return newRefDVD;
         }
         else // if external db does not have it, make an unknown...
@@ -54,15 +54,25 @@ async function fetchExternalDVD(barcode: string = `7321905737437`)
     return response.data
 }
 
-async function newReferenceDVD(barcode: string, title: string)
+async function newReferenceDVD(barcode: string, title: string, details?)
 {
     if (!barcode || !title)
     {
         return null;
     }
-    const newRefDVD = new ReferenceDVDModel({ barcode, title });
-    await newRefDVD.save();
-    return newRefDVD
+    if (details)
+    {
+        const newRefDVD = new ReferenceDVDModel({ barcode, title, ...details });
+        await newRefDVD.save();
+        return newRefDVD
+    }
+    else
+    {
+        const newRefDVD = new ReferenceDVDModel({ barcode, title });
+        await newRefDVD.save();
+        return newRefDVD
+    }
+
 }
 
 export async function updateReferenceDVD(req, res)
