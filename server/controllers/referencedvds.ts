@@ -60,15 +60,16 @@ async function newReferenceDVD(barcode: string, title: string, details?)
     {
         return null;
     }
+    const upcitemdb_title = title
     if (details)
     {
-        const newRefDVD = new ReferenceDVDModel({ barcode, title, ...details });
+        const newRefDVD = new ReferenceDVDModel({ barcode, title, upcitemdb_title, ...details });
         await newRefDVD.save();
         return newRefDVD
     }
     else
     {
-        const newRefDVD = new ReferenceDVDModel({ barcode, title });
+        const newRefDVD = new ReferenceDVDModel({ barcode, title, upcitemdb_title });
         await newRefDVD.save();
         return newRefDVD
     }

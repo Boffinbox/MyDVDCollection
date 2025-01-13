@@ -74,27 +74,19 @@ function Disc()
                                 <th>Barcode</th>
                                 <th>{refDisc.barcode}</th>
                             </tr>
+                            <tr>
+                                <th>Title</th>
+                                <th>{refDisc.title}</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Title</td>
+                                <td>Category</td>
+                                <td>{refDisc.category}</td>
+                            </tr>
+                            <tr>
+                                <td>Original Title</td>
                                 <td>{refDisc.title}</td>
-                            </tr>
-                            <tr>
-                                <td>EAN</td>
-                                <td>{refDisc.ean}</td>
-                            </tr>
-                            <tr>
-                                <td>UPC</td>
-                                <td>{refDisc.upc}</td>
-                            </tr>
-                            <tr>
-                                <td>GTIN</td>
-                                <td>{refDisc.gtin}</td>
-                            </tr>
-                            <tr>
-                                <td>ASIN</td>
-                                <td>{refDisc.asin}</td>
                             </tr>
                             <tr>
                                 <td>Description</td>
@@ -117,10 +109,6 @@ function Disc()
                                 <td>{refDisc.weight}</td>
                             </tr>
                             <tr>
-                                <td>Category</td>
-                                <td>{refDisc.category}</td>
-                            </tr>
-                            <tr>
                                 <td>Currency</td>
                                 <td>{refDisc.currency}</td>
                             </tr>
@@ -131,6 +119,22 @@ function Disc()
                             <tr>
                                 <td>Highest Recorded Price</td>
                                 <td>{refDisc.highest_recorded_price}</td>
+                            </tr>
+                            <tr>
+                                <td>EAN</td>
+                                <td>{refDisc.ean}</td>
+                            </tr>
+                            <tr>
+                                <td>UPC</td>
+                                <td>{refDisc.upc}</td>
+                            </tr>
+                            <tr>
+                                <td>GTIN</td>
+                                <td>{refDisc.gtin}</td>
+                            </tr>
+                            <tr>
+                                <td>ASIN</td>
+                                <td>{refDisc.asin}</td>
                             </tr>
                             <tr>
                                 <td>Images</td>

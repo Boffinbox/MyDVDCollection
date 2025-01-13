@@ -29,6 +29,9 @@ class ReferenceDVD
     @prop({ required: true, default: "unknown" })
     title!: string;
 
+    @prop({ required: true, default: "unknown" })
+    upcitemdb_title!: string;
+
     @prop({ default: "" })
     ean: string;
 
