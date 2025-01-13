@@ -131,7 +131,7 @@ function Collection()
                     {collection.discs.map((disc: IDisc, idx: number) => (
                         <DiscListItem
                             key={disc._id}
-                            title={disc.referenceDVD.title}
+                            title={disc.referenceDVD.upcitemdb_truedata ? disc.referenceDVD.title : `(*)${disc.referenceDVD.title}`}
                             barcode={disc.referenceDVD.barcode}
                             collectionId={collection._id}
                             discId={disc._id}

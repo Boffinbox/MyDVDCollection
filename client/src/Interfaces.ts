@@ -26,6 +26,7 @@ export interface IReferenceDisc
     barcode: string;
     title: string;
     upcitemdb_title: string;
+    upcitemdb_truedata: boolean;
     ean: string;
     upc: string;
     gtin: string;

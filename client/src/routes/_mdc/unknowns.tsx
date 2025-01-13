@@ -125,7 +125,7 @@ function UnknownCollection()
                                                 <>
                                                     <DiscListItem
                                                         key={disc._id}
-                                                        title={disc.referenceDVD.title}
+                                                        title={disc.referenceDVD.upcitemdb_truedata ? disc.referenceDVD.title : `(*)${disc.referenceDVD.title}`}
                                                         barcode={disc.referenceDVD.barcode}
                                                         discId={disc._id}
                                                         deleteFn={async () => 

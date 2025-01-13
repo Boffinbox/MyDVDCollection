@@ -28,17 +28,36 @@ export async function getReferenceDVD(barcode: string, title: string)
     else // time to burn an api call
     {
         // const externalDVDInfo = exampleUPCItemDBData();
-        const externalDVDInfo = await fetchExternalDVD(barcode);
-        if (externalDVDInfo.items.length > 0)
+        const response = await fetchExternalDVD(barcode);
+        if (response == undefined)
         {
-            const { title } = externalDVDInfo.items[0]
-            const newRefDVD = await newReferenceDVD(barcode, title, externalDVDInfo.items[0]);
+            console.log("unable to reach upcitemdb")
+            console.log(`speculatively adding ${barcode} anyway`)
+            const newRefDVD = await newReferenceDVD(barcode, "unknown", false);
             return newRefDVD;
         }
-        else // if external db does not have it, make an unknown...
+        const externalDVDInfo = response.data
+        if (externalDVDInfo.code == "OK") // if external db check was valid
         {
-            console.log("we didn't find it, rip");
-            const newRefDVD = await newReferenceDVD(barcode, "unknown");
+            console.log("upcitemdb valid lookup, make a disc")
+            if (externalDVDInfo.items.length > 0)
+            {
+                const { title } = externalDVDInfo.items[0]
+                const newRefDVD = await newReferenceDVD(barcode, title, true, externalDVDInfo.items[0]);
+                return newRefDVD;
+            }
+            else // if external db does not have it, make an unknown...
+            {
+                console.log("upcitemdb doesn't have it :(");
+                const newRefDVD = await newReferenceDVD(barcode, "unknown", true);
+                return newRefDVD;
+            }
+        }
+        else // if something wrong with request...
+        {
+            console.log("upcitemdb possibly maxed out?")
+            console.log(`speculatively adding ${barcode} anyway`)
+            const newRefDVD = await newReferenceDVD(barcode, "unknown", false);
             return newRefDVD;
         }
     }
@@ -47,14 +66,22 @@ export async function getReferenceDVD(barcode: string, title: string)
 async function fetchExternalDVD(barcode: string = `7321905737437`)
 {
     console.log(`WARNING - BURNING 1 API CALL, with barcode: ${barcode}`)
-    const response = await axios.get(`https://api.upcitemdb.com/prod/trial/lookup?upc=${barcode}`)
+    const response = await axios.get(`https://api.upcitemdb.com/prod/trial/lookup?upc=${barcode}`, { validateStatus: () => true })
         .then((res) => { return res; })
         .catch((e) => { return e.response })
-    console.log(response.data);
-    return response.data
+    console.log(`upcitemdb's response is:`);
+    if (response == undefined)
+    {
+        console.log(response)
+    }
+    else
+    {
+        console.log(response.data)
+    }
+    return response
 }
 
-async function newReferenceDVD(barcode: string, title: string, details?)
+async function newReferenceDVD(barcode: string, title: string, upcitemdb_truedata: boolean = false, details?)
 {
     if (!barcode || !title)
     {
@@ -63,17 +90,16 @@ async function newReferenceDVD(barcode: string, title: string, details?)
     const upcitemdb_title = title
     if (details)
     {
-        const newRefDVD = new ReferenceDVDModel({ barcode, title, upcitemdb_title, ...details });
+        const newRefDVD = new ReferenceDVDModel({ barcode, title, upcitemdb_title, upcitemdb_truedata, ...details });
         await newRefDVD.save();
         return newRefDVD
     }
     else
     {
-        const newRefDVD = new ReferenceDVDModel({ barcode, title, upcitemdb_title });
+        const newRefDVD = new ReferenceDVDModel({ barcode, title, upcitemdb_title, upcitemdb_truedata });
         await newRefDVD.save();
         return newRefDVD
     }
-
 }
 
 export async function updateReferenceDVD(req, res)
