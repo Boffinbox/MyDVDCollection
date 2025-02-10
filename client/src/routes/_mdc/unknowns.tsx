@@ -48,6 +48,7 @@ function UnknownCollection()
                             if (coll.discs[j].referenceDVD.barcode === returnedRef.barcode)
                             {
                                 coll.discs[j].referenceDVD.title = returnedRef.title
+                                coll.discs[j].referenceDVD.upcitemdb_truedata = returnedRef.upcitemdb_truedata
                             }
                         }
                     }
@@ -125,9 +126,12 @@ function UnknownCollection()
                                                 <>
                                                     <DiscListItem
                                                         key={disc._id}
-                                                        title={disc.referenceDVD.upcitemdb_truedata ? disc.referenceDVD.title : `(*)${disc.referenceDVD.title}`}
+                                                        title={disc.referenceDVD.title}
                                                         barcode={disc.referenceDVD.barcode}
+                                                        collectionId={coll._id}
                                                         discId={disc._id}
+                                                        trueData={disc.referenceDVD.upcitemdb_truedata}
+                                                        imageLink={disc.referenceDVD.images[0]}
                                                         deleteFn={async () => 
                                                         {
                                                             await deleteDiscMutation.mutate({

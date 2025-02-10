@@ -76,6 +76,7 @@ function Collection()
                         if (discs[i].referenceDVD.barcode === returnedRef.barcode)
                         {
                             discs[i].referenceDVD.title = returnedRef.title
+                            discs[i].referenceDVD.upcitemdb_truedata = returnedRef.upcitemdb_truedata
                         }
                     }
                     coll.discs = discs
@@ -131,10 +132,11 @@ function Collection()
                     {collection.discs.map((disc: IDisc, idx: number) => (
                         <DiscListItem
                             key={disc._id}
-                            title={disc.referenceDVD.upcitemdb_truedata ? disc.referenceDVD.title : `(*)${disc.referenceDVD.title}`}
+                            title={disc.referenceDVD.title}
                             barcode={disc.referenceDVD.barcode}
                             collectionId={collection._id}
                             discId={disc._id}
+                            trueData={disc.referenceDVD.upcitemdb_truedata}
                             imageLink={disc.referenceDVD.images[0]}
                             deleteFn={async () => await deleteDiscMutation.mutate(disc._id)}
                             updateRefFn={async (title: string) => await updateRefDiscMutation.mutate({ barcode: disc.referenceDVD.barcode, title })} />

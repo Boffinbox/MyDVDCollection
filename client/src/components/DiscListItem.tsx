@@ -20,7 +20,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useState } from "react";
-import { Edit, InfoOutlined } from "@mui/icons-material";
+import { Edit, InfoOutlined, Refresh } from "@mui/icons-material";
 import { SingleLineForm } from "./SingleLineForm";
 import { useNavigate } from "@tanstack/react-router";
 
@@ -30,6 +30,7 @@ export function DiscListItem(
         barcode = "0000000000000",
         collectionId,
         discId,
+        trueData,
         imageLink,
         deleteFn,
         updateRefFn
@@ -38,6 +39,7 @@ export function DiscListItem(
         barcode: string,
         collectionId: string,
         discId: string,
+        trueData: boolean,
         imageLink: string,
         deleteFn: (...args: any[]) => void,
         updateRefFn: (...args: any[]) => void,
@@ -50,7 +52,6 @@ export function DiscListItem(
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
     const navigate = useNavigate();
-
 
     return (
         <>
@@ -73,6 +74,11 @@ export function DiscListItem(
                             </Typography>
                         </ListItemContent>
                     </ListItemButton>
+                    {trueData ? <></> :
+                        <IconButton onClick={() => updateRefFn(title)}
+                            sx={{ backgroundColor: "blue" }}>
+                            <Refresh sx={{ color: `#42e308` }} />
+                        </IconButton>}
                     <IconButton onClick={() => setOpen(true)}>
                         <MoreVertIcon />
                     </IconButton>
