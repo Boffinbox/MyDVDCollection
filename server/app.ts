@@ -35,6 +35,24 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(mongoSanitize());
 app.use(passport.initialize());
 
+// middleware to remove squiggly brackets
+const removeCurlies = (req, res, next) =>
+{
+    Object.keys(req.body).forEach((key) =>
+    {
+        req.body[key] = req.body[key].toString().replace("{", "[");
+        req.body[key] = req.body[key].toString().replace("}", "]");
+    });
+    Object.keys(req.params).forEach((key) =>
+    {
+        req.params[key] = req.params[key].toString().replace("{", "[");
+        req.params[key] = req.params[key].toString().replace("}", "]");
+    });
+    next();
+};
+
+app.use(removeCurlies)
+
 // main router
 app.use("/api/v1", router)
 
