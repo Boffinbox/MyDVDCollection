@@ -78,13 +78,13 @@ async function externalAPICall(barcode: string, title: string, isNew: boolean)
 
 async function fetchExternalDVD(barcode: string = `7321905737437`)
 {
-    console.log(`WARNING - BURNING 1 API CALL, with barcode: ${barcode}`)
     // never do a call if we are in a test
     if (process.env.NODE_ENV === "test")
     {
         return undefined
     }
-    const response = await axios.get(`https://api.upcitemdb.com/prod/trial/lookup?upc=${barcode}`, { validateStatus: () => true })
+    console.log(`WARNING - BURNING 1 API CALL, with barcode: ${barcode}`)
+    const response = await axios.get(process.env.UPCITEMDB_URL + `${barcode}`, { validateStatus: () => true })
         .then((res) => { return res; })
         .catch((e) => { return e.response })
     console.log(`upcitemdb's response is:`);
