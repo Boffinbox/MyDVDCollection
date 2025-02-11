@@ -38,31 +38,31 @@ const Joi = baseJoi.extend(htmlSanitizeExtension);
 
 const registrationSchema = Joi.object(
     {
-        username: Joi.string().escapeHTML().required(),
-        email: Joi.string().escapeHTML().required(),
-        password: Joi.string().escapeHTML().required(),
+        username: Joi.string().max(128).escapeHTML().required(),
+        email: Joi.string().max(128).escapeHTML().required(),
+        password: Joi.string().max(128).escapeHTML().required(),
         registrationKey: Joi.string().escapeHTML().required()
     }
 ).required()
 
 const loginSchema = Joi.object(
     {
-        username: Joi.string().escapeHTML(),
-        email: Joi.string().escapeHTML().required(),
-        password: Joi.string().escapeHTML().required()
+        username: Joi.string().max(128).escapeHTML(),
+        email: Joi.string().max(128).escapeHTML().required(),
+        password: Joi.string().max(128).escapeHTML().required()
     }
 ).required()
 
 const newCollectionSchema = Joi.object(
     {
-        title: Joi.string().max(64).escapeHTML().required(),
+        title: Joi.string().max(128).escapeHTML().required(),
     }
 ).required()
 
 const newDVDSchema = Joi.object(
     {
-        barcode: Joi.string().min(12).max(13).escapeHTML().required(),
-        title: Joi.string().max(64).escapeHTML()
+        barcode: Joi.number().min(0).max(9999999999999).required(),
+        title: Joi.string().max(128).escapeHTML()
     }
 ).required()
 
