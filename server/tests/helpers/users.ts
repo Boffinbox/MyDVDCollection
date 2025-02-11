@@ -22,9 +22,10 @@ export function generateUserDetails(username = "boff", email = "boff@test.co.uk"
 
 export async function registerAUser(userDetails: IUserDetails)
 {
+    const registrationDetails = { ...userDetails, registrationKey: process.env.REGISTRATION_KEY }
     const res = await request(app)
         .post(`${api}/users/register`)
-        .send(userDetails);
+        .send(registrationDetails);
     return res;
 }
 

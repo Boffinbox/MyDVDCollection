@@ -40,7 +40,8 @@ const registrationSchema = Joi.object(
     {
         username: Joi.string().escapeHTML().required(),
         email: Joi.string().escapeHTML().required(),
-        password: Joi.string().escapeHTML().required()
+        password: Joi.string().escapeHTML().required(),
+        registrationKey: Joi.string().escapeHTML().required()
     }
 ).required()
 

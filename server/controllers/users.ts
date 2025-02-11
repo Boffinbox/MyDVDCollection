@@ -28,7 +28,21 @@ function updateExistingRefreshToken(user, tokenIndex: number)
 
 export async function register(req, res)
 {
-    const { username, email, password }: { username: string, email: string, password: string } = req.body;
+    const {
+        username,
+        email,
+        password,
+        registrationKey
+    }: {
+        username: string,
+        email: string,
+        password: string,
+        registrationKey: string
+    } = req.body;
+    if (registrationKey != process.env.REGISTRATION_KEY)
+    {
+        return res.status(403).json(`wrong registration key provided ;)`);
+    }
     const newUser = await UserModel.register(new UserModel({ username, email }), password)
     const userTokens = await getTokens(newUser);
     const user = addNewRefreshTokenToUser(newUser, userTokens.refreshToken);
