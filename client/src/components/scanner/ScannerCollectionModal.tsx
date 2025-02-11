@@ -1,17 +1,19 @@
-import { Modal, ModalDialog, Typography, List, ListItem, ListItemButton } from "@mui/joy";
-import { ICollectionHydrated } from "../Interfaces";
+import { Modal, ModalDialog, Typography, List, ListItem, ListItemButton, ListDivider } from "@mui/joy";
+import { ICollectionHydrated } from "../../Interfaces";
 
 export function ScannerCollectionModal(
     {
         isModalOpen,
         closeModal,
         collections,
-        setFormData
+        setFormData,
+        handleCollChange
     }: {
         isModalOpen: boolean
         closeModal: (...args: any[]) => void,
         collections: ICollectionHydrated[]
         setFormData: (...args: any[]) => void,
+        handleCollChange: (collectionId: string) => void
     })
 {
     return (
@@ -31,7 +33,7 @@ export function ScannerCollectionModal(
                         textColor="inherit"
                         sx={{ fontWeight: 'lg', mb: 1 }}
                     >
-                        Pick a collection
+                        Pick a collection to scan:
                     </Typography>
                     <List
                         sx={[
@@ -55,6 +57,7 @@ export function ScannerCollectionModal(
                                                 collectionId: item._id.toString()
                                             };
                                         })
+                                        handleCollChange(item._id.toString())
                                         closeModal()
                                     }}
                                 >
@@ -62,6 +65,26 @@ export function ScannerCollectionModal(
                                 </ListItemButton>
                             </ListItem>
                         ))}
+                        <ListDivider />
+                        <ListItem>
+                            <ListItemButton
+                                variant="outlined"
+                                onClick={() =>
+                                {
+                                    setFormData(currentData =>
+                                    {
+                                        return {
+                                            ...currentData,
+                                            collectionId: ""
+                                        };
+                                    })
+                                    handleCollChange("")
+                                    closeModal()
+                                }}
+                            >
+                                Scan all collections
+                            </ListItemButton>
+                        </ListItem>
                     </List>
                 </ModalDialog>
             </Modal>

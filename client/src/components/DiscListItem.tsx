@@ -10,6 +10,9 @@ import
     AspectRatio,
     IconButton,
     Divider,
+    Modal,
+    ModalDialog,
+    Button,
 
 } from "@mui/joy";
 
@@ -17,39 +20,65 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useState } from "react";
+import { Edit, InfoOutlined, Refresh } from "@mui/icons-material";
+import { SingleLineForm } from "./SingleLineForm";
+import { useNavigate } from "@tanstack/react-router";
 
 export function DiscListItem(
     {
         title = "notitle",
         barcode = "0000000000000",
+        collectionId,
         discId,
-        deleteFn
+        trueData,
+        imageLink,
+        deleteFn,
+        updateRefFn
     }: {
         title: string,
         barcode: string,
+        collectionId: string,
         discId: string,
+        trueData: boolean,
+        imageLink: string,
         deleteFn: (...args: any[]) => void,
+        updateRefFn: (...args: any[]) => void,
     })
 {
     const [open, setOpen] = useState(false);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+
+    const navigate = useNavigate();
 
     return (
         <>
             <ListItem>
                 <ListItemButton sx={{ px: 0 }}>
-                    <ListItemDecorator sx={{ mx: "auto" }}>
-                        <AspectRatio ratio="135 / 190" flex>
-                            <img src="/dev/dvd.jpg" />
-                        </AspectRatio>
-                    </ListItemDecorator>
-                    <ListItemContent>
-                        <Typography level="title-sm" noWrap>
-                            {title}
-                        </Typography>
-                        <Typography level="body-sm" noWrap>
-                            Barcode: {barcode}
-                        </Typography>
-                    </ListItemContent>
+                    <ListItemButton
+                        onClick={() => navigate({ to: `/collections/${collectionId}/${discId}` })}
+                    >
+                        <ListItemDecorator sx={{ mx: "auto" }}>
+                            <AspectRatio ratio="135 / 190" flex>
+                                <img src={imageLink} />
+                            </AspectRatio>
+                        </ListItemDecorator>
+                        <ListItemContent>
+                            <Typography level="title-sm" noWrap>
+                                {title}
+                            </Typography>
+                            <Typography level="body-sm" noWrap>
+                                Barcode: {barcode}
+                            </Typography>
+                        </ListItemContent>
+                    </ListItemButton>
+                    {trueData ? <></> :
+                        <IconButton onClick={() => updateRefFn(title)}
+                            sx={{ backgroundColor: "blue" }}>
+                            <Refresh sx={{ color: `#42e308` }} />
+                        </IconButton>}
                     <IconButton onClick={() => setOpen(true)}>
                         <MoreVertIcon />
                     </IconButton>
@@ -57,7 +86,7 @@ export function DiscListItem(
                         open={open}
                         onClose={() => setOpen(false)}
                         anchor="bottom"
-                        size="sm"
+                        size="xs"
                     >
                         <List
                             size="lg"
@@ -70,13 +99,21 @@ export function DiscListItem(
                         >
                             <ListItem>{title}</ListItem>
                             <Divider />
-                            <ListItemButton>And</ListItemButton>
-                            <ListItemButton>Here's</ListItemButton>
-                            <ListItemButton>Some</ListItemButton>
-                            <ListItemButton>Other</ListItemButton>
-                            <ListItemButton>Actions</ListItemButton>
+                            <ListItemButton
+                                // onClick={() => updateRefFn()}
+                                onClick={() => setIsModalOpen(true)}
+                                color="warning"
+                                sx={{ fontWeight: "lg" }}>
+                                <ListItemDecorator>
+                                    <Edit />
+                                </ListItemDecorator>
+                                Edit Title
+                            </ListItemButton>
                             <Divider />
-                            <ListItemButton onClick={deleteFn} color="danger" sx={{ fontWeight: "lg" }}>
+                            <ListItemButton
+                                onClick={() => setIsDeleteModalOpen(true)}
+                                color="danger"
+                                sx={{ fontWeight: "lg" }}>
                                 <ListItemDecorator>
                                     <DeleteIcon />
                                 </ListItemDecorator>
@@ -86,6 +123,69 @@ export function DiscListItem(
                     </Drawer>
                 </ListItemButton>
             </ListItem>
+            {/* edit modal */}
+            <Modal
+                open={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+                <ModalDialog
+                    variant="outlined"
+                    sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
+                >
+                    <Typography
+                        component="h2"
+                        level="h4"
+                        textColor="inherit"
+                        sx={{ fontWeight: 'lg', mb: 1 }}
+                    >
+                        Rename Item
+                    </Typography>
+                    <SingleLineForm
+                        submitButtonText="Update!"
+                        labelText="New Title"
+                        onSubmit={(title: string) => updateRefFn(title)}
+                    />
+                </ModalDialog>
+            </Modal>
+            {/* delete modal */}
+            <Modal
+                open={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+                <ModalDialog
+                    variant="outlined"
+                    sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
+                >
+                    <Typography
+                        component="h2"
+                        level="h4"
+                        textColor="inherit"
+                        sx={{ fontWeight: 'lg', mb: 1 }}
+                    >
+                        Confirm Deletion
+                    </Typography>
+                    <Typography
+                        component="h2"
+                        level="body-sm"
+                        textColor="inherit"
+                        sx={{ fontWeight: 'sm', mb: 1 }}
+                    >
+                        {title}
+                    </Typography>
+                    <Typography
+                        level="body-sm"
+                        startDecorator={<InfoOutlined />}
+                        sx={{ alignItems: 'flex-start', maxWidth: 240, wordBreak: 'break-all' }}
+                    >
+                        This action cannot be undone.
+                    </Typography>
+                    <Button onClick={deleteFn} color="danger">
+                        Delete
+                    </Button>
+                </ModalDialog>
+            </Modal>
         </>
     )
 }

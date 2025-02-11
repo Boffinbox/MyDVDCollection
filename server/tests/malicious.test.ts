@@ -72,6 +72,33 @@ test(`try to use the wrong jwt token for a user`, async () =>
     expect(aliceRes.status).toBe(200);
 })
 
+test(`try to rename another user's collection to something else`, async () =>
+{
+    // first, setup alice, our honest user, with
+    // a new collection, and a copy of gremlins
+    const alice = await testDVDSetup("alice", "alice@test.co.uk", "1234", "567856785678", "gremlins")
+
+    // next, setup trudy the intruder
+    const trudyDetails = userFunctions.generateUserDetails("trudy", "mal@icio.us", "hahaha")
+    // trudy saves her access token while registering, to use for evil deeds later
+    const trudyToken = await userFunctions.registerAUser(trudyDetails).then((res) => res.body.token)
+
+    // now, lets try to rename one of alice's collections, using trudy's token. alice's collection should be "My Test Collection"
+    const trudyRes = await request(app)
+        .patch(`${api}/disccollections/${alice.collId}/`)
+        .set(`Authorization`, `Bearer ${trudyToken}`)
+        .send({ title: "My Evil Collection" });
+    expect(trudyRes.status).toBe(401);
+
+    // and just to be sure, lets now re-read alice's legitimate collection title
+    const aliceRes = await request(app)
+        .get(`${api}/disccollections/${alice.collId}/`)
+        .set(`Authorization`, `Bearer ${alice.userToken}`)
+        .send();
+    expect(aliceRes.status).toBe(200);
+    expect(aliceRes.body.title).toEqual("My Test Collection")
+})
+
 test(`add two dvds to two collections, then try to delete dvd 1 from collection 2`, async () =>
 {
     // first, setup bob, our honest user, with

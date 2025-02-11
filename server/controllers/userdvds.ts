@@ -31,7 +31,7 @@ export async function addDVD(req, res)
     const referenceDVD = await getReferenceDVD(barcode, title);
     if (!referenceDVD)
     {
-        res.status(503).json({ message: "couldn't find dvd with this barcode" });
+        res.status(503).json({ message: "could not get reference dvd" });
     }
     else
     {

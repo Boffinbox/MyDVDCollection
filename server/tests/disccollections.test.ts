@@ -41,6 +41,34 @@ test(`retrieve a known collection for a known user`, async () =>
     expect(resTwo.body.discs).toEqual([]);
 })
 
+test(`rename a known collection for a known user`, async () =>
+{
+    const userDetails = userFunctions.generateUserDetails();
+    const registerRes = await userFunctions.registerAUser(userDetails);
+    const userToken = registerRes.body.token
+    expect(registerRes.status).toBe(201);
+
+    const title = "My Test Collection"
+    const resOne = await discCollectionFunctions.newCollection(userToken, title);
+    expect(resOne.status).toBe(201);
+    expect(resOne.body.title).toEqual(title);
+
+    const collId = resOne.body._id
+    const getResOne = await discCollectionFunctions.getCollection(userToken, collId)
+    expect(getResOne.status).toBe(200);
+
+    const resTwo = await request(app)
+        .patch(`${api}/disccollections/${resOne.body._id}`)
+        .set(`Authorization`, `Bearer ${userToken}`)
+        .send({ title: "My Edited Collection" });
+    expect(resTwo.status).toBe(200);
+    expect(resTwo.body.title).toEqual("My Edited Collection")
+
+    const getResTwo = await discCollectionFunctions.getCollection(userToken, collId)
+    expect(getResTwo.status).toBe(200);
+    expect(getResTwo.body.title).toEqual("My Edited Collection")
+})
+
 test(`delete a known collection for a known user`, async () =>
 {
     const userDetails = userFunctions.generateUserDetails();

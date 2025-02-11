@@ -3,11 +3,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { DeleteCollection } from "../../httpverbs/DeleteCollection";
 import { PostCollection } from "../../httpverbs/PostCollection";
+import { PatchCollection } from "../../httpverbs/PatchCollection";
 
 import { SingleLineForm } from "../../components/SingleLineForm";
 
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries"
-import { ICollection } from "../../Interfaces";
+import { ICollection, ICollectionHydrated } from "../../Interfaces";
 
 import { Divider, Stack, Typography } from "@mui/joy"
 import { CollectionCard } from "../../components/CollectionCard";
@@ -24,12 +25,28 @@ function Collections()
     const token: string | undefined = tokenQuery.data;
 
     const collectionsQuery = useQuery(CollectionsQueryOptions(token))
-    const collections: [{ _id: string, title: string }] = collectionsQuery.data;
+    const collections: ICollectionHydrated[] = collectionsQuery.data;
 
     const newCollectionMutation = useMutation({
         mutationFn: (title: string) => PostCollection(token, title),
         onSuccess: (returnedCollection: ICollection) => queryClient.setQueryData(["collections"],
             (oldData: ICollection[]) => [...oldData, returnedCollection])
+    })
+
+    const updateCollectionMutation = useMutation({
+        mutationFn: ({ collectionId, title }: { collectionId: string, title: string }) => PatchCollection(token, collectionId, title),
+        onSuccess: (returnedCollection: ICollection) => queryClient.setQueryData(["collections"],
+            (oldData: ICollection[]) =>
+            {
+                let newData = oldData
+                let collToUpdate = newData.find(coll => coll._id === returnedCollection._id)
+                if (collToUpdate == undefined)
+                {
+                    return newData
+                }
+                collToUpdate.title = returnedCollection.title
+                return newData
+            })
     })
 
     const deleteCollectionMutation = useMutation({
@@ -69,6 +86,8 @@ function Collections()
                             title={coll.title}
                             collId={coll._id}
                             deleteFn={async () => await deleteCollectionMutation.mutate(coll._id)}
+                            updateCollTitleFn={async (title: string) => await updateCollectionMutation.mutate({ collectionId: coll._id, title: title })}
+                            discCount={coll.discs.length}
                         >
                         </CollectionCard>
                     ))}

@@ -26,8 +26,56 @@ class ReferenceDVD
     @prop({ required: true })
     barcode!: string;
 
-    @prop({ required: true })
+    @prop({ required: true, default: "unknown" })
     title!: string;
+
+    @prop({ required: true, default: "unknown" })
+    upcitemdb_title!: string;
+
+    @prop({ required: true, default: false })
+    upcitemdb_truedata!: boolean;
+
+    @prop({ default: "" })
+    ean: string;
+
+    @prop({ default: "" })
+    upc: string;
+
+    @prop({ default: "" })
+    gtin: string;
+
+    @prop({ default: "" })
+    asin: string;
+
+    @prop({ default: "" })
+    description: string;
+
+    @prop({ default: "" })
+    brand: string;
+
+    @prop({ default: "" })
+    model: string;
+
+    @prop({ default: "" })
+    dimension: string;
+
+    @prop({ default: "" })
+    weight: string;
+
+    @prop({ default: "" })
+    category: string;
+
+    @prop({ default: "" })
+    currency: string;
+
+    @prop({ default: 0 })
+    lowest_recorded_price: number
+
+    @prop({ default: 0 })
+    highest_recorded_price: number
+
+    @prop({ type: () => [String], default: [] })
+    images: string[];
 }
 
 class UserDVD
