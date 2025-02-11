@@ -9,6 +9,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const passport = require("passport")
+const helmet = require("helmet")
 const app = express();
 
 const ExpressError = require("./helpers/ExpressError");
@@ -26,8 +27,9 @@ require("./auth/authenticate");
 
 // start middlewares
 app.use(morgan("dev"));
+app.use(helmet());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(passport.initialize());
 
