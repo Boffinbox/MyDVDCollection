@@ -1,26 +1,21 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { DeleteDisc } from '../../httpverbs/DeleteDisc'
-import { PostBarcode } from '../../httpverbs/PostBarcode'
-import { PostReference } from '../../httpverbs/PostReference'
-import { SingleLineForm } from '../../components/SingleLineForm'
-import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import
-    {
-        AccessTokenQueryOptions,
-        CollectionsQueryOptions,
-    } from '../../utilities/Queries'
+{
+    AccessTokenQueryOptions,
+    CollectionsQueryOptions,
+} from '../../utilities/Queries'
 import { ICollectionHydrated, IDisc, IReferenceDisc } from '../../Interfaces'
 import
-    {
-        AspectRatio,
-        Button,
-        Divider,
-        List,
-        Sheet,
-        Stack,
-        Table,
-        Typography,
-    } from '@mui/joy'
+{
+    AspectRatio,
+    Button,
+    Divider,
+    Sheet,
+    Stack,
+    Table,
+    Typography,
+} from '@mui/joy'
 
 export const Route = createFileRoute(
     '/_mdc/collections_/$collectionId_/$discId',
@@ -31,8 +26,6 @@ export const Route = createFileRoute(
 function Disc()
 {
     const { collectionId, discId } = Route.useParams()
-
-    const queryClient = useQueryClient()
 
     const navigate = useNavigate()
 

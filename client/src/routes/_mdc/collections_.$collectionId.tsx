@@ -5,10 +5,10 @@ import { PostReference } from '../../httpverbs/PostReference'
 import { SingleLineForm } from '../../components/SingleLineForm'
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query'
 import
-    {
-        AccessTokenQueryOptions,
-        CollectionsQueryOptions,
-    } from '../../utilities/Queries'
+{
+    AccessTokenQueryOptions,
+    CollectionsQueryOptions,
+} from '../../utilities/Queries'
 import { ICollectionHydrated, IDisc, IReferenceDisc } from '../../Interfaces'
 import { DiscListItem } from '../../components/DiscListItem'
 import { Divider, List, Stack, Typography } from '@mui/joy'
@@ -155,7 +155,7 @@ function Collection()
                     onSubmit={async (barcode) => await newDiscMutation.mutate(barcode)}
                 />
                 <List>
-                    {collection.discs.map((disc: IDisc, idx: number) => (
+                    {collection.discs.map((disc: IDisc) => (
                         <DiscListItem
                             key={disc._id}
                             title={disc.referenceDVD.title}
