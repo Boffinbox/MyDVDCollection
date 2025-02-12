@@ -41,10 +41,15 @@ async function externalAPICall(barcode: string, title: string, isNew: boolean)
     }
     // const externalDVDInfo = exampleUPCItemDBData();
     const response = await fetchExternalDVD(barcode);
+    // codes: OK, TOO_FAST, EXCEED_LIMIT, NOT_FOUND, INVALID_UPC, INVALID_QUERY
+    // rate limits are 100 per 24 hours, and 6 per 60 seconds
     if (response == undefined || response.data.code != "OK") // if something wrong with request...
     {
         console.log("unable to reach or use upcitemdb")
-        console.log("are you maxed out on requests?")
+        if (response && response.data.code == "EXCEED_LIMIT")
+        {
+            console.log("server is maxed out on requests for the day")
+        }
         if (isNew)
         {
             console.log(`speculatively adding ${barcode} anyway`)

@@ -24,7 +24,7 @@ function MDCComponent()
         <>
             <div>Oh no! Something went wrong... 🙁</div>
             <p>
-                <RouterLink to="/">
+                <RouterLink to="/home">
                     <Link>Click here to go to homepage...</Link>
                 </RouterLink>{` `}
             </p>
