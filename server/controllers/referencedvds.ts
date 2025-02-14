@@ -10,6 +10,17 @@ export async function getAllReferenceDVDs(req, res)
     res.status(200).json(listOfAllReferenceDVDs);
 }
 
+export async function getSoloReferenceDVD(req, res)
+{
+    const { barcode }: { barcode: string } = req.params
+    const refDVD = await getReferenceDVD(barcode, "")
+    if (!refDVD)
+    {
+        return res.status(404).json({ message: "barcode not found in references" });
+    }
+    return res.status(200).json(refDVD)
+}
+
 // returns a reference dvd, either from my own db, or external api
 export async function getReferenceDVD(barcode: string, title: string)
 {

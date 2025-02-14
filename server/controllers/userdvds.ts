@@ -10,6 +10,27 @@ const
 const getUserDocument = require("../helpers/GetUserDocument");
 const { getReferenceDVD } = require("./referencedvds.ts");
 
+export async function getDVD(req, res)
+{
+    const user = await getUserDocument(req, res);
+    if (!user.collections.includes(req.params.collectionId))
+    {
+        return res.status(401).send("Unauthorized");
+    }
+    const { collectionId, discId }: { collectionId: string, discId: string } = req.params
+    const collection = await DiscCollectionModel.findById(collectionId)
+    if (!collection)
+    {
+        return res.status(503).json({ message: "couldn't find collection" });
+    }
+    if (!collection.discs.includes(req.params.discId))
+    {
+        return res.status(401).json({ message: "wrong collection, disc mismatch" });
+    }
+    const disc = await UserDVDModel.findOne({ _id: discId })
+    return res.status(200).json(disc);
+}
+
 export async function addDVD(req, res)
 {
     const user = await getUserDocument(req, res);
@@ -53,7 +74,7 @@ export async function updateDVD(req, res)
     const user = await getUserDocument(req, res);
     if (!user.collections.includes(req.params.collectionId))
     {
-        return res.status(401).send("Unauthorized - not a match");
+        return res.status(401).send("Unauthorized");
     }
     const { collectionId, discId }: { collectionId: string, discId: string } = req.params
     const { rating = 0, watched = false }: { rating: number, watched: boolean } = req.body;

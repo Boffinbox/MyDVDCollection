@@ -33,6 +33,18 @@ test(`add a dvd without adding a corresponding reference dvd`, async () =>
     expect(newDvdRes.status).toBe(201);
 })
 
+test(`add a dvd, and then get that dvd back as json`, async () =>
+{
+    const testSetup = await userDVDFunctions.testDVDSetup();
+    expect(testSetup.dvdRes.status).toBe(201);
+
+    const dvdRes = await request(app)
+        .get(`${api}/disccollections/${testSetup.collId}/userdvds/${testSetup.dvd._id}`)
+        .set(`Authorization`, `Bearer ${testSetup.userToken}`);
+    expect(dvdRes.status).toBe(200);
+    expect(dvdRes.body._id).toBe(testSetup.dvd._id);
+})
+
 test(`update a dvd in a user's collection, setting rating to 2 and watched to true`, async () =>
 {
     const testSetup = await userDVDFunctions.testDVDSetup();

@@ -36,7 +36,7 @@ function Collection()
         mutationFn: (barcode: string) => PostBarcode(token, collectionId, barcode),
         onSuccess: (returnedDisc: IDisc) =>
         {
-            console.log('received data was: ', returnedDisc)
+            console.log('new disc received data was: ', returnedDisc)
             console.log('coll id is: ', collectionId)
             queryClient.setQueryData(
                 ['collections'],
