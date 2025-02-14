@@ -139,15 +139,25 @@ function Collection()
     return (
         <>
             <Stack gap={1} sx={{ height: '100%' }}>
-                <Typography level="h1">
-                    {collection.title}
-                    {` `}
-                    <Typography level="h4">
-                        {collectionsQuery.isFetching ? (
-                            <span style={{ fontSize: 'small' }}>Fetching...</span>
-                        ) : null}
+                <Stack direction="row" gap={1} sx=
+                    {{
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}>
+                    <Typography level="h1">
+                        {collection.title}
+                        {` `}
+                        <Typography level="h4">
+                            {collectionsQuery.isFetching ? (
+                                <span style={{ fontSize: 'small' }}>Fetching...</span>
+                            ) : null}
+                        </Typography>
                     </Typography>
-                </Typography>
+                    <Typography level="h4">
+                        Disc count:{` `}
+                        {collection.discs.length}
+                    </Typography>
+                </Stack>
                 <Divider />
                 <SingleLineForm
                     submitButtonText="Submit!"
