@@ -2,7 +2,6 @@ export { };
 
 const
     {
-        ReferenceDVDModel,
         UserDVDModel,
         DiscCollectionModel,
     } = require("../models")

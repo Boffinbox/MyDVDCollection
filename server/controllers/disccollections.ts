@@ -7,15 +7,6 @@ export async function index(req, res)
 {
     const userId = req.user._id
     const user = await UserModel.findById({ _id: userId })
-        .populate({
-            path: "collections",
-            populate: {
-                path: "discs",
-                populate: {
-                    path: "referenceDVD"
-                }
-            }
-        }).exec();
     if (!user)
     {
         return res.status(401).send("Unauthorized");
@@ -32,13 +23,6 @@ export async function showCollection(req, res)
     }
     const collectionOfConcern = await DiscCollectionModel
         .findOne({ _id: req.params.collectionId })
-        .populate({
-            path: "discs",
-            populate: {
-                path: "referenceDVD"
-            }
-        })
-        .exec();
     return res.status(200).json(collectionOfConcern);
 }
 
