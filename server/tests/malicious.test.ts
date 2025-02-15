@@ -106,31 +106,59 @@ test(`add two dvds to two collections, then try to delete dvd 1 from collection 
     const bob = await testDVDSetup("bob", "bob@test.co.uk", "1234", "567856785678", "gremlins")
 
     // get the first coll as separate data
-    const firstColl = await discCollectionFunctions.getCollection(bob.userToken, bob.collId)
-    expect(firstColl.status).toBe(200)
+    const firstCollRes = await discCollectionFunctions.getCollection(bob.userToken, bob.collId)
+    expect(firstCollRes.status).toBe(200)
+    let firstColl = firstCollRes.body
 
     // then, make a second collection and add a dvd to that too
-    const newColl = await discCollectionFunctions.newCollection(bob.userToken, "second collection")
-    expect(newColl.status).toBe(201);
-    await userDVDFunctions.newDVD(bob.userToken, newColl.body._id, "567856785678", "gremlins");
-    const secondColl = await discCollectionFunctions.getCollection(bob.userToken, newColl.body._id)
-    expect(secondColl.status).toBe(200)
+    const newCollRes = await discCollectionFunctions.newCollection(bob.userToken, "second collection")
+    expect(newCollRes.status).toBe(201);
+    await userDVDFunctions.newDVD(bob.userToken, newCollRes.body._id, "567856785678", "gremlins");
+    const secondCollRes = await discCollectionFunctions.getCollection(bob.userToken, newCollRes.body._id)
+    expect(secondCollRes.status).toBe(200)
+    let secondColl = secondCollRes.body
 
-    // should be 1 user, two collections, each with 1 dvd, both called gremlins, same refId, different dvdId.
+    // these collections now need to be populated to perform the test
+    const collArray = [firstColl, secondColl]
+    for (let i = 0; i < collArray.length; i++)
+    {
+        for (let j = 0; j < collArray[i].discs.length; j++)
+        {
+            const discRes = await request(app)
+                .get(`${api}/disccollections/${collArray[i]._id}/userdvds/${collArray[i].discs[j]}`)
+                .set(`Authorization`, `Bearer ${bob.userToken}`)
+                .send();
+            const disc = discRes.body
+            const refRes = await request(app)
+                .get(`${api}/referencedvds/${disc.referenceDVD}`)
+                .set(`Authorization`, `Bearer ${bob.userToken}`)
+                .send();
+            const refDisc = refRes.body
+
+            disc.referenceDVD = refDisc
+            collArray[i].discs[j] = disc
+        }
+    }
+
+    // should be 1 user, two populated collections, each with 1 dvd, both called gremlins, same refId, different dvdId.
     const collRes = await request(app)
         .get(`${api}/disccollections`)
         .set(`Authorization`, `Bearer ${bob.userToken}`)
         .send();
-    console.log("disc 1 title is: ", firstColl.body.discs[0].referenceDVD.title);
-    console.log("disc 2 title is: ", secondColl.body.discs[0].referenceDVD.title);
+    console.log("disc 1 title is: ", firstColl.discs[0].referenceDVD.title);
+    console.log("disc 2 title is: ", secondColl.discs[0].referenceDVD.title);
+    console.log(firstColl.discs[0].referenceDVD._id)
+    console.log(secondColl.discs[0].referenceDVD._id)
+    console.log(firstColl.discs[0]._id)
+    console.log(secondColl.discs[0]._id)
     expect(collRes.body.length).toEqual(2);
-    expect(firstColl.body.discs[0].referenceDVD.title).toEqual(secondColl.body.discs[0].referenceDVD.title);
-    expect(firstColl.body.discs[0].referenceDVD._id).toEqual(secondColl.body.discs[0].referenceDVD._id);
-    expect(firstColl.body.discs[0]._id).not.toEqual(secondColl.body.discs[0]._id)
+    expect(firstColl.discs[0].referenceDVD.title).toEqual(secondColl.discs[0].referenceDVD.title);
+    expect(firstColl.discs[0].referenceDVD._id).toEqual(secondColl.discs[0].referenceDVD._id);
+    expect(firstColl.discs[0]._id).not.toEqual(secondColl.discs[0]._id)
 
     // lastly, lets try and delete disc 1 from collection 2
     const deleteRes = await request(app)
-        .delete(`${api}/disccollections/${secondColl.body._id}/userdvds/${firstColl.body.discs[0]._id}`)
+        .delete(`${api}/disccollections/${secondColl._id}/userdvds/${firstColl.discs[0]._id}`)
         .set(`Authorization`, `Bearer ${bob.userToken}`)
         .send();
     expect(deleteRes.status).toBe(401);
