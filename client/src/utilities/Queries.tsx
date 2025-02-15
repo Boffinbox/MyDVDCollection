@@ -24,6 +24,7 @@ export function CollectionQueryOptions(token: string | undefined, id: string)
 {
     return queryOptions({
         queryKey: ["collection", id],
-        queryFn: () => GetCollection(token, id)
+        queryFn: () => GetCollection(token, id),
+        enabled: !!id
     })
 }

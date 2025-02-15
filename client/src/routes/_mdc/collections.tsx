@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { DeleteCollection } from "../../httpverbs/DeleteCollection";
 import { PostCollection } from "../../httpverbs/PostCollection";
@@ -7,8 +7,13 @@ import { PatchCollection } from "../../httpverbs/PatchCollection";
 
 import { SingleLineForm } from "../../components/SingleLineForm";
 
-import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries"
-import { ICollection, ICollectionHydrated } from "../../Interfaces";
+import
+{
+    AccessTokenQueryOptions,
+    CollectionsQueryOptions,
+    CollectionQueryOptions
+} from "../../utilities/Queries"
+import { ICollection } from "../../Interfaces";
 
 import { Divider, Stack, Typography } from "@mui/joy"
 import { CollectionCard } from "../../components/CollectionCard";
@@ -24,8 +29,15 @@ function Collections()
     const tokenQuery = useQuery(AccessTokenQueryOptions())
     const token: string | undefined = tokenQuery.data;
 
-    const collectionsQuery = useQuery(CollectionsQueryOptions(token))
-    const collections: ICollectionHydrated[] = collectionsQuery.data;
+    const collectionListQuery = useQuery(CollectionsQueryOptions(token))
+    const collectionList: string[] = collectionListQuery.data
+
+    const collectionsQueries = useQueries({
+        queries: collectionList.map((id) => (CollectionQueryOptions(token, id)))
+    })
+
+    const collections = collectionsQueries.map((query) => query.data)
+    console.log(collections)
 
     const newCollectionMutation = useMutation({
         mutationFn: (title: string) => PostCollection(token, title),
@@ -55,20 +67,25 @@ function Collections()
             (oldData: ICollection[]) => oldData.filter((coll: ICollection) => coll._id !== returnedCollection._id))
     })
 
-    if (collectionsQuery.isLoading) return <Typography level="h1" sx={{ height: "100%" }}>Loading...</Typography>
-    if (collectionsQuery.isError) return (
+    if (collectionListQuery.isLoading) return <Typography level="h1" sx={{ height: "100%" }}>Loading...</Typography>
+    if (collectionListQuery.isError) return (
         <>
             <div>Oh no! Something went wrong...</div>
-            <pre>{JSON.stringify(collectionsQuery.error.message)}</pre>
+            <pre>{JSON.stringify(collectionListQuery.error.message)}</pre>
         </>
     )
 
+    for (let query of collectionsQueries)
+    {
+        if (query.isLoading) return <Typography level="h1" sx={{ height: "100%" }}>Loading...</Typography>
+        if (query.isError) return <Typography level="h1" sx={{ height: "100%" }}>Error :(</Typography>
+    }
 
     return (
         <>
             <Stack gap={1} sx={{ height: "100%" }}>
                 <Typography level="h1">Collections {` `}
-                    <Typography level="h4">{collectionsQuery.isFetching ? <span style={{ fontSize: "small" }}>Fetching...</span> : null}</Typography>
+                    <Typography level="h4">{collectionListQuery.isFetching ? <span style={{ fontSize: "small" }}>Fetching...</span> : null}</Typography>
                 </Typography>
                 <Divider />
                 <SingleLineForm
