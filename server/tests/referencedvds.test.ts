@@ -14,11 +14,14 @@ test(`get a reference dvd`, async () =>
     expect(testSetup.dvdRes.body.referenceDVD.barcode).toEqual("7321905737437")
     expect(testSetup.dvdRes.body.referenceDVD.title).toEqual("gremlins")
 
+    const refId = testSetup.dvdRes.body.referenceDVD._id
+
     const refDvdRes = await request(app)
-        .get(`${api}/referencedvds/7321905737437`)
+        .get(`${api}/referencedvds/${refId}`)
         .set(`Authorization`, `Bearer ${testSetup.userToken}`)
     expect(refDvdRes.status).toBe(200);
     console.log(refDvdRes.body)
+    expect(refDvdRes.body._id).toEqual(refId)
     expect(refDvdRes.body.barcode).toEqual("7321905737437")
     expect(refDvdRes.body.title).toEqual("gremlins")
 })

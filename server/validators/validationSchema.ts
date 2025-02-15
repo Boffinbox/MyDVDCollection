@@ -36,8 +36,7 @@ const htmlSanitizeExtension = (baseJoi) => ({
 
 const Joi = baseJoi.extend(htmlSanitizeExtension);
 
-const collectionIdSchema = Joi.string().length(24).escapeHTML().required()
-const discIdSchema = Joi.string().length(24).escapeHTML().required()
+const idSchema = Joi.string().length(24).escapeHTML().required()
 const barcodeSchema = Joi.number().min(0).max(9999999999999).required()
 
 const registrationSchema = Joi.object(
@@ -84,8 +83,7 @@ module.exports = {
     barcodeSchema,
     newDVDSchema,
     patchDVDSchema,
-    collectionIdSchema,
-    discIdSchema
+    idSchema
 };
 
 // const collectionSchema = Joi.object(

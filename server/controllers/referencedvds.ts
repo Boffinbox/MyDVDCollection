@@ -12,11 +12,15 @@ export async function getAllReferenceDVDs(req, res)
 
 export async function getSoloReferenceDVD(req, res)
 {
-    const { barcode }: { barcode: string } = req.params
-    const refDVD = await getReferenceDVD(barcode, "")
+    const { referenceId }: { referenceId: string } = req.params
+    if (!referenceId)
+    {
+        return res.status(404).json({ message: "refdisc not found" });
+    }
+    const refDVD = await ReferenceDVDModel.findOne({ _id: referenceId });
     if (!refDVD)
     {
-        return res.status(404).json({ message: "barcode not found in references" });
+        return res.status(404).json({ message: "refdisc not found" });
     }
     return res.status(200).json(refDVD)
 }

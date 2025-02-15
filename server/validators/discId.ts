@@ -1,12 +1,12 @@
 export { };
 
-const { discIdSchema } = require("./validationSchema");
+const { idSchema } = require("./validationSchema");
 
 const ExpressError = require("../helpers/expresserror");
 
 const validateDiscId = (req, res, next) =>
 {
-    const { error } = discIdSchema.validate(req.params.discId);
+    const { error } = idSchema.validate(req.params.discId);
     if (error)
     {
         const msg = error.details.map(el => el.message).join(',');

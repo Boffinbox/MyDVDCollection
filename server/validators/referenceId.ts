@@ -4,20 +4,20 @@ const { idSchema } = require("./validationSchema");
 
 const ExpressError = require("../helpers/expresserror");
 
-const validateCollectionId = (req, res, next) =>
+const validateReferenceId = (req, res, next) =>
 {
-    const { error } = idSchema.validate(req.params.collectionId);
+    const { error } = idSchema.validate(req.params.referenceId);
     if (error)
     {
         const msg = error.details.map(el => el.message).join(',');
-        console.log(`Collection ID validation failed, with reason: ${msg}`);
+        console.log(`Reference ID validation failed, with reason: ${msg}`);
         throw new ExpressError(400, msg);
     }
     else
     {
-        console.log("Collection ID validated successfully");
+        console.log("Reference ID validated successfully");
         next();
     }
 }
 
-module.exports = validateCollectionId;
+module.exports = validateReferenceId;
