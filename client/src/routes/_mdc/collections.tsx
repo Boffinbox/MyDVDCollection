@@ -19,6 +19,11 @@ import { Divider, Stack, Typography } from "@mui/joy"
 import { CollectionCard } from "../../components/CollectionCard";
 
 export const Route = createFileRoute('/_mdc/collections')({
+    beforeLoad: async ({ context: { queryClient } }) =>
+    {
+        const token = await queryClient.ensureQueryData(AccessTokenQueryOptions())
+        await queryClient.ensureQueryData(CollectionsQueryOptions(token))
+    },
     component: Collections
 })
 
@@ -26,8 +31,7 @@ function Collections()
 {
     const queryClient = useQueryClient();
 
-    const tokenQuery = useQuery(AccessTokenQueryOptions())
-    const token: string | undefined = tokenQuery.data;
+    const token: string | undefined = queryClient.getQueryData(["accesstoken"])
 
     const collectionListQuery = useQuery(CollectionsQueryOptions(token))
     const collectionList: string[] = collectionListQuery.data
@@ -36,8 +40,7 @@ function Collections()
         queries: collectionList.map((id) => (CollectionQueryOptions(token, id)))
     })
 
-    const collections = collectionsQueries.map((query) => query.data)
-    console.log(collections)
+    const collections: ICollection[] = collectionsQueries.map((query) => query.data)
 
     const newCollectionMutation = useMutation({
         mutationFn: (title: string) => PostCollection(token, title),
@@ -78,7 +81,12 @@ function Collections()
     for (let query of collectionsQueries)
     {
         if (query.isLoading) return <Typography level="h1" sx={{ height: "100%" }}>Loading...</Typography>
-        if (query.isError) return <Typography level="h1" sx={{ height: "100%" }}>Error :(</Typography>
+        if (query.isError) return (
+            <>
+                <div>Oh no! Something went wrong...</div>
+                <pre>{JSON.stringify(query.error.message)}</pre>
+            </>
+        )
     }
 
     return (

@@ -4,7 +4,7 @@ export async function GetCollections(token: string | undefined)
 {
     if (token == undefined)
     {
-        throw new Error("No access token supplied to fetch collections.");
+        throw new Error("No access token supplied to get collections.");
     }
     const config =
     {
@@ -14,7 +14,7 @@ export async function GetCollections(token: string | undefined)
     {
         const response = await axios.get(`/api/v1/disccollections/`, config)
         console.log("token used was: ", token);
-        console.log("Collection request received.");
+        console.log("Collections request received.");
         console.log(response.data);
         return response.data;
     }
