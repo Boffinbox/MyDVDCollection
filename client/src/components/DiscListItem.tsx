@@ -13,7 +13,7 @@ import
     Modal,
     ModalDialog,
     Button,
-
+    Stack,
 } from "@mui/joy";
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -23,35 +23,63 @@ import { useState } from "react";
 import { Edit, InfoOutlined, Refresh } from "@mui/icons-material";
 import { SingleLineForm } from "./SingleLineForm";
 import { useNavigate } from "@tanstack/react-router";
+import { IDisc, IReferenceDisc } from "../Interfaces";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { DiscQueryOptions, ReferenceQueryOptions } from "../utilities/Queries";
 
 export function DiscListItem(
     {
-        title = "notitle",
-        barcode = "0000000000000",
-        collectionId,
         discId,
-        trueData,
-        imageLink,
-        deleteFn,
-        updateRefFn
+        collectionId,
+        // title = "notitle",
+        // barcode = "0000000000000",
     }: {
-        title: string,
-        barcode: string,
-        collectionId: string,
         discId: string,
-        trueData: boolean,
-        imageLink: string,
-        deleteFn: (...args: any[]) => void,
-        updateRefFn: (...args: any[]) => void,
+        collectionId: string,
+        // title: string,
+        // barcode: string,
+        // trueData: boolean,
+        // imageLink: string,
+        // deleteFn: (...args: any[]) => void,
+        // updateRefFn: (...args: any[]) => void,
     })
 {
+    const navigate = useNavigate();
+
+    const queryClient = useQueryClient()
+
     const [open, setOpen] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
-    const navigate = useNavigate();
+    const token: string | undefined = queryClient.getQueryData(["accesstoken"])
+
+    const discQuery = useQuery(DiscQueryOptions(token, collectionId, discId))
+    const referenceQuery = useQuery(ReferenceQueryOptions(token, discQuery.data?.referenceDVD))
+
+    if (discQuery.isLoading || referenceQuery.isLoading)
+    {
+        return (<pre>Disc Loading...</pre>)
+    }
+
+    if (discQuery.isError || referenceQuery.isError)
+    {
+        return (<pre>Disc Error.</pre>)
+    }
+
+    // return (
+    //     <Stack direction="row" gap={1} sx=
+    //         {{
+    //             justifyContent: "space-between",
+    //             alignItems: "center",
+    //         }}>
+    //         {JSON.stringify(discQuery.data)}
+    //         {"---"}
+    //         {JSON.stringify(referenceQuery.data)}
+    //     </Stack>
+    // )
 
     return (
         <>
@@ -62,20 +90,21 @@ export function DiscListItem(
                     >
                         <ListItemDecorator sx={{ mx: "auto" }}>
                             <AspectRatio ratio="135 / 190" flex>
-                                <img src={imageLink} />
+                                <img src={referenceQuery.data.images[0]} />
                             </AspectRatio>
                         </ListItemDecorator>
                         <ListItemContent>
                             <Typography level="title-sm" noWrap>
-                                {title}
+                                {referenceQuery.data.title}
                             </Typography>
                             <Typography level="body-sm" noWrap>
-                                Barcode: {barcode}
+                                Barcode: {referenceQuery.data.barcode}
                             </Typography>
                         </ListItemContent>
                     </ListItemButton>
-                    {trueData ? <></> :
-                        <IconButton onClick={() => updateRefFn(title)}
+                    {referenceQuery.data.upcitemdb_truedata ? <></> :
+                        // <IconButton onClick={() => updateRefFn("test title")}
+                        <IconButton onClick={() => alert("test title")}
                             sx={{ backgroundColor: "blue" }}>
                             <Refresh sx={{ color: `#42e308` }} />
                         </IconButton>}
@@ -97,7 +126,7 @@ export function DiscListItem(
                                 justifyContent: "flex-end",
                             }}
                         >
-                            <ListItem>{title}</ListItem>
+                            <ListItem>{referenceQuery.data.title}</ListItem>
                             <Divider />
                             <ListItemButton
                                 // onClick={() => updateRefFn()}
@@ -144,7 +173,8 @@ export function DiscListItem(
                     <SingleLineForm
                         submitButtonText="Update!"
                         labelText="New Title"
-                        onSubmit={(title: string) => updateRefFn(title)}
+                        // onSubmit={(title: string) => updateRefFn(title)}
+                        onSubmit={(title: string) => alert("title")}
                     />
                 </ModalDialog>
             </Modal>
@@ -172,7 +202,7 @@ export function DiscListItem(
                         textColor="inherit"
                         sx={{ fontWeight: 'sm', mb: 1 }}
                     >
-                        {title}
+                        {referenceQuery.data.title}
                     </Typography>
                     <Typography
                         level="body-sm"
@@ -181,7 +211,8 @@ export function DiscListItem(
                     >
                         This action cannot be undone.
                     </Typography>
-                    <Button onClick={deleteFn} color="danger">
+                    {/* <Button onClick={deleteFn} color="danger"> */}
+                    <Button onClick={() => alert("delete")} color="danger">
                         Delete
                     </Button>
                 </ModalDialog>

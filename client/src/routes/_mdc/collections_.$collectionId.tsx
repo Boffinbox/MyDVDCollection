@@ -44,11 +44,13 @@ function Collection()
         )
     }
 
-    const discQueries = useQueries({
-        queries: collection.discs.map((discId: string) => DiscQueryOptions(token, collectionId, discId))
-    })
+    console.log(collection.discs)
 
-    const discs: IDisc[] = discQueries.map((query) => query.data)
+    // const discQueries = useQueries({
+    //     queries: collection.discs.map((discId: string) => DiscQueryOptions(token, collectionId, discId))
+    // })
+
+    // const discs: IDisc[] = discQueries.map((query) => query.data)
 
     // return (
     //     <pre>
@@ -146,16 +148,16 @@ function Collection()
     //         ),
     // })
 
-    for (let query of discQueries)
-    {
-        if (query.isLoading) return <Typography level="h1" sx={{ height: "100%" }}>Loading...</Typography>
-        if (query.isError) return (
-            <>
-                <div>Oh no! Something went wrong...</div>
-                <pre>{JSON.stringify(query.error.message)}</pre>
-            </>
-        )
-    }
+    // for (let query of discQueries)
+    // {
+    //     if (query.isLoading) return <Typography level="h1" sx={{ height: "100%" }}>Loading...</Typography>
+    //     if (query.isError) return (
+    //         <>
+    //             <div>Oh no! Something went wrong...</div>
+    //             <pre>{JSON.stringify(query.error.message)}</pre>
+    //         </>
+    //     )
+    // }
 
     return (
         <>
@@ -186,22 +188,11 @@ function Collection()
                     onSubmit={async (barcode) => await newDiscMutation.mutate(barcode)}
                 />
                 <List>
-                    {discs.map((disc: IDisc) => (
+                    {collection.discs.map((disc: string) => (
                         <DiscListItem
-                            key={disc._id}
-                            title={disc.referenceDVD.title}
-                            barcode={disc.referenceDVD.barcode}
-                            collectionId={collection._id}
-                            discId={disc._id}
-                            trueData={disc.referenceDVD.upcitemdb_truedata}
-                            imageLink={`disc.referenceDVD.images[0]`}
-                            deleteFn={async () => await deleteDiscMutation.mutate(disc._id)}
-                            updateRefFn={async (title: string) =>
-                                await updateRefDiscMutation.mutate({
-                                    barcode: disc.referenceDVD.barcode,
-                                    title,
-                                })
-                            }
+                            key={disc}
+                            discId={disc}
+                            collectionId={collectionId}
                         />
                     ))}
                 </List>
