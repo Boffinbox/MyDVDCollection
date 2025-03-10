@@ -44,8 +44,11 @@ function Collections()
 
     const newCollectionMutation = useMutation({
         mutationFn: (title: string) => PostCollection(token, title),
-        onSuccess: (returnedCollection: ICollection) => queryClient.setQueryData(["collections"],
-            (oldData: ICollection[]) => [...oldData, returnedCollection])
+        onSuccess: (returnedCollection: ICollection) =>
+        {
+            queryClient.setQueryData(["collection", returnedCollection._id], returnedCollection)
+            queryClient.setQueryData(["collections"], (oldData: ICollection[]) => [...oldData, returnedCollection._id])
+        }
     })
 
     const updateCollectionMutation = useMutation({
@@ -66,8 +69,19 @@ function Collections()
 
     const deleteCollectionMutation = useMutation({
         mutationFn: (collectionId: string) => DeleteCollection(token, collectionId),
-        onSuccess: (returnedCollection: ICollection) => queryClient.setQueryData(["collections"],
-            (oldData: ICollection[]) => oldData.filter((coll: ICollection) => coll._id !== returnedCollection._id))
+        onSuccess: (returnedCollection: ICollection) =>
+        {
+            queryClient.setQueryData(["collections"],
+                (oldData: string[]) =>
+                {
+                    console.log("returned coll is:")
+                    console.log(returnedCollection)
+                    console.log("...and the old query data is:")
+                    console.log(oldData)
+                    return oldData.filter((collId: string) => collId !== returnedCollection._id)
+                })
+            queryClient.removeQueries({ queryKey: ["collection", returnedCollection._id] })
+        }
     })
 
     if (collectionListQuery.isLoading) return <Typography level="h1" sx={{ height: "100%" }}>Loading...</Typography>
