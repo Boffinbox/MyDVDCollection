@@ -23,7 +23,6 @@ import { useState } from "react";
 import { Edit, InfoOutlined, Refresh } from "@mui/icons-material";
 import { SingleLineForm } from "./SingleLineForm";
 import { useNavigate } from "@tanstack/react-router";
-import { IDisc, IReferenceDisc } from "../Interfaces";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DiscQueryOptions, ReferenceQueryOptions } from "../utilities/Queries";
 
@@ -33,6 +32,8 @@ export function DiscListItem(
         collectionId,
         // title = "notitle",
         // barcode = "0000000000000",
+        deleteFn,
+        updateRefFn
     }: {
         discId: string,
         collectionId: string,
@@ -40,8 +41,8 @@ export function DiscListItem(
         // barcode: string,
         // trueData: boolean,
         // imageLink: string,
-        // deleteFn: (...args: any[]) => void,
-        // updateRefFn: (...args: any[]) => void,
+        deleteFn: (...args: any[]) => void,
+        updateRefFn: (...args: any[]) => void,
     })
 {
     const navigate = useNavigate();
@@ -173,8 +174,7 @@ export function DiscListItem(
                     <SingleLineForm
                         submitButtonText="Update!"
                         labelText="New Title"
-                        // onSubmit={(title: string) => updateRefFn(title)}
-                        onSubmit={(title: string) => alert("title")}
+                        onSubmit={(title: string) => updateRefFn(title)}
                     />
                 </ModalDialog>
             </Modal>
@@ -211,8 +211,7 @@ export function DiscListItem(
                     >
                         This action cannot be undone.
                     </Typography>
-                    {/* <Button onClick={deleteFn} color="danger"> */}
-                    <Button onClick={() => alert("delete")} color="danger">
+                    <Button onClick={deleteFn} color="danger">
                         Delete
                     </Button>
                 </ModalDialog>

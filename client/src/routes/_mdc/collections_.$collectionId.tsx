@@ -44,109 +44,52 @@ function Collection()
         )
     }
 
-    console.log(collection.discs)
+    const newDiscMutation = useMutation({
+        mutationFn: (discId: string) => PostBarcode(token, collectionId, discId),
+        onSuccess: (returnedDisc: IDisc) =>
+        {
+            queryClient.setQueryData(['collection', collectionId],
+                (oldData: ICollection) =>
+                {
+                    oldData.discs.push(returnedDisc._id)
+                    return oldData
+                })
+        },
+    })
 
-    // const discQueries = useQueries({
-    //     queries: collection.discs.map((discId: string) => DiscQueryOptions(token, collectionId, discId))
-    // })
+    const updateRefDiscMutation = useMutation({
+        mutationFn: ({ discId, title }: { discId: string; title: string }) =>
+        {
+            let discData: IDisc = queryClient.getQueryData(["disc", discId])!
+            let refId = discData.referenceDVD
+            let refData: IReferenceDisc = queryClient.getQueryData(["reference", refId])!
+            let barcode = refData.barcode
+            return PostReference({ token, barcode, title })
+        },
+        onSuccess: (returnedRef: IReferenceDisc) =>
+        {
+            queryClient.setQueryData(["reference", returnedRef._id],
+                (oldData: IReferenceDisc) =>
+                {
+                    oldData.title = returnedRef.title
+                }
+            )
+        }
+    })
 
-    // const discs: IDisc[] = discQueries.map((query) => query.data)
-
-    // return (
-    //     <pre>
-    //         {JSON.stringify(discs)}
-    //     </pre>
-    // )
-
-    // const newDiscMutation = useMutation({
-    //     mutationFn: (barcode: string) => PostBarcode(token, collectionId, barcode),
-    //     onSuccess: (returnedDisc: IDisc) =>
-    //     {
-    //         console.log('new disc received data was: ', returnedDisc)
-    //         console.log('coll id is: ', collectionId)
-    //         queryClient.setQueryData(
-    //             ['collections'],
-    //             (oldData: ICollectionHydrated[]) =>
-    //             {
-    //                 let newData = oldData
-    //                 let coll = newData.find((coll) => coll._id === collectionId)
-    //                 if (coll == undefined)
-    //                 {
-    //                     return [...oldData]
-    //                 }
-    //                 let index = newData.indexOf(coll)
-    //                 coll = {
-    //                     ...coll,
-    //                     discs: [...coll.discs, returnedDisc],
-    //                 }
-    //                 newData[index] = coll
-    //                 return [...newData]
-    //             },
-    //         )
-    //     },
-    // })
-
-    // const updateRefDiscMutation = useMutation({
-    //     mutationFn: ({ barcode, title }: { barcode: string; title: string }) =>
-    //         PostReference({ token, barcode, title }),
-    //     onSuccess: (returnedRef: IReferenceDisc) =>
-    //     {
-    //         queryClient.setQueryData(
-    //             ['collections'],
-    //             (oldData: ICollectionHydrated[]) =>
-    //             {
-    //                 console.log(oldData)
-    //                 console.log(`modified ${returnedRef.barcode}`)
-    //                 let newData = oldData
-    //                 let coll = newData.find((coll) => coll._id === collectionId)
-    //                 if (coll == undefined)
-    //                 {
-    //                     return [...oldData]
-    //                 }
-    //                 let index = newData.indexOf(coll)
-    //                 const discs: IDisc[] = coll.discs
-    //                 for (let i = 0; i < discs.length; i++)
-    //                 {
-    //                     if (discs[i].referenceDVD.barcode === returnedRef.barcode)
-    //                     {
-    //                         discs[i].referenceDVD.title = returnedRef.title
-    //                         discs[i].referenceDVD.upcitemdb_truedata =
-    //                             returnedRef.upcitemdb_truedata
-    //                     }
-    //                 }
-    //                 coll.discs = discs
-    //                 newData[index] = coll
-    //                 return [...newData]
-    //             },
-    //         )
-    //     },
-    // })
-
-    // const deleteDiscMutation = useMutation({
-    //     mutationFn: (discId: string) => DeleteDisc(token, collectionId, discId),
-    //     onSuccess: (returnedDisc: IDisc) =>
-    //         queryClient.setQueryData(
-    //             ['collections'],
-    //             (oldData: ICollectionHydrated[]) =>
-    //             {
-    //                 let newData = oldData
-    //                 let coll = newData.find((coll) => coll._id === collectionId)
-    //                 if (coll == undefined)
-    //                 {
-    //                     return [...oldData]
-    //                 }
-    //                 let index = newData.indexOf(coll)
-    //                 coll = {
-    //                     ...coll,
-    //                     discs: coll.discs.filter(
-    //                         (disc: IDisc) => disc._id !== returnedDisc._id,
-    //                     ),
-    //                 }
-    //                 newData[index] = coll
-    //                 return [...newData]
-    //             },
-    //         ),
-    // })
+    const deleteDiscMutation = useMutation({
+        mutationFn: (discId: string) => DeleteDisc(token, collectionId, discId),
+        onSuccess: (returnedDisc: IDisc) =>
+        {
+            queryClient.setQueryData(["collection", collectionId],
+                (oldData: ICollection) =>
+                {
+                    oldData.discs = oldData.discs.filter((discId: string) => discId !== returnedDisc._id)
+                    return oldData
+                })
+            queryClient.removeQueries({ queryKey: ["disc", returnedDisc._id] })
+        }
+    })
 
     // for (let query of discQueries)
     // {
@@ -193,6 +136,8 @@ function Collection()
                             key={disc}
                             discId={disc}
                             collectionId={collectionId}
+                            deleteFn={async () => await deleteDiscMutation.mutate(disc)}
+                            updateRefFn={async (title: string) => await updateRefDiscMutation.mutate({ discId: disc, title })}
                         />
                     ))}
                 </List>
