@@ -23,8 +23,10 @@ import { useState } from "react";
 import { Edit, InfoOutlined, Refresh } from "@mui/icons-material";
 import { SingleLineForm } from "./SingleLineForm";
 import { useNavigate } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { DiscQueryOptions, ReferenceQueryOptions } from "../utilities/Queries";
+import { IDisc, IReferenceDisc } from "../Interfaces";
+import { PostReference } from "../httpverbs/PostReference";
 
 export function DiscListItem(
     {
@@ -33,7 +35,7 @@ export function DiscListItem(
         // title = "notitle",
         // barcode = "0000000000000",
         deleteFn,
-        updateRefFn
+        // updateRefFn
     }: {
         discId: string,
         collectionId: string,
@@ -42,7 +44,7 @@ export function DiscListItem(
         // trueData: boolean,
         // imageLink: string,
         deleteFn: (...args: any[]) => void,
-        updateRefFn: (...args: any[]) => void,
+        // updateRefFn: (...args: any[]) => void,
     })
 {
     const navigate = useNavigate();
@@ -59,6 +61,26 @@ export function DiscListItem(
 
     const discQuery = useQuery(DiscQueryOptions(token, collectionId, discId))
     const referenceQuery = useQuery(ReferenceQueryOptions(token, discQuery.data?.referenceDVD))
+
+    const updateRefDiscMutation = useMutation({
+        mutationFn: (title: string) =>
+        {
+            let discData: IDisc = queryClient.getQueryData(["disc", discId])!
+            let refId = discData.referenceDVD
+            let refData: IReferenceDisc = queryClient.getQueryData(["reference", refId])!
+            let barcode = refData.barcode
+            return PostReference({ token, barcode, title })
+        },
+        onSuccess: (returnedRef: IReferenceDisc) =>
+        {
+            queryClient.setQueryData(["reference", returnedRef._id],
+                (oldData: IReferenceDisc) =>
+                {
+                    oldData.title = returnedRef.title
+                }
+            )
+        }
+    })
 
     if (discQuery.isLoading || referenceQuery.isLoading)
     {
@@ -174,7 +196,7 @@ export function DiscListItem(
                     <SingleLineForm
                         submitButtonText="Update!"
                         labelText="New Title"
-                        onSubmit={(title: string) => updateRefFn(title)}
+                        onSubmit={(title: string) => updateRefDiscMutation.mutate(title)}
                     />
                 </ModalDialog>
             </Modal>

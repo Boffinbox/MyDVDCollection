@@ -57,26 +57,6 @@ function Collection()
         },
     })
 
-    const updateRefDiscMutation = useMutation({
-        mutationFn: ({ discId, title }: { discId: string; title: string }) =>
-        {
-            let discData: IDisc = queryClient.getQueryData(["disc", discId])!
-            let refId = discData.referenceDVD
-            let refData: IReferenceDisc = queryClient.getQueryData(["reference", refId])!
-            let barcode = refData.barcode
-            return PostReference({ token, barcode, title })
-        },
-        onSuccess: (returnedRef: IReferenceDisc) =>
-        {
-            queryClient.setQueryData(["reference", returnedRef._id],
-                (oldData: IReferenceDisc) =>
-                {
-                    oldData.title = returnedRef.title
-                }
-            )
-        }
-    })
-
     const deleteDiscMutation = useMutation({
         mutationFn: (discId: string) => DeleteDisc(token, collectionId, discId),
         onSuccess: (returnedDisc: IDisc) =>
@@ -84,23 +64,19 @@ function Collection()
             queryClient.setQueryData(["collection", collectionId],
                 (oldData: ICollection) =>
                 {
-                    oldData.discs = oldData.discs.filter((discId: string) => discId !== returnedDisc._id)
+                    let discs = oldData.discs
+                    let newArray: string[] = []
+                    const index = oldData.discs.indexOf(returnedDisc._id)
+                    if (index !== -1)
+                    {
+                        newArray = [...discs.slice(0, index), ...discs.slice(index + 1)]
+                    }
+                    oldData.discs = newArray
                     return oldData
                 })
             queryClient.removeQueries({ queryKey: ["disc", returnedDisc._id] })
         }
     })
-
-    // for (let query of discQueries)
-    // {
-    //     if (query.isLoading) return <Typography level="h1" sx={{ height: "100%" }}>Loading...</Typography>
-    //     if (query.isError) return (
-    //         <>
-    //             <div>Oh no! Something went wrong...</div>
-    //             <pre>{JSON.stringify(query.error.message)}</pre>
-    //         </>
-    //     )
-    // }
 
     return (
         <>
@@ -137,7 +113,6 @@ function Collection()
                             discId={disc}
                             collectionId={collectionId}
                             deleteFn={async () => await deleteDiscMutation.mutate(disc)}
-                            updateRefFn={async (title: string) => await updateRefDiscMutation.mutate({ discId: disc, title })}
                         />
                     ))}
                 </List>
