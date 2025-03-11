@@ -35,6 +35,7 @@ export function DiscListItem(
         // title = "notitle",
         // barcode = "0000000000000",
         deleteFn,
+        drawerFn
         // updateRefFn
     }: {
         discId: string,
@@ -44,6 +45,7 @@ export function DiscListItem(
         // trueData: boolean,
         // imageLink: string,
         deleteFn: (...args: any[]) => void,
+        drawerFn: (...args: any[]) => void
         // updateRefFn: (...args: any[]) => void,
     })
 {
@@ -62,26 +64,6 @@ export function DiscListItem(
     const discQuery = useQuery(DiscQueryOptions(token, collectionId, discId))
     const referenceQuery = useQuery(ReferenceQueryOptions(token, discQuery.data?.referenceDVD))
 
-    const updateRefDiscMutation = useMutation({
-        mutationFn: (title: string) =>
-        {
-            let discData: IDisc = queryClient.getQueryData(["disc", discId])!
-            let refId = discData.referenceDVD
-            let refData: IReferenceDisc = queryClient.getQueryData(["reference", refId])!
-            let barcode = refData.barcode
-            return PostReference({ token, barcode, title })
-        },
-        onSuccess: (returnedRef: IReferenceDisc) =>
-        {
-            queryClient.setQueryData(["reference", returnedRef._id],
-                (oldData: IReferenceDisc) =>
-                {
-                    oldData.title = returnedRef.title
-                }
-            )
-        }
-    })
-
     if (discQuery.isLoading || referenceQuery.isLoading)
     {
         return (<pre>Disc Loading...</pre>)
@@ -91,18 +73,6 @@ export function DiscListItem(
     {
         return (<pre>Disc Error.</pre>)
     }
-
-    // return (
-    //     <Stack direction="row" gap={1} sx=
-    //         {{
-    //             justifyContent: "space-between",
-    //             alignItems: "center",
-    //         }}>
-    //         {JSON.stringify(discQuery.data)}
-    //         {"---"}
-    //         {JSON.stringify(referenceQuery.data)}
-    //     </Stack>
-    // )
 
     return (
         <>
@@ -131,113 +101,11 @@ export function DiscListItem(
                             sx={{ backgroundColor: "blue" }}>
                             <Refresh sx={{ color: `#42e308` }} />
                         </IconButton>}
-                    <IconButton onClick={() => setOpen(true)}>
+                    <IconButton onClick={drawerFn}>
                         <MoreVertIcon />
                     </IconButton>
-                    <Drawer
-                        open={open}
-                        onClose={() => setOpen(false)}
-                        anchor="bottom"
-                        size="xs"
-                    >
-                        <List
-                            size="lg"
-                            component="nav"
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "flex-end",
-                            }}
-                        >
-                            <ListItem>{referenceQuery.data.title}</ListItem>
-                            <Divider />
-                            <ListItemButton
-                                // onClick={() => updateRefFn()}
-                                onClick={() => setIsModalOpen(true)}
-                                color="warning"
-                                sx={{ fontWeight: "lg" }}>
-                                <ListItemDecorator>
-                                    <Edit />
-                                </ListItemDecorator>
-                                Edit Title
-                            </ListItemButton>
-                            <Divider />
-                            <ListItemButton
-                                onClick={() => setIsDeleteModalOpen(true)}
-                                color="danger"
-                                sx={{ fontWeight: "lg" }}>
-                                <ListItemDecorator>
-                                    <DeleteIcon />
-                                </ListItemDecorator>
-                                Delete
-                            </ListItemButton>
-                        </List>
-                    </Drawer>
                 </ListItemButton>
             </ListItem>
-            {/* edit modal */}
-            <Modal
-                open={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-            >
-                <ModalDialog
-                    variant="outlined"
-                    sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
-                >
-                    <Typography
-                        component="h2"
-                        level="h4"
-                        textColor="inherit"
-                        sx={{ fontWeight: 'lg', mb: 1 }}
-                    >
-                        Rename Item
-                    </Typography>
-                    <SingleLineForm
-                        submitButtonText="Update!"
-                        labelText="New Title"
-                        onSubmit={(title: string) => updateRefDiscMutation.mutate(title)}
-                    />
-                </ModalDialog>
-            </Modal>
-            {/* delete modal */}
-            <Modal
-                open={isDeleteModalOpen}
-                onClose={() => setIsDeleteModalOpen(false)}
-                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-            >
-                <ModalDialog
-                    variant="outlined"
-                    sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
-                >
-                    <Typography
-                        component="h2"
-                        level="h4"
-                        textColor="inherit"
-                        sx={{ fontWeight: 'lg', mb: 1 }}
-                    >
-                        Confirm Deletion
-                    </Typography>
-                    <Typography
-                        component="h2"
-                        level="body-sm"
-                        textColor="inherit"
-                        sx={{ fontWeight: 'sm', mb: 1 }}
-                    >
-                        {referenceQuery.data.title}
-                    </Typography>
-                    <Typography
-                        level="body-sm"
-                        startDecorator={<InfoOutlined />}
-                        sx={{ alignItems: 'flex-start', maxWidth: 240, wordBreak: 'break-all' }}
-                    >
-                        This action cannot be undone.
-                    </Typography>
-                    <Button onClick={deleteFn} color="danger">
-                        Delete
-                    </Button>
-                </ModalDialog>
-            </Modal>
         </>
     )
 }
