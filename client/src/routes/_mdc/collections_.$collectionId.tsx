@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useRouteContext } from '@tanstack/react-router'
 import { DeleteDisc } from '../../httpverbs/DeleteDisc'
 import { PostBarcode } from '../../httpverbs/PostBarcode'
 import { PostReference } from '../../httpverbs/PostReference'
@@ -12,9 +12,10 @@ import
 import { ICollection, IDisc, IReferenceDisc } from '../../Interfaces'
 import { DiscListItem } from '../../components/DiscListItem'
 import { Button, Divider, Drawer, List, ListItem, ListItemButton, ListItemDecorator, Modal, ModalDialog, Sheet, Stack, Typography } from '@mui/joy'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Edit, InfoOutlined } from '@mui/icons-material'
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useVirtualizer } from '@tanstack/react-virtual'
 
 export const Route = createFileRoute('/_mdc/collections_/$collectionId')({
     beforeLoad: async ({ context: { queryClient }, params }) =>
@@ -36,12 +37,21 @@ function Collection()
     const collection: ICollection | undefined = queryClient.getQueryData(["collection", collectionId])
 
     const [open, setOpen] = useState(false);
-
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-
     const [modalDisc, setModalDisc] = useState<{ id: string, title: string }>({ id: "undefined", title: "undefined" })
+
+    const scrollRef = useRef<HTMLDivElement>(null)
+
+    const virtualizer = useVirtualizer(
+        {
+            count: collection!.discs.length,
+            estimateSize: () => 70,
+            getScrollElement: () => scrollRef.current
+        }
+    )
+
+    const virtualItems = virtualizer.getVirtualItems()
 
     const newDiscMutation = useMutation({
         mutationFn: (discId: string) => PostBarcode(token, collectionId, discId),
@@ -55,7 +65,6 @@ function Collection()
                 })
         },
     })
-
 
     const updateRefDiscMutation = useMutation({
         mutationFn: ({ discId, title }: { discId: string, title: string }) =>
@@ -106,7 +115,6 @@ function Collection()
         setIsEditModalOpen(false)
         setIsDeleteModalOpen(false)
         deleteDiscMutation.mutate(modalDisc.id)
-        setModalDisc({ id: "undefined", title: "undefined" })
     }
 
     if (collection == undefined)
@@ -121,7 +129,7 @@ function Collection()
 
     return (
         <>
-            <Stack gap={1} sx={{ height: '100%' }}>
+            <Stack gap={1} sx={{ height: '100%', overflow: "scroll" }} ref={scrollRef}>
                 <Stack direction="row" gap={1} sx=
                     {{
                         justifyContent: "space-between",
@@ -142,15 +150,33 @@ function Collection()
                     onSubmit={async (barcode) => await newDiscMutation.mutate(barcode)}
                 />
                 <List>
-                    {collection.discs.map((disc: string) => (
-                        <DiscListItem
-                            key={disc}
-                            discId={disc}
-                            collectionId={collectionId}
-                            deleteFn={async () => await deleteDiscMutation.mutate(disc)}
-                            drawerFn={() => drawerFunction(disc)}
-                        />
-                    ))}
+                    <div style={{
+                        position: "relative",
+                        height: `${virtualizer.getTotalSize()}px`,
+                    }}>
+                        {virtualItems.map((vItem) =>
+                        {
+                            const disc = collection.discs[vItem.index]
+                            return (
+                                <div
+                                    style={{
+                                        transform: `translateY(${vItem.start})px`,
+                                        height: `${vItem.size}px`,
+                                    }}
+                                    key={vItem.key}
+                                    data-index={vItem.index}
+                                >
+                                    <DiscListItem
+                                        key={disc}
+                                        discId={disc}
+                                        collectionId={collectionId}
+                                        deleteFn={async () => await deleteDiscMutation.mutate(disc)}
+                                        drawerFn={() => drawerFunction(disc)}
+                                    />
+                                </div>
+                            )
+                        })}
+                    </div>
                 </List>
             </Stack>
             <Drawer
