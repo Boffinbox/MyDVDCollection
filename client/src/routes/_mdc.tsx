@@ -5,6 +5,8 @@ import { AccessTokenQueryOptions, CollectionsQueryOptions } from '../utilities/Q
 
 import { Sheet, Typography, Link } from "@mui/joy";
 import { MdcAppbar } from '../components/MdcAppbar';
+import { ScrollContext } from '../components/ScrollContextProvider';
+import { useContext } from 'react';
 
 export const Route = createFileRoute('/_mdc')({
     beforeLoad: async ({ context: { queryClient } }) =>
@@ -18,6 +20,8 @@ function MDCComponent()
 {
     const tokenQuery = useQuery(AccessTokenQueryOptions())
     // const token: string | undefined = tokenQuery.data;
+
+    const scrollContext = useContext(ScrollContext)
 
     if (tokenQuery.status === "error") return (
         <>
@@ -47,8 +51,10 @@ function MDCComponent()
                         display: "flex",
                         flexDirection: "column",
                         height: "100%",
-                        overflow: "scroll"
-                    }}>
+                        overflow: "auto"
+                    }}
+                    ref={scrollContext.scrollRef}
+                >
                     {tokenQuery.isLoading ?
                         <Sheet
                             sx={{

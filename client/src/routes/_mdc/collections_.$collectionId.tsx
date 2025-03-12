@@ -12,10 +12,11 @@ import
 import { ICollection, IDisc, IReferenceDisc } from '../../Interfaces'
 import { DiscListItem } from '../../components/DiscListItem'
 import { Button, Divider, Drawer, List, ListItem, ListItemButton, ListItemDecorator, Modal, ModalDialog, Sheet, Stack, Typography } from '@mui/joy'
-import { useRef, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Edit, InfoOutlined } from '@mui/icons-material'
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useVirtualizer } from '@tanstack/react-virtual'
+import { ScrollContext } from '../../components/ScrollContextProvider'
 
 export const Route = createFileRoute('/_mdc/collections_/$collectionId')({
     beforeLoad: async ({ context: { queryClient }, params }) =>
@@ -41,13 +42,13 @@ function Collection()
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
     const [modalDisc, setModalDisc] = useState<{ id: string, title: string }>({ id: "undefined", title: "undefined" })
 
-    const scrollRef = useRef<HTMLDivElement>(null)
+    const scrollContext = useContext(ScrollContext)
 
     const virtualizer = useVirtualizer(
         {
             count: collection!.discs.length,
             estimateSize: () => 70,
-            getScrollElement: () => scrollRef.current
+            getScrollElement: () => scrollContext.scrollRef.current
         }
     )
 
@@ -129,7 +130,7 @@ function Collection()
 
     return (
         <>
-            <Stack gap={1} sx={{ height: '100%', overflow: "scroll" }} ref={scrollRef}>
+            <Stack gap={1} sx={{ height: '100%' }}>
                 <Stack direction="row" gap={1} sx=
                     {{
                         justifyContent: "space-between",
@@ -154,6 +155,7 @@ function Collection()
                         position: "relative",
                         height: `${virtualizer.getTotalSize()}px`,
                     }}>
+
                         {virtualItems.map((vItem) =>
                         {
                             const disc = collection.discs[vItem.index]
