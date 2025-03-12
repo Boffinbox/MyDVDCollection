@@ -3,7 +3,7 @@ import { DeleteDisc } from '../../httpverbs/DeleteDisc'
 import { PostBarcode } from '../../httpverbs/PostBarcode'
 import { PostReference } from '../../httpverbs/PostReference'
 import { SingleLineForm } from '../../components/SingleLineForm'
-import { useQueryClient, useMutation } from '@tanstack/react-query'
+import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import
 {
     AccessTokenQueryOptions,
@@ -35,7 +35,9 @@ function Collection()
 
     const token: string | undefined = queryClient.getQueryData(["accesstoken"])
 
-    const collection: ICollection | undefined = queryClient.getQueryData(["collection", collectionId])
+    // const collection: ICollection | undefined = queryClient.getQueryData(["collection", collectionId])
+    const collectionData = useQuery(CollectionQueryOptions(token, collectionId))
+    const collection = collectionData.data
 
     const [open, setOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -48,7 +50,8 @@ function Collection()
         {
             count: collection!.discs.length,
             estimateSize: () => 70,
-            getScrollElement: () => scrollContext.scrollRef.current
+            getScrollElement: () => scrollContext.scrollRef.current,
+            overscan: 4
         }
     )
 
@@ -162,8 +165,12 @@ function Collection()
                             return (
                                 <div
                                     style={{
-                                        transform: `translateY(${vItem.start})px`,
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
                                         height: `${vItem.size}px`,
+                                        transform: `translateY(${vItem.start}px)`,
                                     }}
                                     key={vItem.key}
                                     data-index={vItem.index}
@@ -180,7 +187,7 @@ function Collection()
                         })}
                     </div>
                 </List>
-            </Stack>
+            </Stack >
             <Drawer
                 open={open}
                 onClose={() => setOpen(false)}
