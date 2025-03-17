@@ -4,6 +4,7 @@ import { GetCollection } from "../httpverbs/GetCollection"
 import { GetAccessToken } from "../httpverbs/GetAccessToken"
 import { GetDisc } from "../httpverbs/GetDisc"
 import { GetReference } from "../httpverbs/GetReference"
+import { GetUnknowns } from "../httpverbs/GetUnknowns"
 
 export function AccessTokenQueryOptions()
 {
@@ -52,5 +53,15 @@ export function ReferenceQueryOptions(token: string | undefined, refId: string)
         queryFn: () => GetReference(token, refId),
         enabled: !!token,
         staleTime: Infinity
+    })
+}
+
+export function UnknownsQueryOptions(token: string | undefined)
+{
+    return queryOptions({
+        queryKey: ["unknowns"],
+        queryFn: () => GetUnknowns(token),
+        enabled: !!token,
+        staleTime: 1000
     })
 }

@@ -53,12 +53,6 @@ export function DiscListItem(
 
     const queryClient = useQueryClient()
 
-    const [open, setOpen] = useState(false);
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-
     const token: string | undefined = queryClient.getQueryData(["accesstoken"])
 
     const discQuery = useQuery(DiscQueryOptions(token, collectionId, discId))
