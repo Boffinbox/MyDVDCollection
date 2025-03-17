@@ -14,6 +14,30 @@ export async function index(req, res)
     res.status(200).json(user.collections);
 }
 
+export async function unknowns(req, res)
+{
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId })
+        .populate({
+            path: "collections",
+            populate: {
+                path: "discs",
+                populate: {
+                    path: "referenceDVD"
+                }
+            }
+        }).exec();
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized");
+    }
+    for (let coll of user.collections)
+    {
+        coll.discs = coll.discs.filter((disc) => disc.referenceDVD.isUnknown == true)
+    }
+    res.status(200).json(user.collections);
+}
+
 export async function showCollection(req, res)
 {
     const user = await getUserDocument(req, res);

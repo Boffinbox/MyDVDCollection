@@ -10,8 +10,11 @@ const validateCollectionId = require("../validators/collectionId");
 const disccollections = require("../controllers/disccollections");
 
 // disc collection restful routing
-// index a list of all disc collections (in future: only DCs that user is authorized to see)
+// index a list of all a user's disc collections
 router.get("/", verifyUser, TryCatchAsync(disccollections.index))
+
+// return all unknown discs of a user
+router.get("/unknowns", verifyUser, TryCatchAsync(disccollections.unknowns))
 
 // show individual disc collection
 router.get("/:collectionId", verifyUser, validateCollectionId, TryCatchAsync(disccollections.showCollection))
