@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query'
-import { useState } from "react";
+import { useContext, useState } from "react";
 import
 {
     AccessTokenQueryOptions,
@@ -19,8 +19,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { SingleLineForm } from '../../components/SingleLineForm';
 import { PostReference } from '../../httpverbs/PostReference';
 import { DeleteDisc } from '../../httpverbs/DeleteDisc';
+import { ScrollContext } from '../../components/ScrollContextProvider'
+import { useVirtualizer, VirtualItem, Virtualizer } from '@tanstack/react-virtual';
 
 export const Route = createFileRoute('/_mdc/unknowns')({
+    beforeLoad: async ({ context: { queryClient } }) =>
+    {
+        const token = await queryClient.ensureQueryData(AccessTokenQueryOptions())
+        await queryClient.ensureQueryData(UnknownsQueryOptions(token))
+    },
     component: UnknownCollection,
 })
 
@@ -32,11 +39,37 @@ function UnknownCollection()
     const token: string | undefined = tokenQuery.data
 
     const unknownsQuery = useQuery(UnknownsQueryOptions(token))
+    const unknowns = unknownsQuery.data
+
+    // convert these unknowns into a simple array, with titles and discs
+
+    const data = []
+    for (let coll of unknowns)
+    {
+        data.push(coll.title)
+        for (let disc of coll.discs)
+        {
+            disc.collId = coll._id
+            data.push(disc)
+        }
+    }
 
     const [open, setOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
     const [modalDisc, setModalDisc] = useState<{ id: string, title: string, collId: string }>({ id: "undefined", title: "undefined", collId: "undefined" })
+
+    const scrollContext = useContext(ScrollContext)
+
+    const virtualizer = useVirtualizer(
+        {
+            count: data.length,
+            estimateSize: () => 70,
+            getScrollElement: () => scrollContext.scrollRef.current,
+            overscan: 4
+        }
+    )
+    const virtualItems = virtualizer.getVirtualItems()
 
     const updateRefDiscMutation = useMutation({
         mutationFn: ({ discId, title }: { discId: string, title: string }) =>
@@ -122,33 +155,59 @@ function UnknownCollection()
                 </Typography>
                 <Divider />
                 <List>
-                    {unknownsQuery.data.map((coll, idx: number) =>
-                    (
-                        <>
-                            <Typography level="body-md" noWrap
-                            >
-                                <i>{coll.title}</i>
-                            </Typography>
-                            <Sheet sx={{ height: "5px" }} />
-                            <Divider />
-                            <Sheet sx={{ height: "5px" }} />
-                            {coll.discs.map((disc, idx: number) =>
-                            (
-                                <>
-                                    <DiscListItem
-                                        key={disc._id}
-                                        discId={disc._id}
-                                        collectionId={coll._id}
-                                        deleteFn={async () => await deleteDiscMutation.mutate(disc._id)}
-                                        drawerFn={() => drawerFunction(disc._id, coll._id)}
-                                    />
-                                </>
-                            ))}
-                            <Sheet sx={{ height: "5px" }} />
-                            <Divider />
-                            <Sheet sx={{ height: "5px" }} />
-                        </>
-                    ))}
+                    <div style={{
+                        position: "relative",
+                        height: `${virtualizer.getTotalSize()}px`,
+                    }}>
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                transform: `translateY(${virtualItems[0]?.start ?? 0}px)`,
+                            }}
+                        >
+                            {virtualItems.map((vItem) =>
+                            {
+                                const item = data[vItem.index]
+                                return (
+                                    <div
+                                        key={vItem.key}
+                                        data-index={vItem.index}
+                                        ref={virtualizer.measureElement}
+                                    >
+                                        {/* conditional to see if element is a coll title or a disc */}
+                                        {!item._id ?
+                                            <>
+                                                <Sheet sx={{ height: "5px" }} />
+                                                <Divider />
+                                                <Sheet sx={{ height: "5px" }} />
+                                                <Typography level="body-md" noWrap
+                                                >
+                                                    <i>{item}</i>
+                                                </Typography>
+                                                <Sheet sx={{ height: "5px" }} />
+                                                <Divider />
+                                                <Sheet sx={{ height: "5px" }} />
+                                            </>
+                                            :
+                                            <>
+                                                <DiscListItem
+                                                    key={item._id}
+                                                    discId={item._id}
+                                                    collectionId={item.collId}
+                                                    deleteFn={async () => await deleteDiscMutation.mutate(item._id)}
+                                                    drawerFn={() => drawerFunction(item._id, item.collId)}
+                                                />
+                                            </>}
+
+                                    </div>
+                                )
+                            })
+                            }
+                        </div>
+                    </div>
                 </List>
             </Stack >
             <Drawer

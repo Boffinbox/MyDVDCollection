@@ -35,6 +35,8 @@ export async function unknowns(req, res)
     {
         coll.discs = coll.discs.filter((disc) => disc.referenceDVD.isUnknown == true)
     }
+    // remove collections that have no unknowns
+    user.collections = user.collections.filter((coll) => coll.discs.length > 0)
     res.status(200).json(user.collections);
 }
 
