@@ -108,6 +108,7 @@ function UnknownCollection()
                     return oldData
                 })
             queryClient.removeQueries({ queryKey: ["disc", returnedDisc._id] })
+            queryClient.invalidateQueries({ queryKey: ["collection", modalDisc.collId] })
         }
     })
 
