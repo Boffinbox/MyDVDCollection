@@ -35,7 +35,8 @@ export function DiscListItem(
         // title = "notitle",
         // barcode = "0000000000000",
         deleteFn,
-        drawerFn
+        drawerFn,
+        updateRefFn
         // updateRefFn
     }: {
         discId: string,
@@ -46,7 +47,7 @@ export function DiscListItem(
         // imageLink: string,
         deleteFn: (...args: any[]) => void,
         drawerFn: (...args: any[]) => void
-        // updateRefFn: (...args: any[]) => void,
+        updateRefFn: (...args: any[]) => void,
     })
 {
     const navigate = useNavigate();
@@ -90,8 +91,7 @@ export function DiscListItem(
                         </ListItemContent>
                     </ListItemButton>
                     {referenceQuery.data.upcitemdb_truedata ? <></> :
-                        // <IconButton onClick={() => updateRefFn("test title")}
-                        <IconButton onClick={() => alert("test title")}
+                        <IconButton onClick={() => updateRefFn(referenceQuery.data.title)}
                             sx={{ backgroundColor: "blue" }}>
                             <Refresh sx={{ color: `#42e308` }} />
                         </IconButton>}

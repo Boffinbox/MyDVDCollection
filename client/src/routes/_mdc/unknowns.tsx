@@ -86,6 +86,7 @@ function UnknownCollection()
                 (oldData: IReferenceDisc) =>
                 {
                     oldData.title = returnedRef.title
+                    oldData.upcitemdb_truedata = returnedRef.upcitemdb_truedata
                 }
             )
             setModalDisc({ id: modalDisc.id, title: returnedRef.title, collId: modalDisc.id })
@@ -200,6 +201,7 @@ function UnknownCollection()
                                                     collectionId={item.collId}
                                                     deleteFn={async () => await deleteDiscMutation.mutate(item._id)}
                                                     drawerFn={() => drawerFunction(item._id, item.collId)}
+                                                    updateRefFn={async (title: string) => await updateRefDiscMutation.mutate({ discId: item._id, title })}
                                                 />
                                             </>}
 

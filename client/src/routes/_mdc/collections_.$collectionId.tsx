@@ -85,6 +85,7 @@ function Collection()
                 (oldData: IReferenceDisc) =>
                 {
                     oldData.title = returnedRef.title
+                    oldData.upcitemdb_truedata = returnedRef.upcitemdb_truedata
                 }
             )
             setModalDisc({ id: modalDisc.id, title: returnedRef.title })
@@ -181,6 +182,7 @@ function Collection()
                                         collectionId={collectionId}
                                         deleteFn={async () => await deleteDiscMutation.mutate(disc)}
                                         drawerFn={() => drawerFunction(disc)}
+                                        updateRefFn={async (title: string) => await updateRefDiscMutation.mutate({ discId: disc, title })}
                                     />
                                 </div>
                             )
