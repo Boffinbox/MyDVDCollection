@@ -7,6 +7,17 @@ export async function index(req, res)
 {
     const userId = req.user._id
     const user = await UserModel.findById({ _id: userId })
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized");
+    }
+    res.status(200).json(user.collections);
+}
+
+export async function unknowns(req, res)
+{
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId })
         .populate({
             path: "collections",
             populate: {
@@ -20,6 +31,12 @@ export async function index(req, res)
     {
         return res.status(401).send("Unauthorized");
     }
+    for (let coll of user.collections)
+    {
+        coll.discs = coll.discs.filter((disc) => disc.referenceDVD.isUnknown == true)
+    }
+    // remove collections that have no unknowns
+    user.collections = user.collections.filter((coll) => coll.discs.length > 0)
     res.status(200).json(user.collections);
 }
 
@@ -32,13 +49,6 @@ export async function showCollection(req, res)
     }
     const collectionOfConcern = await DiscCollectionModel
         .findOne({ _id: req.params.collectionId })
-        .populate({
-            path: "discs",
-            populate: {
-                path: "referenceDVD"
-            }
-        })
-        .exec();
     return res.status(200).json(collectionOfConcern);
 }
 

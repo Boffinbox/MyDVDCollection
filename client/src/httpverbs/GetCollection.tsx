@@ -4,7 +4,7 @@ export async function GetCollection(token: string | undefined, collectionId: str
 {
     if (token == undefined)
     {
-        throw new Error("No access token supplied to fetch collection.");
+        throw new Error("No access token supplied to get collection.");
     }
     const config =
     {

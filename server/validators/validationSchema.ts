@@ -36,32 +36,36 @@ const htmlSanitizeExtension = (baseJoi) => ({
 
 const Joi = baseJoi.extend(htmlSanitizeExtension);
 
+const idSchema = Joi.string().length(24).escapeHTML().required()
+const barcodeSchema = Joi.number().min(0).max(9999999999999).required()
+
 const registrationSchema = Joi.object(
     {
-        username: Joi.string().escapeHTML().required(),
-        email: Joi.string().escapeHTML().required(),
-        password: Joi.string().escapeHTML().required()
+        username: Joi.string().max(128).escapeHTML().required(),
+        email: Joi.string().max(128).escapeHTML().required(),
+        password: Joi.string().max(128).escapeHTML().required(),
+        registrationKey: Joi.string().escapeHTML().required()
     }
 ).required()
 
 const loginSchema = Joi.object(
     {
-        username: Joi.string().escapeHTML(),
-        email: Joi.string().escapeHTML().required(),
-        password: Joi.string().escapeHTML().required()
+        username: Joi.string().max(128).escapeHTML(),
+        email: Joi.string().max(128).escapeHTML().required(),
+        password: Joi.string().max(128).escapeHTML().required()
     }
 ).required()
 
 const newCollectionSchema = Joi.object(
     {
-        title: Joi.string().max(64).escapeHTML().required(),
+        title: Joi.string().max(128).escapeHTML().required(),
     }
 ).required()
 
 const newDVDSchema = Joi.object(
     {
-        barcode: Joi.string().min(12).max(13).escapeHTML().required(),
-        title: Joi.string().max(64).escapeHTML()
+        barcode: barcodeSchema,
+        title: Joi.string().max(128).escapeHTML()
     }
 ).required()
 
@@ -72,17 +76,14 @@ const patchDVDSchema = Joi.object(
     }
 ).required()
 
-const collectionIdSchema = Joi.string().length(24).escapeHTML().required()
-const discIdSchema = Joi.string().length(24).escapeHTML().required()
-
 module.exports = {
     registrationSchema,
     loginSchema,
     newCollectionSchema,
+    barcodeSchema,
     newDVDSchema,
     patchDVDSchema,
-    collectionIdSchema,
-    discIdSchema
+    idSchema
 };
 
 // const collectionSchema = Joi.object(

@@ -76,6 +76,19 @@ class ReferenceDVD
 
     @prop({ type: () => [String], default: [] })
     images: string[];
+
+    public get isUnknown(): boolean
+    {
+        if (this.upcitemdb_truedata == false)
+        {
+            return true
+        }
+        else if (this.upcitemdb_truedata == true && this.title == "unknown")
+        {
+            return true
+        }
+        return false
+    }
 }
 
 class UserDVD
@@ -130,7 +143,11 @@ const emailRegExpLiteral =
             {
                 delete ret.refreshToken;
                 return ret;
-            }
+            },
+            virtuals: true
+        },
+        toObject: {
+            virtuals: true
         }
     }
 })

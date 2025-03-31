@@ -113,15 +113,17 @@ test(`retrieve all collections for a known user`, async () =>
         .get(`${api}/disccollections`)
         .set(`Authorization`, `Bearer ${userToken}`)
         .send();
+    console.log(res.body)
     expect(res.body.length).toEqual(titles.length);
 
-    for (let i = 0; i < titles.length; i++)
+    for (let i = 0; i < res.body.length; i++)
     {
-        // we have to do it like this because mongodb could return
-        // the collections in the ""wrong"" order,
-        // so it's safer to assume collection array arrives unsorted.
-        const coll = res.body.findIndex((coll) => coll.title.includes(titles[i]))
-        // console.log("found: " + res.body[coll].title + ", expected: " + titles[i])
-        expect(res.body[coll].title).toEqual(titles[i]);
+        const collRes = await request(app)
+            .get(`${api}/disccollections/${res.body[i]}`)
+            .set(`Authorization`, `Bearer ${userToken}`)
+            .send();
+        const coll = collRes.body
+        console.log(coll)
+        expect(coll.title).toEqual(titles[i]);
     }
 })

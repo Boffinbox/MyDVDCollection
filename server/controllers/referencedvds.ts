@@ -10,6 +10,21 @@ export async function getAllReferenceDVDs(req, res)
     res.status(200).json(listOfAllReferenceDVDs);
 }
 
+export async function getSoloReferenceDVD(req, res)
+{
+    const { referenceId }: { referenceId: string } = req.params
+    if (!referenceId)
+    {
+        return res.status(404).json({ message: "refdisc not found" });
+    }
+    const refDVD = await ReferenceDVDModel.findOne({ _id: referenceId });
+    if (!refDVD)
+    {
+        return res.status(404).json({ message: "refdisc not found" });
+    }
+    return res.status(200).json(refDVD)
+}
+
 // returns a reference dvd, either from my own db, or external api
 export async function getReferenceDVD(barcode: string, title: string)
 {
@@ -41,10 +56,15 @@ async function externalAPICall(barcode: string, title: string, isNew: boolean)
     }
     // const externalDVDInfo = exampleUPCItemDBData();
     const response = await fetchExternalDVD(barcode);
+    // codes: OK, TOO_FAST, EXCEED_LIMIT, NOT_FOUND, INVALID_UPC, INVALID_QUERY
+    // rate limits are 100 per 24 hours, and 6 per 60 seconds
     if (response == undefined || response.data.code != "OK") // if something wrong with request...
     {
         console.log("unable to reach or use upcitemdb")
-        console.log("are you maxed out on requests?")
+        if (response && response.data.code == "EXCEED_LIMIT")
+        {
+            console.log("server is maxed out on requests for the day")
+        }
         if (isNew)
         {
             console.log(`speculatively adding ${barcode} anyway`)
@@ -78,13 +98,13 @@ async function externalAPICall(barcode: string, title: string, isNew: boolean)
 
 async function fetchExternalDVD(barcode: string = `7321905737437`)
 {
-    console.log(`WARNING - BURNING 1 API CALL, with barcode: ${barcode}`)
     // never do a call if we are in a test
     if (process.env.NODE_ENV === "test")
     {
         return undefined
     }
-    const response = await axios.get(`https://api.upcitemdb.com/prod/trial/lookup?upc=${barcode}`, { validateStatus: () => true })
+    console.log(`WARNING - BURNING 1 API CALL, with barcode: ${barcode}`)
+    const response = await axios.get(process.env.UPCITEMDB_URL + `${barcode}`, { validateStatus: () => true })
         .then((res) => { return res; })
         .catch((e) => { return e.response })
     console.log(`upcitemdb's response is:`);
