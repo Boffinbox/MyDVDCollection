@@ -3,9 +3,12 @@ import { useQuery } from '@tanstack/react-query'
 import
 {
     AccessTokenQueryOptions,
+    CollectionQueryOptions,
     CollectionsQueryOptions,
+    DiscQueryOptions,
+    ReferenceQueryOptions,
 } from '../../utilities/Queries'
-import { ICollectionHydrated, IDisc, IReferenceDisc } from '../../Interfaces'
+import { IDisc, IReferenceDisc } from '../../Interfaces'
 import
 {
     AspectRatio,
@@ -21,6 +24,12 @@ export const Route = createFileRoute(
     '/_mdc/collections_/$collectionId_/$discId',
 )({
     component: Disc,
+    beforeLoad: async ({ context: { queryClient }, params }) =>
+    {
+        const token = await queryClient.ensureQueryData(AccessTokenQueryOptions())
+        await queryClient.ensureQueryData(CollectionQueryOptions(token, params.collectionId))
+        await queryClient.ensureQueryData(DiscQueryOptions(token, params.collectionId, params.discId))
+    },
 })
 
 function Disc()
@@ -32,25 +41,30 @@ function Disc()
     const tokenQuery = useQuery(AccessTokenQueryOptions())
     const token: string | undefined = tokenQuery.data
 
-    const collectionsQuery = useQuery(CollectionsQueryOptions(token))
-    const collections: ICollectionHydrated[] = collectionsQuery.data
-    const collection: ICollectionHydrated = collections.find(
-        (coll) => coll._id === collectionId,
-    )!
-    const disc: IDisc = collection.discs.find((disc) => disc._id === discId)!
-    const refDisc: IReferenceDisc = disc.referenceDVD
+    const discQuery = useQuery(DiscQueryOptions(token, collectionId, discId))
+    const disc = discQuery.data
 
-    if (collectionsQuery.isLoading)
+    const refQuery = useQuery(ReferenceQueryOptions(token, disc.referenceDVD))
+    const refDisc = refQuery.data
+
+    if (discQuery.isLoading || refQuery.isLoading)
         return (
             <Typography level="h1" sx={{ height: '100%' }}>
                 Loading...
             </Typography>
         )
-    if (collectionsQuery.isError)
+    if (discQuery.isError)
         return (
             <>
                 <div>Oh no! Something went wrong...</div>
-                <pre>{JSON.stringify(collectionsQuery.error.message)}</pre>
+                <pre>{JSON.stringify(discQuery.error.message)}</pre>
+            </>
+        )
+    if (refQuery.isError)
+        return (
+            <>
+                <div>Oh no! Something went wrong...</div>
+                <pre>{JSON.stringify(refQuery.error.message)}</pre>
             </>
         )
 
