@@ -37,8 +37,8 @@ export async function getReferenceDVD(barcode: string, title: string)
     // i can only afford 100 calls per day, lol
     else if (process.env.NODE_ENV === "test")
     {
-        // supply a fake reference dvd for testing, with hardcoded title
-        return await newReferenceDVD(barcode, title)
+        // supply a fake reference dvd for testing, with hardcoded title, and confirmed to be "true" data
+        return await newReferenceDVD(barcode, title, true)
     }
     else // time to burn an api call
     {

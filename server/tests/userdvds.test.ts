@@ -136,3 +136,45 @@ test(`discover a dvd's barcode from scratch`, async () =>
 
     expect(ref.barcode).toEqual("7321905737437")
 })
+
+test.only(`add three dvds, mark two as unknown, and then get these unknowns`, async () =>
+{
+    const testSetup = await userDVDFunctions.testDVDSetup();
+    expect(testSetup.dvdRes.status).toBe(201);
+
+    const discOne = await userDVDFunctions.newDVD(
+        testSetup.userToken,
+        testSetup.collId,
+        "123456",
+        "test dvd one"
+    )
+    const discTwo = await userDVDFunctions.newDVD(
+        testSetup.userToken,
+        testSetup.collId,
+        "234567",
+        "unknown"
+    )
+    const discThree = await userDVDFunctions.newDVD(
+        testSetup.userToken,
+        testSetup.collId,
+        "345678",
+        "unknown"
+    )
+
+    const collRes = await request(app)
+        .get(`${api}/disccollections/${testSetup.collId}`)
+        .set(`Authorization`, `Bearer ${testSetup.userToken}`)
+        .send();
+    const coll = collRes.body
+
+    const unknownRes = await request(app)
+        .get(`${api}/disccollections/unknowns`)
+        .set(`Authorization`, `Bearer ${testSetup.userToken}`)
+        .send();
+    const unknowns = unknownRes.body
+
+    expect(coll.discs.length).toEqual(4);
+    expect(unknowns[0].discs.length).toEqual(2);
+    expect(coll.discs[3]).toEqual(unknowns[0].discs[1]._id)
+    expect(unknowns[0].discs[1].referenceDVD.title).toEqual("unknown")
+})
