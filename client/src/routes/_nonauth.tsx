@@ -8,7 +8,6 @@ import { NonAuthAppbar } from '../components/NonAuthAppbar';
 export const Route = createFileRoute('/_nonauth')({
     beforeLoad: async ({ context: { queryClient } }) =>
     {
-        queryClient.ensureQueryData(AccessTokenQueryOptions())
     },
     component: NonAuthComponent
 })

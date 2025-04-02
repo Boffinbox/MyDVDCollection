@@ -8,7 +8,6 @@ import { Sheet, Typography, Link } from '@mui/joy';
 export const Route = createFileRoute('/_nonauth/home')({
     beforeLoad: async ({ context: { queryClient } }) =>
     {
-        queryClient.ensureQueryData(AccessTokenQueryOptions())
     },
     component: Home
 })

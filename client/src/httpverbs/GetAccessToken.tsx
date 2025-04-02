@@ -1,3 +1,4 @@
+import { redirect } from "@tanstack/react-router";
 import axios from "axios";
 
 export async function GetAccessToken()
@@ -12,6 +13,8 @@ export async function GetAccessToken()
     }
     catch (e)
     {
-        throw new Error("Unable to refresh token.");
+        throw redirect({
+            to: "/login"
+        })
     }
 }
