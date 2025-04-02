@@ -18,6 +18,7 @@ import { Route as WebcamScannerImport } from './routes/_webcam/scanner'
 import { Route as NonauthLogoutImport } from './routes/_nonauth/logout'
 import { Route as NonauthLoginImport } from './routes/_nonauth/login'
 import { Route as NonauthHomeImport } from './routes/_nonauth/home'
+import { Route as NonauthAttributionsImport } from './routes/_nonauth/attributions'
 import { Route as MdcUnknownsImport } from './routes/_mdc/unknowns'
 import { Route as MdcNewformImport } from './routes/_mdc/newform'
 import { Route as MdcCollectionsImport } from './routes/_mdc/collections'
@@ -62,6 +63,12 @@ const NonauthLoginRoute = NonauthLoginImport.update({
 const NonauthHomeRoute = NonauthHomeImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => NonauthRoute,
+} as any)
+
+const NonauthAttributionsRoute = NonauthAttributionsImport.update({
+  id: '/attributions',
+  path: '/attributions',
   getParentRoute: () => NonauthRoute,
 } as any)
 
@@ -144,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MdcUnknownsImport
       parentRoute: typeof MdcImport
     }
+    '/_nonauth/attributions': {
+      id: '/_nonauth/attributions'
+      path: '/attributions'
+      fullPath: '/attributions'
+      preLoaderRoute: typeof NonauthAttributionsImport
+      parentRoute: typeof NonauthImport
+    }
     '/_nonauth/home': {
       id: '/_nonauth/home'
       path: '/home'
@@ -210,12 +224,14 @@ const MdcRouteChildren: MdcRouteChildren = {
 const MdcRouteWithChildren = MdcRoute._addFileChildren(MdcRouteChildren)
 
 interface NonauthRouteChildren {
+  NonauthAttributionsRoute: typeof NonauthAttributionsRoute
   NonauthHomeRoute: typeof NonauthHomeRoute
   NonauthLoginRoute: typeof NonauthLoginRoute
   NonauthLogoutRoute: typeof NonauthLogoutRoute
 }
 
 const NonauthRouteChildren: NonauthRouteChildren = {
+  NonauthAttributionsRoute: NonauthAttributionsRoute,
   NonauthHomeRoute: NonauthHomeRoute,
   NonauthLoginRoute: NonauthLoginRoute,
   NonauthLogoutRoute: NonauthLogoutRoute,
@@ -240,6 +256,7 @@ export interface FileRoutesByFullPath {
   '/collections': typeof MdcCollectionsRoute
   '/newform': typeof MdcNewformRoute
   '/unknowns': typeof MdcUnknownsRoute
+  '/attributions': typeof NonauthAttributionsRoute
   '/home': typeof NonauthHomeRoute
   '/login': typeof NonauthLoginRoute
   '/logout': typeof NonauthLogoutRoute
@@ -253,6 +270,7 @@ export interface FileRoutesByTo {
   '/collections': typeof MdcCollectionsRoute
   '/newform': typeof MdcNewformRoute
   '/unknowns': typeof MdcUnknownsRoute
+  '/attributions': typeof NonauthAttributionsRoute
   '/home': typeof NonauthHomeRoute
   '/login': typeof NonauthLoginRoute
   '/logout': typeof NonauthLogoutRoute
@@ -269,6 +287,7 @@ export interface FileRoutesById {
   '/_mdc/collections': typeof MdcCollectionsRoute
   '/_mdc/newform': typeof MdcNewformRoute
   '/_mdc/unknowns': typeof MdcUnknownsRoute
+  '/_nonauth/attributions': typeof NonauthAttributionsRoute
   '/_nonauth/home': typeof NonauthHomeRoute
   '/_nonauth/login': typeof NonauthLoginRoute
   '/_nonauth/logout': typeof NonauthLogoutRoute
@@ -284,6 +303,7 @@ export interface FileRouteTypes {
     | '/collections'
     | '/newform'
     | '/unknowns'
+    | '/attributions'
     | '/home'
     | '/login'
     | '/logout'
@@ -296,6 +316,7 @@ export interface FileRouteTypes {
     | '/collections'
     | '/newform'
     | '/unknowns'
+    | '/attributions'
     | '/home'
     | '/login'
     | '/logout'
@@ -310,6 +331,7 @@ export interface FileRouteTypes {
     | '/_mdc/collections'
     | '/_mdc/newform'
     | '/_mdc/unknowns'
+    | '/_nonauth/attributions'
     | '/_nonauth/home'
     | '/_nonauth/login'
     | '/_nonauth/logout'
@@ -359,6 +381,7 @@ export const routeTree = rootRoute
     "/_nonauth": {
       "filePath": "_nonauth.tsx",
       "children": [
+        "/_nonauth/attributions",
         "/_nonauth/home",
         "/_nonauth/login",
         "/_nonauth/logout"
@@ -381,6 +404,10 @@ export const routeTree = rootRoute
     "/_mdc/unknowns": {
       "filePath": "_mdc/unknowns.tsx",
       "parent": "/_mdc"
+    },
+    "/_nonauth/attributions": {
+      "filePath": "_nonauth/attributions.tsx",
+      "parent": "/_nonauth"
     },
     "/_nonauth/home": {
       "filePath": "_nonauth/home.tsx",

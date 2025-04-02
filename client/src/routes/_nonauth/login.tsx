@@ -70,7 +70,7 @@ function LoginComponent()
 
                     <div>
                         <Typography level="h4" component="h1">
-                            <b>Welcome to mDc!</b>
+                            <b>My DVD Collection</b>
                         </Typography>
                         <Typography level="body-sm">Sign in to continue.</Typography>
                     </div>

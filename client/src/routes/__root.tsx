@@ -62,7 +62,7 @@ function App()
                 </Sheet>
             </CssBaseline>
         </CssVarsProvider>
-        <ReactQueryDevtools buttonPosition='top-right' position='right' />
+        {/* <ReactQueryDevtools buttonPosition='top-right' position='right' /> */}
         {/* <TanStackRouterDevtools position='top-left' /> */}
     </div >
 }
