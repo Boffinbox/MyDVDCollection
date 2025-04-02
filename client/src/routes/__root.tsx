@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
 import { CssBaseline, Sheet } from '@mui/joy';
+import ErrorPage from '../utilities/ErrorPage';
 
 declare module '@mui/joy/Drawer' {
     interface DrawerPropsSizeOverrides
@@ -17,7 +18,8 @@ declare module '@mui/joy/Drawer' {
 export const Route = createRootRouteWithContext<{
     queryClient: QueryClient
 }>()({
-    component: App
+    component: App,
+    errorComponent: ErrorPage
 })
 
 const mdcTheme = extendTheme({

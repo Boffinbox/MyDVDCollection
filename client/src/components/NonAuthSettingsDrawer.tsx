@@ -2,7 +2,7 @@ import { useNavigate } from "@tanstack/react-router"
 
 import { Drawer, List, ListItem, Divider, ListItemButton, ListItemDecorator, Typography } from "@mui/joy"
 
-import LogoutIcon from '@mui/icons-material/Logout';
+import AttributionIcon from '@mui/icons-material/Attribution';
 import { DarkModeToggle } from "./DarkModeToggle";
 
 export function NonAuthSettingsDrawer({ open, setOpen }: { open: boolean, setOpen: (arg0: boolean) => void })
@@ -32,10 +32,14 @@ export function NonAuthSettingsDrawer({ open, setOpen }: { open: boolean, setOpe
                 <DarkModeToggle />
                 <Divider />
                 <ListItemButton
-                    onClick={() => navigate({ to: "/attributions" })}
+                    onClick={() =>
+                    {
+                        navigate({ to: "/attributions" })
+                        setOpen(false)
+                    }}
                 >
                     <ListItemDecorator>
-                        <LogoutIcon />
+                        <AttributionIcon />
                     </ListItemDecorator>
                     <Typography>Attributions</Typography>
                 </ListItemButton>
