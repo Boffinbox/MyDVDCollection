@@ -137,7 +137,7 @@ test(`discover a dvd's barcode from scratch`, async () =>
     expect(ref.barcode).toEqual("7321905737437")
 })
 
-test.only(`add three dvds, mark two as unknown, and then get these unknowns`, async () =>
+test(`add three dvds, mark two as unknown, and then get these unknowns`, async () =>
 {
     const testSetup = await userDVDFunctions.testDVDSetup();
     expect(testSetup.dvdRes.status).toBe(201);

@@ -2,12 +2,58 @@ export { };
 
 const axios = require("axios");
 
-const { ReferenceDVDModel } = require("../models");
+const { ReferenceDVDModel, UserModel } = require("../models");
 
 export async function getAllReferenceDVDs(req, res)
 {
     const listOfAllReferenceDVDs = await ReferenceDVDModel.find({})
     res.status(200).json(listOfAllReferenceDVDs);
+}
+
+export async function getUserBarcodes(req, res)
+{
+    const userId = req.user._id
+    const user = await UserModel.findById({ _id: userId })
+        .populate({
+            path: "collections",
+            populate: {
+                path: "discs",
+                populate: {
+                    path: "referenceDVD"
+                }
+            }
+        }).exec();
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized");
+    }
+    const barcodesMap = new Map<string, { count: number, collSet: Set<string> }>()
+    for (let coll of user.collections)
+    {
+        for (let disc of coll.discs)
+        {
+            let barcode = disc.referenceDVD.barcode
+            let count = 1
+            let collSet = new Set<string>()
+            if (barcodesMap.has(barcode))
+            {
+                let prevData: { count: number, collSet: Set<string> } = barcodesMap.get(barcode)!
+                count = prevData.count
+                count++
+                collSet = prevData.collSet
+            }
+            collSet.add(coll._id.toString())
+            barcodesMap.set(barcode, { count, collSet })
+        }
+    }
+    let barcodes: { [k: string]: { count: number, collSet?: Set<string>, collArray?: string[] } } = Object.fromEntries(barcodesMap)
+    for (let barcode in barcodes)
+    {
+        let collArray = Array.from(barcodes[barcode].collSet!)
+        barcodes[barcode].collArray = collArray
+        delete barcodes[barcode].collSet
+    }
+    res.status(200).send(barcodes)
 }
 
 export async function getSoloReferenceDVD(req, res)
