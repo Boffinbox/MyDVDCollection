@@ -1,5 +1,5 @@
 import { Modal, ModalDialog, Typography, List, ListItem, ListItemButton, ListDivider } from "@mui/joy";
-import { ICollectionHydrated } from "../../Interfaces";
+import { ICollection } from "../../Interfaces";
 
 export function ScannerCollectionModal(
     {
@@ -11,7 +11,7 @@ export function ScannerCollectionModal(
     }: {
         isModalOpen: boolean
         closeModal: (...args: any[]) => void,
-        collections: ICollectionHydrated[]
+        collections: ICollection[]
         setFormData: (...args: any[]) => void,
         handleCollChange: (collectionId: string) => void
     })

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AccessTokenQueryOptions, BarcodesQueryOptions, CollectionQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
 
 import { Typography, Sheet, Button, ButtonGroup } from "@mui/joy"
 import { useState } from "react";
@@ -9,7 +9,7 @@ import { useState } from "react";
 import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
 import 'react-barcode-scanner/polyfill'
 
-import { ICollectionHydrated, IDisc } from "../../Interfaces";
+import { IBarcodes, ICollection, IReferenceDisc } from "../../Interfaces";
 import { PostBarcode } from "../../httpverbs/PostBarcode";
 import { ScannerFlairs } from "../../components/scanner/ScannerFlairs";
 import { ScannerCollectionModal } from "../../components/scanner/ScannerCollectionModal";
@@ -32,8 +32,17 @@ function Scanner()
     const tokenQuery = useQuery(AccessTokenQueryOptions())
     const token: string | undefined = tokenQuery.data;
 
-    const collectionsQuery = useQuery(CollectionsQueryOptions(token))
-    const collections: ICollectionHydrated[] = collectionsQuery.data;
+    const collectionListQuery = useQuery(CollectionsQueryOptions(token))
+    const collectionList: string[] = collectionListQuery.data;
+
+    const collectionsQueries = useQueries({
+        queries: collectionList.map((id) => (CollectionQueryOptions(token, id)))
+    })
+
+    const collections: ICollection[] = collectionsQueries.map((query) => query.data)
+
+    const barcodesQuery = useQuery(BarcodesQueryOptions(token))
+    const barcodes: IBarcodes = barcodesQuery.data
 
     const [formData, setFormData] = useState({ barcode: "", collectionId: "" })
 
@@ -50,23 +59,19 @@ function Scanner()
     const [openModal, setOpenModal] = useState<boolean>(false);
 
     const newDiscMutation = useMutation({
-        mutationFn: (barcode: string) => PostBarcode(token, formData.collectionId, barcode),
-        onSuccess: (returnedDisc: IDisc) =>
+        mutationFn: (discId: string) => PostBarcode(token, formData.collectionId, discId),
+        onSuccess: (returnedDisc: {
+            _id: string;
+            rating: number;
+            watched: boolean;
+            referenceDVD: IReferenceDisc
+        }) =>
         {
-            console.log("received data was: ", returnedDisc)
-            console.log("coll id is: ", formData.collectionId)
-            queryClient.setQueryData(["collections"],
-                (oldData: ICollectionHydrated[]) =>
+            queryClient.setQueryData(['collection', formData.collectionId],
+                (oldData: ICollection) =>
                 {
-                    let newData = oldData;
-                    let coll = newData.find(coll => coll._id === formData.collectionId)!
-                    let index = newData.indexOf(coll)
-                    coll = {
-                        ...coll,
-                        discs: [...coll.discs, returnedDisc]
-                    }
+                    oldData.discs.push(returnedDisc._id)
                     setIsAddAttempt(true)
-                    // if unknown logic
                     if (returnedDisc.referenceDVD.title == "unknown")
                     {
                         setIsUnknown(true)
@@ -76,8 +81,29 @@ function Scanner()
                     {
                         setGenString(() => ({ value: "Added successfully!" }))
                     }
-                    newData[index] = coll
-                    return [...newData]
+                    return oldData
+                })
+            queryClient.setQueryData(["barcodes"],
+                (oldData: IBarcodes) =>
+                {
+                    if (oldData[formData.barcode] == null)
+                    {
+                        oldData[formData.barcode] =
+                        {
+                            count: 0,
+                            collArray: []
+                        }
+                    }
+                    let count = oldData[formData.barcode].count
+                    count++
+                    let collArray = oldData[formData.barcode].collArray
+                    if (collArray.indexOf(formData.collectionId) == -1)
+                    {
+                        collArray.push(formData.collectionId)
+                    }
+                    oldData[formData.barcode].count = count
+                    oldData[formData.barcode].collArray = collArray
+                    return oldData
                 }
             )
         },
@@ -94,53 +120,22 @@ function Scanner()
     {
         const barcode = detection.rawValue
         setFormData(prevData => ({ ...prevData, barcode }));
-        console.log("barcode to check is: ", barcode);
-        let owned = false;
-        let coll: ICollectionHydrated | undefined = collections.find(coll => coll._id === formData.collectionId)
-        if (coll === undefined)
-        {
-            for (let i = 0; i < collections.length; i++)
-            {
-                if (isOwned(collections[i], barcode))
-                {
-                    owned = true
-                    break
-                }
-            }
-        }
-        else
-        {
-            owned = isOwned(coll, barcode)
-        }
-        setIsOwnedBarcode(owned)
-        console.log("is this barcode owned? : " + owned)
-        let text = genText(coll, barcode, owned)
-        console.log("generated text is: " + text)
-        setGenString(() => ({ value: text }))
         setIsCaptured(() => (true))
         setCamera(() => ({ isActive: false }))
+        handleDataChange(formData.collectionId, barcode)
     }
 
     function handleCollChange(collectionId: string)
     {
         let barcode = formData.barcode
-        let owned = false;
-        let coll: ICollectionHydrated | undefined = collections.find(coll => coll._id === collectionId)
-        if (coll === undefined)
-        {
-            for (let i = 0; i < collections.length; i++)
-            {
-                if (isOwned(collections[i], barcode))
-                {
-                    owned = true
-                    break
-                }
-            }
-        }
-        else
-        {
-            owned = isOwned(coll, barcode)
-        }
+        handleDataChange(collectionId, barcode)
+    }
+
+    function handleDataChange(collectionId: string, barcode: string)
+    {
+        console.log("barcode to check is: ", barcode);
+        let owned = isOwned(barcode)
+        let coll: ICollection | undefined = collections.find(coll => coll._id === collectionId)
         setIsOwnedBarcode(owned)
         console.log("is this barcode owned? : " + owned)
         let text = genText(coll, barcode, owned)
@@ -148,19 +143,13 @@ function Scanner()
         setGenString(() => ({ value: text }))
     }
 
-    function isOwned(collection: ICollectionHydrated, barcode: string): boolean
+    function isOwned(barcode: string): boolean
     {
-        for (let i = 0; i < collection.discs.length; i++)
-        {
-            if (collection.discs[i].referenceDVD.barcode === barcode)
-            {
-                return true
-            }
-        }
+        if (barcodes[barcode]) return true
         return false
     }
 
-    function genText(coll: ICollectionHydrated | undefined = undefined, barcode: string, isOwnedBarcode: boolean): string
+    function genText(coll: ICollection | undefined = undefined, barcode: string, isOwnedBarcode: boolean): string
     {
         if (isOwnedBarcode === false)
         {
@@ -174,38 +163,13 @@ function Scanner()
             }
         }
         let titles = []
-        let discCount = 0;
-        if (coll === undefined)
+        let discCount = barcodes[barcode].count;
+        let collCount = barcodes[barcode].collArray.length
+        for (let collId of barcodes[barcode].collArray)
         {
-            for (let i = 0; i < collections.length; i++)
-            {
-                let wasFound = false;
-                for (let j = 0; j < collections[i].discs.length; j++)
-                {
-                    if (collections[i].discs[j].referenceDVD.barcode === barcode)
-                    {
-                        wasFound = true;
-                        discCount++
-                    }
-                }
-                if (wasFound)
-                {
-                    titles.push(collections[i].title);
-                }
-            }
+            let coll: ICollection | undefined = queryClient.getQueryData(["collection", collId])!
+            titles.push(coll.title)
         }
-        else
-        {
-            for (let j = 0; j < coll.discs.length; j++)
-            {
-                if (coll.discs[j].referenceDVD.barcode === barcode)
-                {
-                    discCount++
-                }
-            }
-            titles.push(coll.title);
-        }
-        let collCount = titles.length
         let stringToReturn = `Barcode [${barcode}] was found ${discCount} time`
         if (discCount == 1)
         {
@@ -217,7 +181,7 @@ function Scanner()
         }
         if (collCount == 1) // singular check, time vs times
         {
-            stringToReturn += `in [${titles[0]}].`
+            stringToReturn += `in your [${titles[0]}] collection.`
         }
         else
         {
@@ -237,13 +201,32 @@ function Scanner()
         return stringToReturn;
     }
 
-    if (collectionsQuery.isLoading) return <Typography level="h1">Loading...</Typography>
-    if (collectionsQuery.isError) return (
+    if (collectionListQuery.isLoading) return <Typography level="h1">Loading...</Typography>
+    if (collectionListQuery.isError) return (
         <>
             <div>Oh no! Something went wrong...</div>
-            <pre>{JSON.stringify(collectionsQuery.error.message)}</pre>
+            <pre>{JSON.stringify(collectionListQuery.error.message)}</pre>
         </>
     )
+
+    if (barcodesQuery.isLoading) return <Typography level="h1">Loading...</Typography>
+    if (barcodesQuery.isError) return (
+        <>
+            <div>Oh no! Something went wrong...</div>
+            <pre>{JSON.stringify(barcodesQuery.error.message)}</pre>
+        </>
+    )
+
+    for (let query of collectionsQueries)
+    {
+        if (query.isLoading) return <Typography level="h1" sx={{ height: "100%" }}>Loading...</Typography>
+        if (query.isError) return (
+            <>
+                <div>Oh no! Something went wrong...</div>
+                <pre>{JSON.stringify(query.error.message)}</pre>
+            </>
+        )
+    }
 
     return (
         <>

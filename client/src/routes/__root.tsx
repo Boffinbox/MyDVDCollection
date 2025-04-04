@@ -18,8 +18,9 @@ declare module '@mui/joy/Drawer' {
 export const Route = createRootRouteWithContext<{
     queryClient: QueryClient
 }>()({
-    component: App,
-    errorComponent: ErrorPage
+    component: App
+    // component: App,
+    // errorComponent: ErrorPage
 })
 
 const mdcTheme = extendTheme({
