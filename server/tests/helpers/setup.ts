@@ -7,18 +7,25 @@ const dbUrl = `mongodb://127.0.0.1:27017/${dbId}`
 
 beforeAll(async () =>
 {
-    await mongoose.connect(dbUrl)
-        .then(() =>
-        {
-            console.log(`MongoDB Test Connection Open :)`);
-        })
-        .catch((err) =>
-        {
-            console.log("Oh no! MongoDB Test Connection Error :(");
-            console.log(err);
-        });
-    // if for some cosmic coincidence, that the db already exists...
-    await mongoose.connection.dropDatabase();
+    if (process.env.NODE_ENV !== "test")
+    {
+        await mongoose.connection.close();
+    }
+    else
+    {
+        await mongoose.connect(dbUrl)
+            .then(() =>
+            {
+                console.log(`MongoDB Test Connection Open :)`);
+            })
+            .catch((err) =>
+            {
+                console.log("Oh no! MongoDB Test Connection Error :(");
+                console.log(err);
+            });
+        // if for some cosmic coincidence, that the db already exists...
+        await mongoose.connection.dropDatabase();
+    }
 });
 
 afterEach(async () =>
