@@ -2,7 +2,7 @@ export { };
 
 const { barcodeSchema } = require("./validationSchema");
 
-const ExpressError = require("../helpers/expresserror");
+const ExpressError = require("../helpers/ExpressError");
 
 const validateBarcode = (req, res, next) =>
 {

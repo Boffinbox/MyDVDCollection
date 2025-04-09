@@ -2,7 +2,7 @@ export { };
 
 const { newCollectionSchema } = require("./validationSchema");
 
-const ExpressError = require("../helpers/expresserror");
+const ExpressError = require("../helpers/ExpressError");
 
 const validateNewCollection = (req, res, next) =>
 {

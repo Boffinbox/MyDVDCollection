@@ -2,7 +2,7 @@ export { };
 
 const { newDVDSchema } = require("./validationSchema");
 
-const ExpressError = require("../helpers/expresserror");
+const ExpressError = require("../helpers/ExpressError");
 
 const validateNewDVD = (req, res, next) =>
 {
