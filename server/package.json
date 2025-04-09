@@ -5,7 +5,7 @@
   "main": "server.ts",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest --testTimeout=5000 --detectOpenHandles",
-    "start": "node server.ts",
+    "start": "set NODE_ENV=production&&ts-node server.ts",
     "dev": "set NODE_ENV=development&&nodemon server.ts"
   },
   "keywords": [],
