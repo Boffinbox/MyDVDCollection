@@ -27,9 +27,9 @@ require("./auth/LocalStrategy");
 require("./auth/JwtStrategy");
 require("./auth/authenticate");
 
-// set cors origin to be mdc frontend from render
+// set cors origin to be domain
 const corsOptions = {
-    origin: 'https://mydvdcollection.onrender.com',
+    origin: `https://${process.env.DOMAIN}`,
     optionsSuccessStatus: 200,
 };
 
