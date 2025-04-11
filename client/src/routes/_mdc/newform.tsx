@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../../utilities/Queries";
 
 import { Divider, Select, Option, Typography, FormControl, FormLabel, FormHelperText, Stack, Button, Input, Snackbar } from "@mui/joy"
@@ -16,7 +16,7 @@ export const Route = createFileRoute('/_mdc/newform')({
 
 function NewForm()
 {
-    const queryClient = useQueryClient();
+    // const queryClient = useQueryClient();
 
     const tokenQuery = useQuery(AccessTokenQueryOptions())
     const token: string | undefined = tokenQuery.data;
@@ -58,7 +58,7 @@ function NewForm()
         {
             await PostBarcode(token, formJson.collId, formJson.barcode)
             setFormData(() => ({ barcode: "" }))
-            setSnackBarState(prevData =>
+            setSnackBarState(() =>
             {
                 return {
                     snackBarText: `${formJson.barcode} added to collection ${formJson.collId}`,
@@ -142,7 +142,7 @@ function NewForm()
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
                 open={open}
                 color="success"
-                onClose={(event, reason) =>
+                onClose={() =>
                 {
                     setSnackBarState(prevData => { return { ...prevData, open: false } })
                 }}

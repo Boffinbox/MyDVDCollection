@@ -1,4 +1,4 @@
-import { createFileRoute, useRouteContext } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { DeleteDisc } from '../../httpverbs/DeleteDisc'
 import { PostBarcode } from '../../httpverbs/PostBarcode'
 import { PostReference } from '../../httpverbs/PostReference'
@@ -11,7 +11,7 @@ import
 } from '../../utilities/Queries'
 import { ICollection, IDisc, IReferenceDisc } from '../../Interfaces'
 import { DiscListItem } from '../../components/DiscListItem'
-import { Button, Divider, Drawer, List, ListItem, ListItemButton, ListItemDecorator, Modal, ModalDialog, Sheet, Stack, Typography } from '@mui/joy'
+import { Button, Divider, Drawer, List, ListItem, ListItemButton, ListItemDecorator, Modal, ModalDialog, Stack, Typography } from '@mui/joy'
 import { useContext, useState } from 'react'
 import { Edit, InfoOutlined } from '@mui/icons-material'
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -180,7 +180,6 @@ function Collection()
                                         key={disc}
                                         discId={disc}
                                         collectionId={collectionId}
-                                        deleteFn={async () => await deleteDiscMutation.mutate(disc)}
                                         drawerFn={() => drawerFunction(disc)}
                                         updateRefFn={async (title: string) => await updateRefDiscMutation.mutate({ discId: disc, title })}
                                     />

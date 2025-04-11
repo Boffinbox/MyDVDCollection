@@ -39,7 +39,7 @@ export function MdcQuickAddDrawer({ open, setOpen }: { open: boolean, setOpen: (
         {
             await PostBarcode(token, formJson.collId, formJson.barcode)
             setFormData(() => ({ barcode: "" }))
-            setSnackBarState(prevData =>
+            setSnackBarState(() =>
             {
                 return {
                     snackBarText: `${formJson.barcode} added to collection ${formJson.collId}`,
@@ -127,7 +127,7 @@ export function MdcQuickAddDrawer({ open, setOpen }: { open: boolean, setOpen: (
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 open={openSnackBar}
                 color="success"
-                onClose={(event, reason) =>
+                onClose={() =>
                 {
                     setSnackBarState(prevData => { return { ...prevData, open: false } })
                 }}

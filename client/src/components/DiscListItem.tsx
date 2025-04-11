@@ -1,51 +1,30 @@
 import
 {
-    List,
     ListItem,
     ListItemDecorator,
     ListItemContent,
     ListItemButton,
-    Drawer,
     Typography,
     AspectRatio,
     IconButton,
-    Divider,
-    Modal,
-    ModalDialog,
-    Button,
-    Stack,
 } from "@mui/joy";
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import DeleteIcon from '@mui/icons-material/Delete';
 
-import { useState } from "react";
-import { Edit, InfoOutlined, Refresh } from "@mui/icons-material";
-import { SingleLineForm } from "./SingleLineForm";
+import { Refresh } from "@mui/icons-material";
 import { useNavigate } from "@tanstack/react-router";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DiscQueryOptions, ReferenceQueryOptions } from "../utilities/Queries";
-import { IDisc, IReferenceDisc } from "../Interfaces";
-import { PostReference } from "../httpverbs/PostReference";
 
 export function DiscListItem(
     {
         discId,
         collectionId,
-        // title = "notitle",
-        // barcode = "0000000000000",
-        deleteFn,
         drawerFn,
         updateRefFn
-        // updateRefFn
     }: {
         discId: string,
         collectionId: string,
-        // title: string,
-        // barcode: string,
-        // trueData: boolean,
-        // imageLink: string,
-        deleteFn: (...args: any[]) => void,
         drawerFn: (...args: any[]) => void
         updateRefFn: (...args: any[]) => void,
     })

@@ -1,8 +1,8 @@
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { QueryClient } from '@tanstack/react-query';
 
-import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+// import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
 import { CssBaseline, Sheet } from '@mui/joy';
@@ -34,7 +34,7 @@ const mdcTheme = extendTheme({
         },
         JoyDrawer: {
             styleOverrides: {
-                root: ({ ownerState, theme }) => ({
+                root: ({ ownerState }) => ({
                     ...(ownerState.size === 'xs' &&
                     {
                         // literally just a blank size, so typescript stops crying about the drawer height...
@@ -64,7 +64,7 @@ function App()
                 </Sheet>
             </CssBaseline>
         </CssVarsProvider>
-        <ReactQueryDevtools buttonPosition='top-right' position='right' />
+        {/* <ReactQueryDevtools buttonPosition='top-right' position='right' /> */}
         {/* <TanStackRouterDevtools position='top-left' /> */}
     </div >
 }

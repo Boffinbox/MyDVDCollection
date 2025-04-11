@@ -1,7 +1,7 @@
-import { createFileRoute, Link as RouterLink, Outlet, redirect } from '@tanstack/react-router'
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { createFileRoute, Link as RouterLink, Outlet } from '@tanstack/react-router'
+import { useQuery } from '@tanstack/react-query';
 
-import { AccessTokenQueryOptions, CollectionsQueryOptions } from '../utilities/Queries';
+import { AccessTokenQueryOptions } from '../utilities/Queries';
 
 import { Sheet, Typography, Link } from "@mui/joy";
 import { MdcAppbar } from '../components/MdcAppbar';

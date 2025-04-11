@@ -6,9 +6,6 @@ import { AccessTokenQueryOptions } from "../../utilities/Queries"
 import { Sheet, Typography, Link } from '@mui/joy';
 
 export const Route = createFileRoute('/_nonauth/home')({
-    beforeLoad: async ({ context: { queryClient } }) =>
-    {
-    },
     component: Home
 })
 

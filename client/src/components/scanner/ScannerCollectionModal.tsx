@@ -50,7 +50,7 @@ export function ScannerCollectionModal(
                                     variant="outlined"
                                     onClick={() =>
                                     {
-                                        setFormData(currentData =>
+                                        setFormData((currentData: { barcode: "", collectionId: "" }) =>
                                         {
                                             return {
                                                 ...currentData,
@@ -71,7 +71,7 @@ export function ScannerCollectionModal(
                                 variant="outlined"
                                 onClick={() =>
                                 {
-                                    setFormData(currentData =>
+                                    setFormData((currentData: { barcode: "", collectionId: "" }) =>
                                     {
                                         return {
                                             ...currentData,

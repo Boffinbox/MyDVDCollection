@@ -1,19 +1,13 @@
 import { createFileRoute, Link as RouterLink } from '@tanstack/react-router'
-import { useQuery } from '@tanstack/react-query'
-
-import { AccessTokenQueryOptions } from '../../utilities/Queries'
 
 import { Sheet, Typography, Link } from '@mui/joy'
 
 export const Route = createFileRoute('/_nonauth/attributions')({
-    beforeLoad: async ({ context: { queryClient } }) => { },
     component: Attributions,
 })
 
 function Attributions()
 {
-    const tokenQuery = useQuery(AccessTokenQueryOptions())
-
     return (
         <>
             <Sheet

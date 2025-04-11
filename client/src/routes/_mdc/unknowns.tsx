@@ -20,7 +20,7 @@ import { SingleLineForm } from '../../components/SingleLineForm';
 import { PostReference } from '../../httpverbs/PostReference';
 import { DeleteDisc } from '../../httpverbs/DeleteDisc';
 import { ScrollContext } from '../../components/ScrollContextProvider'
-import { useVirtualizer, VirtualItem, Virtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 export const Route = createFileRoute('/_mdc/unknowns')({
     beforeLoad: async ({ context: { queryClient } }) =>

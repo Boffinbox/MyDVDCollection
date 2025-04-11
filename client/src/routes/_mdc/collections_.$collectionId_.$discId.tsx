@@ -4,11 +4,9 @@ import
 {
     AccessTokenQueryOptions,
     CollectionQueryOptions,
-    CollectionsQueryOptions,
     DiscQueryOptions,
     ReferenceQueryOptions,
 } from '../../utilities/Queries'
-import { IDisc, IReferenceDisc } from '../../Interfaces'
 import
 {
     AspectRatio,
