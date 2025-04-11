@@ -29,7 +29,7 @@ require("./auth/authenticate");
 
 // set cors origin to be domain
 const corsOptions = {
-    origin: `https://${process.env.DOMAIN}`,
+    origin: `${process.env.DOMAIN}`,
     optionsSuccessStatus: 200,
     credentials: true
 };
