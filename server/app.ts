@@ -12,6 +12,7 @@ const passport = require("passport")
 const mongoSanitize = require("express-mongo-sanitize")
 const helmet = require("helmet")
 const app = express();
+const cors = require('cors')
 
 const ExpressError = require("./helpers/ExpressError");
 
@@ -26,6 +27,12 @@ require("./auth/LocalStrategy");
 require("./auth/JwtStrategy");
 require("./auth/authenticate");
 
+// set cors origin to be mdc frontend from render
+const corsOptions = {
+    origin: 'https://mydvdcollection.onrender.com',
+    optionsSuccessStatus: 200,
+};
+
 // start middlewares
 app.use(morgan("dev"));
 app.use(helmet());
@@ -34,6 +41,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(mongoSanitize());
 app.use(passport.initialize());
+app.use(cors(corsOptions))
 
 // middleware to remove squiggly brackets
 const removeCurlies = (req, res, next) =>
