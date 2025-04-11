@@ -31,6 +31,7 @@ require("./auth/authenticate");
 const corsOptions = {
     origin: `https://${process.env.DOMAIN}`,
     optionsSuccessStatus: 200,
+    credentials: true
 };
 
 // start middlewares
