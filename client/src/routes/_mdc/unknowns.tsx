@@ -43,7 +43,16 @@ function UnknownCollection()
 
     // convert these unknowns into a simple array, with titles and discs
 
-    const data = []
+    const data: (
+        string |
+        {
+            _id: string;
+            rating: number;
+            watched: boolean;
+            referenceDVD: string,
+            collId: string
+
+        })[] = []
     for (let coll of unknowns)
     {
         data.push(coll.title)
@@ -53,6 +62,7 @@ function UnknownCollection()
             data.push(disc)
         }
     }
+    console.log(data)
 
     const [open, setOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -180,7 +190,7 @@ function UnknownCollection()
                                         ref={virtualizer.measureElement}
                                     >
                                         {/* conditional to see if element is a coll title or a disc */}
-                                        {!item._id ?
+                                        {typeof item === "string" ?
                                             <>
                                                 <Sheet sx={{ height: "5px" }} />
                                                 <Divider />
@@ -199,7 +209,6 @@ function UnknownCollection()
                                                     key={item._id}
                                                     discId={item._id}
                                                     collectionId={item.collId}
-                                                    deleteFn={async () => await deleteDiscMutation.mutate(item._id)}
                                                     drawerFn={() => drawerFunction(item._id, item.collId)}
                                                     updateRefFn={async (title: string) => await updateRefDiscMutation.mutate({ discId: item._id, title })}
                                                 />
