@@ -12,7 +12,7 @@ export async function GetCollections(token: string | undefined)
     }
     try
     {
-        const response = await axios.get(`/api/v1/disccollections/`, config)
+        const response = await axios.get(`https://mydvdcollection-server.onrender.com/api/v1/disccollections/`, config)
         console.log("token used was: ", token);
         console.log("Collections request received.");
         console.log(response.data);

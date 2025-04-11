@@ -17,7 +17,7 @@ export async function PostBarcode(token: string | undefined, collectionId: strin
     }
     try
     {
-        const response = await axios.post(`/api/v1/disccollections/${collectionId}/userdvds`, userData, config)
+        const response = await axios.post(`https://mydvdcollection-server.onrender.com/api/v1/disccollections/${collectionId}/userdvds`, userData, config)
         console.log("token used was: ", token);
         console.log("Post request received.");
         console.log(response.data)

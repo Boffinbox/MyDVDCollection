@@ -28,7 +28,7 @@ export async function PostReference(
     }
     try
     {
-        const response = await axios.post(`/api/v1/referencedvds`, userData, config)
+        const response = await axios.post(`https://mydvdcollection-server.onrender.com/api/v1/referencedvds`, userData, config)
         console.log("token used was: ", token);
         console.log("Post request received.");
         console.log(response.data)

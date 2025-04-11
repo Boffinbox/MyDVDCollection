@@ -7,12 +7,6 @@ export default defineConfig({
     plugins: [react(), TanStackRouterVite()],
     server: {
         port: 3000,
-        proxy: {
-            "/api": {
-                target: "https://mydvdcollection-server.onrender.com",
-                changeOrigin: true,
-            }
-        }
         // proxy: {
         //     "/api": {
         //         target: "https://mydvdcollection-server.onrender.com",

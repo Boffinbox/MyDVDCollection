@@ -8,7 +8,7 @@ export async function PostLogout(token: string)
     }
     try
     {
-        const response = await axios.post(`/api/v1/users/logout`, ``, config)
+        const response = await axios.post(`https://mydvdcollection-server.onrender.com/api/v1/users/logout`, ``, config)
         console.log("Logout request received - removing refresh cookie.");
         console.log(response)
     }
