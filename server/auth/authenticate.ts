@@ -11,6 +11,7 @@ exports.COOKIE_OPTIONS = {
     signed: true,
     maxAge: eval(process.env.REFRESH_TOKEN_EXPIRY ? process.env.REFRESH_TOKEN_EXPIRY : "60 * 60 * 24 * 5") * 1000,
     sameSite: "none",
+    domain: ".mydvdcollection.onrender.com"
 }
 
 exports.getToken = function (user)
