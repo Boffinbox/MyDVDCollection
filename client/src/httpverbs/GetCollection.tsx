@@ -8,7 +8,8 @@ export async function GetCollection(token: string | undefined, collectionId: str
     }
     const config =
     {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
     }
     try
     {

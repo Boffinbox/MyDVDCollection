@@ -13,7 +13,8 @@ export async function PostBarcode(token: string | undefined, collectionId: strin
     }
     const config =
     {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
     }
     try
     {

@@ -6,9 +6,13 @@ export async function PostLogin(email: string, password: string)
         email,
         password
     }
+    const config =
+    {
+        withCredentials: true
+    }
     try
     {
-        const response = await axios.post(`https://mydvdcollection-server.onrender.com/api/v1/users/login`, userData)
+        const response = await axios.post(`https://mydvdcollection-server.onrender.com/api/v1/users/login`, userData, config)
         console.log("Login post request received.");
         console.log(response.data.token)
         return response.data.token

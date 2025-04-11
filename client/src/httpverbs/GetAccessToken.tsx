@@ -3,10 +3,14 @@ import axios from "axios";
 
 export async function GetAccessToken()
 {
+    const config =
+    {
+        withCredentials: true
+    }
     try
     {
         console.log("Getting new access token...")
-        const response = await axios.post(`https://mydvdcollection-server.onrender.com/api/v1/users/refreshToken`)
+        const response = await axios.post(`https://mydvdcollection-server.onrender.com/api/v1/users/refreshToken`, config)
         console.log("Refresh request received.");
         console.log(response.data.token);
         return response.data.token;

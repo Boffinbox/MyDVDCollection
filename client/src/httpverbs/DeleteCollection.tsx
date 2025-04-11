@@ -8,7 +8,8 @@ export async function DeleteCollection(token: string | undefined, collectionId: 
     }
     const config =
     {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
     }
     try
     {

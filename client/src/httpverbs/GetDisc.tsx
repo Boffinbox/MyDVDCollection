@@ -8,7 +8,8 @@ export async function GetDisc(token: string | undefined, collectionId: string, d
     }
     const config =
     {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
     }
     try
     {

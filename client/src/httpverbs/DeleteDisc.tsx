@@ -8,7 +8,8 @@ export async function DeleteDisc(token: string | undefined, collectionId: string
     }
     const config =
     {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
     }
     try
     {

@@ -13,7 +13,8 @@ export async function PostCollection(token: string | undefined, title: string)
     }
     const config =
     {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
     }
     try
     {

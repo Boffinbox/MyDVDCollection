@@ -8,7 +8,8 @@ export async function GetUnknowns(token: string | undefined)
     }
     const config =
     {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
     }
     try
     {

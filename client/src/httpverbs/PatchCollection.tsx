@@ -13,7 +13,8 @@ export async function PatchCollection(token: string | undefined, collectionId: s
     }
     const config =
     {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
     }
     try
     {
