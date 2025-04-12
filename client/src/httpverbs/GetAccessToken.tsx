@@ -10,6 +10,7 @@ export async function GetAccessToken()
     try
     {
         console.log("Getting new access token...")
+        console.log(`${process.env.DOMAIN}/api/v1/users/refreshToken`)
         const response = await axios.post(`${process.env.DOMAIN}/api/v1/users/refreshToken`, config)
         console.log("Refresh request received.");
         console.log(response.data.token);
