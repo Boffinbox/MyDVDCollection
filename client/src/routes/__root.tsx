@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { QueryClient } from '@tanstack/react-query';
 
@@ -14,6 +15,14 @@ declare module '@mui/joy/Drawer' {
         xs: true;
     }
 }
+
+const ReactQueryDevtoolsProduction = React.lazy(() =>
+    import('@tanstack/react-query-devtools/build/modern/production.js').then(
+        (d) => ({
+            default: d.ReactQueryDevtools,
+        }),
+    ),
+)
 
 export const Route = createRootRouteWithContext<{
     queryClient: QueryClient
@@ -47,6 +56,14 @@ const mdcTheme = extendTheme({
 
 function App()
 {
+    const [showDevtools, setShowDevtools] = React.useState(false)
+
+    React.useEffect(() =>
+    {
+        // @ts-expect-error
+        window.toggleDevtools = () => setShowDevtools((old) => !old)
+    }, [])
+
     return <div>
         <CssVarsProvider theme={mdcTheme}>
             <CssBaseline>
@@ -65,6 +82,11 @@ function App()
             </CssBaseline>
         </CssVarsProvider>
         <ReactQueryDevtools buttonPosition='top-right' position='right' />
+        {showDevtools && (
+            <React.Suspense fallback={null}>
+                <ReactQueryDevtoolsProduction />
+            </React.Suspense>
+        )}
         {/* <TanStackRouterDevtools position='top-left' /> */}
     </div >
 }
