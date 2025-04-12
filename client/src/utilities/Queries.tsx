@@ -23,7 +23,7 @@ export function CollectionsQueryOptions(token: string | undefined)
         queryKey: ["collections"],
         queryFn: () => GetCollections(token),
         enabled: !!token,
-        staleTime: 1000
+        staleTime: Infinity
     })
 }
 
@@ -33,7 +33,7 @@ export function CollectionQueryOptions(token: string | undefined, collId: string
         queryKey: ["collection", collId],
         queryFn: () => GetCollection(token, collId),
         enabled: !!token && !!collId,
-        staleTime: 1000
+        staleTime: Infinity
     })
 }
 

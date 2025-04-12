@@ -77,7 +77,7 @@ export async function refreshToken(req, res)
     const { refreshToken } = signedCookies;
     if (!refreshToken)
     {
-        return res.status(401).send("Unauthorized - no valid cookie");
+        return res.status(401).send("Unauthorized");
     }
 
     const payload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
@@ -89,7 +89,7 @@ export async function refreshToken(req, res)
     )
     if (tokenIndex === -1)
     {
-        return res.status(401).send("Unauthorized - could not find cookie in db");
+        return res.status(401).send("Unauthorized");
     }
 
     const userTokens = await getTokens(user);
