@@ -3,6 +3,7 @@ import { createFileRoute, Link as RouterLink, useNavigate } from "@tanstack/reac
 import { PostLogin } from "../../httpverbs/PostLogin";
 
 import { Sheet, FormControl, FormLabel, Input, Button, Typography, Link } from "@mui/joy";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute('/_nonauth/login')({
     component: LoginComponent
@@ -10,6 +11,8 @@ export const Route = createFileRoute('/_nonauth/login')({
 
 function LoginComponent()
 {
+    const queryClient = useQueryClient();
+
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({ email: "", password: "" })
@@ -33,7 +36,8 @@ function LoginComponent()
         console.log("Password is: ", formData.password);
         try
         {
-            await PostLogin(formData.email, formData.password);
+            let token = await PostLogin(formData.email, formData.password);
+            queryClient.setQueryData(["accesstoken"], token)
             setFormData(() => { return { email: "", password: "" } })
             navigate({ to: "/collections" });
         }
