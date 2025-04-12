@@ -18,7 +18,7 @@ export async function PostCollection(token: string | undefined, title: string)
     }
     try
     {
-        const response = await axios.post(`${process.env.DOMAIN}/api/v1/disccollections/`, userData, config)
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/disccollections/`, userData, config)
         console.log("token used was: ", token);
         console.log("Post request received.");
         console.log(response.data)

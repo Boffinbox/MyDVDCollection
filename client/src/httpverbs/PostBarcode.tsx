@@ -18,7 +18,7 @@ export async function PostBarcode(token: string | undefined, collectionId: strin
     }
     try
     {
-        const response = await axios.post(`${process.env.DOMAIN}/api/v1/disccollections/${collectionId}/userdvds`, userData, config)
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/disccollections/${collectionId}/userdvds`, userData, config)
         console.log("token used was: ", token);
         console.log("Post request received.");
         console.log(response.data)
