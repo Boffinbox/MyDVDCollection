@@ -12,7 +12,7 @@ export async function PostLogin(email: string, password: string)
     }
     try
     {
-        const response = await axios.post(`https://mydvdcollection-server.onrender.com/api/v1/users/login`, userData, config)
+        const response = await axios.post(`${process.env.DOMAIN}/api/v1/users/login`, userData, config)
         console.log("Login post request received.");
         console.log(response.data.token)
         return response.data.token

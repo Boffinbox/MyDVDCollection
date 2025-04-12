@@ -10,7 +10,7 @@ export async function GetAccessToken()
     try
     {
         console.log("Getting new access token...")
-        const response = await axios.post(`https://mydvdcollection-server.onrender.com/api/v1/users/refreshToken`, config)
+        const response = await axios.post(`${process.env.DOMAIN}/api/v1/users/refreshToken`, config)
         console.log("Refresh request received.");
         console.log(response.data.token);
         return response.data.token;

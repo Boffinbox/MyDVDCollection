@@ -16,7 +16,7 @@ export async function GetReference(
     }
     try
     {
-        const response = await axios.get(`https://mydvdcollection-server.onrender.com/api/v1/referencedvds/${refId}`, config)
+        const response = await axios.get(`${process.env.DOMAIN}/api/v1/referencedvds/${refId}`, config)
         console.log("token used was: ", token);
         console.log("Getrequest received.");
         console.log(response.data)

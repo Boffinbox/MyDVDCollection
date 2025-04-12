@@ -18,7 +18,7 @@ export async function PatchCollection(token: string | undefined, collectionId: s
     }
     try
     {
-        const response = await axios.patch(`https://mydvdcollection-server.onrender.com/api/v1/disccollections/${collectionId}`, userData, config)
+        const response = await axios.patch(`${process.env.DOMAIN}/api/v1/disccollections/${collectionId}`, userData, config)
         console.log("token used was: ", token);
         console.log("Patch request received.");
         console.log(response.data)

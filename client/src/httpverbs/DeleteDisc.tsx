@@ -13,7 +13,7 @@ export async function DeleteDisc(token: string | undefined, collectionId: string
     }
     try
     {
-        const response = await axios.delete(`https://mydvdcollection-server.onrender.com/api/v1/disccollections/${collectionId}/userdvds/${discId}`, config)
+        const response = await axios.delete(`${process.env.DOMAIN}/api/v1/disccollections/${collectionId}/userdvds/${discId}`, config)
         console.log("token used was: ", token);
         console.log("Deletion request received.");
         console.log(response.data)

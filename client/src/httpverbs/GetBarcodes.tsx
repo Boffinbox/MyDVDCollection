@@ -13,7 +13,7 @@ export async function GetBarcodes(token: string | undefined)
     }
     try
     {
-        const response = await axios.get(`https://mydvdcollection-server.onrender.com/api/v1/referencedvds/barcodes`, config)
+        const response = await axios.get(`${process.env.DOMAIN}/api/v1/referencedvds/barcodes`, config)
         console.log("token used was: ", token);
         console.log("Barcodes request received.");
         console.log(response.data);
