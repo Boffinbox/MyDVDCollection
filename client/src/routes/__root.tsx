@@ -88,12 +88,12 @@ function App()
                 </Sheet>
             </CssBaseline>
         </CssVarsProvider>
-        <ReactQueryDevtools buttonPosition='top-right' position='right' />
         {showDevtools && (
             <React.Suspense fallback={null}>
                 <ReactQueryDevtoolsProduction />
             </React.Suspense>
         )}
+        <ReactQueryDevtools buttonPosition='top-right' position='right' />
         {/* <TanStackRouterDevtools position='top-left' /> */}
     </div >
 }
