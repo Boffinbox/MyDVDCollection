@@ -1,4 +1,4 @@
-// import React from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client';
 import "@fontsource/inter"
 import "./index.css"
@@ -29,11 +29,11 @@ declare module '@tanstack/react-router' {
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    // <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-        <ScrollContextProvider>
-            <RouterProvider router={router} context={{ queryClient }} />
-        </ScrollContextProvider>
-    </QueryClientProvider>
-    // </React.StrictMode>,
+    <React.StrictMode>
+        <QueryClientProvider client={queryClient}>
+            <ScrollContextProvider>
+                <RouterProvider router={router} context={{ queryClient }} />
+            </ScrollContextProvider>
+        </QueryClientProvider>
+    </React.StrictMode>
 )
