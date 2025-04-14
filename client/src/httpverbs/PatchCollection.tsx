@@ -18,7 +18,7 @@ export async function PatchCollection(token: string | undefined, collectionId: s
     }
     try
     {
-        const response = await axios.patch(`${import.meta.env.VITE_API_URL}/api/v1/disccollections/${collectionId}`, userData, config)
+        const response = await axios.patch(`/api/v1/disccollections/${collectionId}`, userData, config)
         console.log("token used was: ", token);
         console.log("Patch request received.");
         console.log(response.data)

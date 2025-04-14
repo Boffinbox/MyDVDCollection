@@ -10,7 +10,7 @@ export async function GetAccessToken()
     try
     {
         console.log("Getting new access token...")
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/users/refreshToken`, null, config)
+        const response = await axios.post(`/api/v1/users/refreshToken`, null, config)
         console.log("Refresh request received.");
         console.log(response.data.token);
         return response.data.token;

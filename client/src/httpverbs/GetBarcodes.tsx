@@ -13,7 +13,7 @@ export async function GetBarcodes(token: string | undefined)
     }
     try
     {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/referencedvds/barcodes`, config)
+        const response = await axios.get(`/api/v1/referencedvds/barcodes`, config)
         console.log("token used was: ", token);
         console.log("Barcodes request received.");
         console.log(response.data);

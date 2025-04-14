@@ -13,7 +13,7 @@ export async function GetUnknowns(token: string | undefined)
     }
     try
     {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/disccollections/unknowns`, config)
+        const response = await axios.get(`/api/v1/disccollections/unknowns`, config)
         console.log("token used was: ", token);
         console.log("Unknowns request received.");
         console.log(response.data);

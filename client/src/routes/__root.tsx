@@ -9,6 +9,13 @@ import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
 import { CssBaseline, Sheet } from '@mui/joy';
 import ErrorPage from '../utilities/ErrorPage';
 
+import axios from "axios"
+
+if (process.env.NODE_ENV == "production")
+{
+    axios.defaults.baseURL = `${import.meta.env.VITE_API_URL}`
+}
+
 declare module '@mui/joy/Drawer' {
     interface DrawerPropsSizeOverrides
     {

@@ -7,9 +7,9 @@ let server: ServerOptions =
     port: 3000,
     proxy: {
         "/api": {
-            target: `${process.env.VITE_API_URL}`,
+            target: `https://localhost:5000`,
             changeOrigin: true,
-            secure: false
+            secure: false,
         }
     },
     https: {
