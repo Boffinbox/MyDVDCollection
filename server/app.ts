@@ -42,7 +42,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(mongoSanitize());
 app.use(passport.initialize());
-app.use(cors(corsOptions))
+if (process.env.NODE_ENV == "production")
+{
+    app.use(cors(corsOptions))
+}
+else
+{
+    console.log(`Running in ${process.env.NODE_ENV} mode`)
+}
 
 // middleware to remove squiggly brackets
 const removeCurlies = (req, res, next) =>
