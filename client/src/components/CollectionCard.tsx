@@ -121,7 +121,11 @@ export function CollectionCard(
                     <SingleLineForm
                         submitButtonText="Update!"
                         labelText="New Title"
-                        onSubmit={(title: string) => updateCollTitleFn(title)}
+                        onSubmit={(title: string) =>
+                        {
+                            setIsModalOpen(false)
+                            updateCollTitleFn(title)
+                        }}
                     />
                 </ModalDialog>
             </Modal>

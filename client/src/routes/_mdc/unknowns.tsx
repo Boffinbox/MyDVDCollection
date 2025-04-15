@@ -282,7 +282,11 @@ function UnknownCollection()
                     <SingleLineForm
                         submitButtonText="Update!"
                         labelText="New Title"
-                        onSubmit={(title: string) => updateRefDiscMutation.mutate({ discId: modalDisc.id, title })}
+                        onSubmit={(title: string) =>
+                        {
+                            setIsEditModalOpen(false)
+                            updateRefDiscMutation.mutate({ discId: modalDisc.id, title })
+                        }}
                     />
                 </ModalDialog>
             </Modal>
