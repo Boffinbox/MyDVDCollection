@@ -76,7 +76,7 @@ function Scanner()
                     if (returnedDisc.referenceDVD.title == "unknown")
                     {
                         setIsUnknown(true)
-                        setGenString(() => ({ value: "Added to your collection, but this disc is not in our database. Set it aside and update the name later!" }))
+                        setGenString(() => ({ value: `Added to your collection, but ${formData.barcode} is not in our database. Set it aside and update the name later!` }))
                     }
                     else
                     {
@@ -156,11 +156,11 @@ function Scanner()
         {
             if (coll === undefined)
             {
-                return `You don't have this item yet! Would you like to add?`
+                return `Barcode [${barcode}] not found! Would you like to add?`
             }
             else
             {
-                return `You don't have this item in your ${coll.title} collection yet! Would you like to add?`
+                return `Barcode [${barcode}] is not in your [${coll.title}] collection yet! Would you like to add?`
             }
         }
         let titles = []
