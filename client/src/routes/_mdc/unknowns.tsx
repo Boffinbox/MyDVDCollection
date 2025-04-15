@@ -21,6 +21,7 @@ import { PostReference } from '../../httpverbs/PostReference';
 import { DeleteDisc } from '../../httpverbs/DeleteDisc';
 import { ScrollContext } from '../../components/ScrollContextProvider'
 import { useVirtualizer } from '@tanstack/react-virtual';
+import DevLog from '../../utilities/DevLog';
 
 export const Route = createFileRoute('/_mdc/unknowns')({
     beforeLoad: async ({ context: { queryClient } }) =>
@@ -62,7 +63,7 @@ function UnknownCollection()
             data.push(disc)
         }
     }
-    console.log(data)
+    DevLog(data)
 
     const [open, setOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);

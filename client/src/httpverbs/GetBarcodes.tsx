@@ -1,4 +1,5 @@
 import axios from "axios"
+import DevLog from "../utilities/DevLog";
 
 export async function GetBarcodes(token: string | undefined)
 {
@@ -14,9 +15,9 @@ export async function GetBarcodes(token: string | undefined)
     try
     {
         const response = await axios.get(`/api/v1/referencedvds/barcodes`, config)
-        console.log("token used was: ", token);
-        console.log("Barcodes request received.");
-        console.log(response.data);
+        DevLog("token used was: ", token);
+        DevLog("Barcodes request received.");
+        DevLog(response.data);
         return response.data;
     }
     catch (e)

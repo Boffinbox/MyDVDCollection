@@ -1,4 +1,5 @@
 import axios from "axios";
+import DevLog from "../utilities/DevLog";
 
 export async function GetDisc(token: string | undefined, collectionId: string, discId: string)
 {
@@ -14,9 +15,9 @@ export async function GetDisc(token: string | undefined, collectionId: string, d
     try
     {
         const response = await axios.get(`/api/v1/disccollections/${collectionId}/userdvds/${discId}`, config)
-        console.log("token used was: ", token);
-        console.log("User disc request received.");
-        console.log(response.data);
+        DevLog("token used was: ", token);
+        DevLog("User disc request received.");
+        DevLog(response.data);
         return response.data;
     }
     catch (e)

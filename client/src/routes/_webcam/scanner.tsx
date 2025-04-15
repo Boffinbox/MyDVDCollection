@@ -20,6 +20,7 @@ import { ScannerCrossMark } from "../../components/scanner/ScannerCrossMark";
 import { ScannerCheckMarkA } from "../../components/scanner/ScannerCheckMarkA";
 import { ArrowDropDown } from "@mui/icons-material";
 import { ScannerCameraMark } from "../../components/scanner/ScannerCameraMark";
+import DevLog from "../../utilities/DevLog";
 
 export const Route = createFileRoute('/_webcam/scanner')({
     component: Scanner
@@ -133,13 +134,13 @@ function Scanner()
 
     function handleDataChange(collectionId: string, barcode: string)
     {
-        console.log("barcode to check is: ", barcode);
+        DevLog("barcode to check is: ", barcode);
         let owned = isOwned(barcode)
         let coll: ICollection | undefined = collections.find(coll => coll._id === collectionId)
         setIsOwnedBarcode(owned)
-        console.log("is this barcode owned? : " + owned)
+        DevLog("is this barcode owned? : " + owned)
         let text = genText(coll, barcode, owned)
-        console.log("generated text is: " + text)
+        DevLog("generated text is: " + text)
         setGenString(() => ({ value: text }))
     }
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PostBarcode } from "../httpverbs/PostBarcode";
 import { useQuery } from "@tanstack/react-query";
 import { AccessTokenQueryOptions, CollectionsQueryOptions } from "../utilities/Queries";
+import DevLog from "../utilities/DevLog";
 
 export function MdcQuickAddDrawer({ open, setOpen }: { open: boolean, setOpen: (arg0: boolean) => void })
 {
@@ -34,7 +35,7 @@ export function MdcQuickAddDrawer({ open, setOpen }: { open: boolean, setOpen: (
         evt.preventDefault();
         const formData = new FormData(evt.currentTarget);
         const formJson = Object.fromEntries((formData as any).entries());
-        console.log("collId: ", formJson.collId, " barcode: ", formJson.barcode);
+        DevLog("collId: ", formJson.collId, " barcode: ", formJson.barcode);
         try
         {
             await PostBarcode(token, formJson.collId, formJson.barcode)

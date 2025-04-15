@@ -2,12 +2,13 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PostLogout } from "../../httpverbs/PostLogout";
 import { Wait } from "../../utilities/Wait";
 import { GetAccessToken } from "../../httpverbs/GetAccessToken";
+import DevLog from "../../utilities/DevLog";
 
 export const Route = createFileRoute('/_nonauth/logout')({
     beforeLoad: async ({ context: { queryClient } }) =>
     {
         let token: string | undefined = await queryClient.getQueryData(["accesstoken"])
-        console.log("in preloader: ", token)
+        DevLog("in preloader: ", token)
         if (token == undefined)
         {
             token = await GetAccessToken()
@@ -24,7 +25,7 @@ export const Route = createFileRoute('/_nonauth/logout')({
         }
         catch
         {
-            console.log("oh no!");
+            DevLog("oh no!");
         }
     },
     component: Logout

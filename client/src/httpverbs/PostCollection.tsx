@@ -1,8 +1,9 @@
 import axios from "axios";
+import DevLog from "../utilities/DevLog";
 
 export async function PostCollection(token: string | undefined, title: string)
 {
-    console.log("reached postcoll")
+    DevLog("reached postcoll")
     if (token == undefined)
     {
         throw new Error("No access token supplied to post collection.");
@@ -19,9 +20,9 @@ export async function PostCollection(token: string | undefined, title: string)
     try
     {
         const response = await axios.post(`/api/v1/disccollections/`, userData, config)
-        console.log("token used was: ", token);
-        console.log("Post request received.");
-        console.log(response.data)
+        DevLog("token used was: ", token);
+        DevLog("Post request received.");
+        DevLog(response.data)
         return response.data
     }
     catch (e)

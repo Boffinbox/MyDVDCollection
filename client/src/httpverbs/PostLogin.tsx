@@ -1,4 +1,5 @@
 import axios from "axios";
+import DevLog from "../utilities/DevLog";
 
 export async function PostLogin(email: string, password: string)
 {
@@ -13,8 +14,8 @@ export async function PostLogin(email: string, password: string)
     try
     {
         const response = await axios.post(`/api/v1/users/login`, userData, config)
-        console.log("Login post request received.");
-        console.log(response.data.token)
+        DevLog("Login post request received.");
+        DevLog(response.data.token)
         return response.data.token
     }
     catch (e)

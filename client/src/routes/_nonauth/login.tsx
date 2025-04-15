@@ -4,6 +4,7 @@ import { PostLogin } from "../../httpverbs/PostLogin";
 
 import { Sheet, FormControl, FormLabel, Input, Button, Typography, Link } from "@mui/joy";
 import { useQueryClient } from "@tanstack/react-query";
+import DevLog from "../../utilities/DevLog";
 
 export const Route = createFileRoute('/_nonauth/login')({
     component: LoginComponent
@@ -31,9 +32,9 @@ function LoginComponent()
     async function handleSubmit(evt: React.FormEvent<HTMLFormElement>)
     {
         evt.preventDefault();
-        console.log("Form submitted!");
-        console.log("Email is: ", formData.email);
-        console.log("Password is: ", formData.password);
+        DevLog("Form submitted!");
+        DevLog("Email is: ", formData.email);
+        DevLog("Password is: ", formData.password);
         try
         {
             let token = await PostLogin(formData.email, formData.password);
@@ -44,7 +45,7 @@ function LoginComponent()
         catch
         {
             // todo
-            console.log("wrong credentials todo inside login.tsx")
+            DevLog("wrong credentials todo inside login.tsx")
         }
     }
 

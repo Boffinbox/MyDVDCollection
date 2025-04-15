@@ -9,6 +9,7 @@ import { PostBarcode } from "../../httpverbs/PostBarcode";
 
 import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
 import 'react-barcode-scanner/polyfill'
+import DevLog from "../../utilities/DevLog";
 
 export const Route = createFileRoute('/_mdc/newform')({
     component: NewForm
@@ -53,7 +54,7 @@ function NewForm()
         evt.preventDefault();
         const formData = new FormData(evt.currentTarget);
         const formJson = Object.fromEntries((formData as any).entries());
-        console.log("collId: ", formJson.collId, " barcode: ", formJson.barcode);
+        DevLog("collId: ", formJson.collId, " barcode: ", formJson.barcode);
         try
         {
             await PostBarcode(token, formJson.collId, formJson.barcode)

@@ -1,4 +1,5 @@
 import axios from "axios";
+import DevLog from "../utilities/DevLog";
 
 export async function PostReference(
     {
@@ -12,7 +13,7 @@ export async function PostReference(
     }
 )
 {
-    console.log("reached postreference")
+    DevLog("reached postreference")
     if (token == undefined)
     {
         throw new Error("No access token supplied to post reference.");
@@ -30,15 +31,15 @@ export async function PostReference(
     try
     {
         const response = await axios.post(`/api/v1/referencedvds`, userData, config)
-        console.log("token used was: ", token);
-        console.log("Post request received.");
-        console.log(response.data)
+        DevLog("token used was: ", token);
+        DevLog("Post request received.");
+        DevLog(response.data)
         return response.data
     }
     catch (e)
     {
-        console.log(`error thrown, barcode: ${barcode}, title: ${title}`)
-        console.log(title)
+        DevLog(`error thrown, barcode: ${barcode}, title: ${title}`)
+        DevLog(title)
         throw new Error(`Failed to post barcode ${barcode} and title ${title}`);
     }
 }
