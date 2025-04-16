@@ -12,7 +12,7 @@ test(`get a reference dvd`, async () =>
 {
     const testSetup = await userDVDFunctions.testDVDSetup();
     expect(testSetup.dvdRes.status).toBe(201);
-    expect(testSetup.dvdRes.body.referenceDVD.barcode).toEqual("7321905737437")
+    expect(testSetup.dvdRes.body.referenceDVD.barcode).toEqual("7321900737432")
     expect(testSetup.dvdRes.body.referenceDVD.title).toEqual("gremlins")
 
     const refId = testSetup.dvdRes.body.referenceDVD._id
@@ -23,7 +23,7 @@ test(`get a reference dvd`, async () =>
     expect(refDvdRes.status).toBe(200);
     console.log(refDvdRes.body)
     expect(refDvdRes.body._id).toEqual(refId)
-    expect(refDvdRes.body.barcode).toEqual("7321905737437")
+    expect(refDvdRes.body.barcode).toEqual("7321900737432")
     expect(refDvdRes.body.title).toEqual("gremlins")
 })
 
@@ -31,16 +31,16 @@ test(`update a dvd's name to something different`, async () =>
 {
     const testSetup = await userDVDFunctions.testDVDSetup();
     expect(testSetup.dvdRes.status).toBe(201);
-    expect(testSetup.dvdRes.body.referenceDVD.barcode).toEqual("7321905737437")
+    expect(testSetup.dvdRes.body.referenceDVD.barcode).toEqual("7321900737432")
     expect(testSetup.dvdRes.body.referenceDVD.title).toEqual("gremlins")
 
     const updateRefDvdRes = await request(app)
         .post(`${api}/referencedvds/`)
         .set(`Authorization`, `Bearer ${testSetup.userToken}`)
-        .send({ barcode: "7321905737437", title: "pp" });
+        .send({ barcode: "7321900737432", title: "pp" });
     expect(updateRefDvdRes.status).toBe(200);
     console.log(updateRefDvdRes.body)
-    expect(updateRefDvdRes.body.barcode).toEqual("7321905737437")
+    expect(updateRefDvdRes.body.barcode).toEqual("7321900737432")
     expect(updateRefDvdRes.body.title).toEqual("pp")
 })
 
@@ -48,7 +48,7 @@ test(`get barcodes object`, async () =>
 {
     const testSetup = await userDVDFunctions.testDVDSetup();
     expect(testSetup.dvdRes.status).toBe(201);
-    expect(testSetup.dvdRes.body.referenceDVD.barcode).toEqual("7321905737437")
+    expect(testSetup.dvdRes.body.referenceDVD.barcode).toEqual("7321900737432")
     expect(testSetup.dvdRes.body.referenceDVD.title).toEqual("gremlins")
 
     const title = "My Second Collection"
@@ -106,9 +106,9 @@ test(`get barcodes object`, async () =>
     expect(data["123456"].count).toEqual(3)
     expect(data["234567"].count).toEqual(2)
     expect(data["345678"].count).toEqual(1)
-    expect(data["7321905737437"].count).toEqual(1)
+    expect(data["7321900737432"].count).toEqual(1)
     expect(data["123456"].collArray.length).toEqual(2)
-    expect(data["7321905737437"].collArray.length).toEqual(1)
+    expect(data["7321900737432"].collArray.length).toEqual(1)
     expect(data["123456"].collArray.indexOf(collIdOne)).toBeGreaterThan(-1)
     expect(data["123456"].collArray.indexOf(collIdTwo)).toBeGreaterThan(-1)
 })

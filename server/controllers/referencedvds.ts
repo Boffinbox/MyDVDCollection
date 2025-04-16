@@ -142,7 +142,7 @@ async function externalAPICall(barcode: string, title: string, isNew: boolean)
     }
 }
 
-async function fetchExternalDVD(barcode: string = `7321905737437`)
+async function fetchExternalDVD(barcode: string = `7321900737432`)
 {
     // never do a call if we are in a test
     if (process.env.NODE_ENV === "test")

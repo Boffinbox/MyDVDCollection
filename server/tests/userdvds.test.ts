@@ -50,7 +50,7 @@ test(`add a dvd without adding a corresponding reference dvd`, async () =>
     const newDvdRes = await request(app)
         .post(`${api}/disccollections/${testSetup.collId}/userdvds/`)
         .set(`Authorization`, `Bearer ${testSetup.userToken}`)
-        .send({ barcode: "7321905737437" });
+        .send({ barcode: "7321900737432" });
     expect(newDvdRes.status).toBe(201);
 })
 
@@ -134,7 +134,7 @@ test(`discover a dvd's barcode from scratch`, async () =>
     expect(refRes.status).toBe(200)
     const ref = refRes.body
 
-    expect(ref.barcode).toEqual("7321905737437")
+    expect(ref.barcode).toEqual("7321900737432")
 })
 
 test(`add three dvds, mark two as unknown, and then get these unknowns`, async () =>
