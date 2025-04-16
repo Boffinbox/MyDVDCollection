@@ -30,19 +30,20 @@ export function MdcSettingsDrawer({ open, setOpen }: { open: boolean, setOpen: (
                 <ListItem>Settings</ListItem>
                 <Divider />
                 <DarkModeToggle />
-                <ListItemButton>And</ListItemButton>
+                {/* <ListItemButton>And</ListItemButton>
                 <ListItemButton>Here's</ListItemButton>
                 <ListItemButton>Some</ListItemButton>
                 <ListItemButton>Other</ListItemButton>
-                <ListItemButton>Actions</ListItemButton>
+                <ListItemButton>Actions</ListItemButton> */}
                 <Divider />
                 <ListItemButton
+                    color="warning"
                     onClick={() => navigate({ to: "/logout" })}
                 >
                     <ListItemDecorator>
                         <LogoutIcon />
                     </ListItemDecorator>
-                    <Typography>Logout</Typography>
+                    <Typography color="warning">Logout</Typography>
                 </ListItemButton>
                 <Divider />
             </List>
