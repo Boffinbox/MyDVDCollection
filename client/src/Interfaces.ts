@@ -35,3 +35,12 @@ export interface IReferenceDisc
     highest_recorded_price: number;
     images: string[]
 }
+
+export interface IBarcodes
+{
+    [k: string]:
+    {
+        count: number,
+        collArray: string[]
+    }
+}

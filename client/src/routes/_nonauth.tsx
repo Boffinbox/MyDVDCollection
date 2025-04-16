@@ -1,15 +1,9 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
-import { AccessTokenQueryOptions } from '../utilities/Queries';
-
 import { Sheet } from '@mui/joy';
 import { NonAuthAppbar } from '../components/NonAuthAppbar';
 
 export const Route = createFileRoute('/_nonauth')({
-    beforeLoad: async ({ context: { queryClient } }) =>
-    {
-        queryClient.ensureQueryData(AccessTokenQueryOptions())
-    },
     component: NonAuthComponent
 })
 

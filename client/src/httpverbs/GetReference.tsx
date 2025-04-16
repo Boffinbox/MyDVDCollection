@@ -1,24 +1,26 @@
 import axios from "axios";
+import DevLog from "../utilities/DevLog";
 
 export async function GetReference(
     token: string | undefined,
     refId: string)
 {
-    console.log("reached getreference")
+    DevLog("reached getreference")
     if (token == undefined)
     {
         throw new Error("No access token supplied to get reference.");
     }
     const config =
     {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
     }
     try
     {
         const response = await axios.get(`/api/v1/referencedvds/${refId}`, config)
-        console.log("token used was: ", token);
-        console.log("Getrequest received.");
-        console.log(response.data)
+        DevLog("token used was: ", token);
+        DevLog("Getrequest received.");
+        DevLog(response.data)
         return response.data
     }
     catch (e)

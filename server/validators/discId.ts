@@ -2,7 +2,7 @@ export { };
 
 const { idSchema } = require("./validationSchema");
 
-const ExpressError = require("../helpers/expresserror");
+const ExpressError = require("../helpers/ExpressError");
 
 const validateDiscId = (req, res, next) =>
 {

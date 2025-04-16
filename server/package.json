@@ -1,12 +1,12 @@
 {
-  "name": "server",
+  "name": "my-dvd-collection-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend for MyDVDCollection",
   "main": "server.ts",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest --testTimeout=5000 --detectOpenHandles",
-    "start": "node server",
-    "dev": "nodemon server.ts"
+    "start": "set NODE_ENV=production&&ts-node server.ts",
+    "dev": "set NODE_ENV=development&&nodemon server.ts"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +15,7 @@
     "@typegoose/typegoose": "^11.5.1",
     "axios": "^1.6.2",
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
@@ -32,6 +33,7 @@
     "passport-local-mongoose": "^8.0.0",
     "sanitize-html": "^2.11.0",
     "supertest": "^6.3.3",
+    "ts-node": "^10.9.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
@@ -47,7 +49,6 @@
     "@types/uuid": "^9.0.7",
     "nodemon": "^3.0.1",
     "ts-jest": "^29.1.1",
-    "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   }
 }

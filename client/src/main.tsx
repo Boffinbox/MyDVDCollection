@@ -35,5 +35,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <RouterProvider router={router} context={{ queryClient }} />
             </ScrollContextProvider>
         </QueryClientProvider>
-    </React.StrictMode>,
+    </React.StrictMode>
 )

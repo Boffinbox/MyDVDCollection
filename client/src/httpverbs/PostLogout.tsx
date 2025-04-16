@@ -1,16 +1,18 @@
 import axios from "axios";
+import DevLog from "../utilities/DevLog";
 
 export async function PostLogout(token: string)
 {
     const config =
     {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
     }
     try
     {
         const response = await axios.post(`/api/v1/users/logout`, ``, config)
-        console.log("Logout request received - removing refresh cookie.");
-        console.log(response)
+        DevLog("Logout request received - removing refresh cookie.");
+        DevLog(response)
     }
     catch (e)
     {

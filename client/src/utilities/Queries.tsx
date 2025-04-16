@@ -5,6 +5,7 @@ import { GetAccessToken } from "../httpverbs/GetAccessToken"
 import { GetDisc } from "../httpverbs/GetDisc"
 import { GetReference } from "../httpverbs/GetReference"
 import { GetUnknowns } from "../httpverbs/GetUnknowns"
+import { GetBarcodes } from "../httpverbs/GetBarcodes"
 
 export function AccessTokenQueryOptions()
 {
@@ -22,7 +23,7 @@ export function CollectionsQueryOptions(token: string | undefined)
         queryKey: ["collections"],
         queryFn: () => GetCollections(token),
         enabled: !!token,
-        staleTime: Infinity
+        staleTime: 1000
     })
 }
 
@@ -61,6 +62,16 @@ export function UnknownsQueryOptions(token: string | undefined)
     return queryOptions({
         queryKey: ["unknowns"],
         queryFn: () => GetUnknowns(token),
+        enabled: !!token,
+        staleTime: 1000
+    })
+}
+
+export function BarcodesQueryOptions(token: string | undefined)
+{
+    return queryOptions({
+        queryKey: ["barcodes"],
+        queryFn: () => GetBarcodes(token),
         enabled: !!token,
         staleTime: 1000
     })

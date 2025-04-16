@@ -1,4 +1,5 @@
 import { Button } from "@mui/joy"
+import DevLog from "../utilities/DevLog";
 
 export function StateChangingButton(
     {
@@ -16,12 +17,12 @@ export function StateChangingButton(
                 evt.preventDefault();
                 try
                 {
-                    console.log(onSubmit)
+                    DevLog(onSubmit)
                     await onSubmit()
                 }
                 catch (e)
                 {
-                    console.log("Couldn't perform action.")
+                    DevLog("Couldn't perform action.")
                 }
             }}>
                 <Button type="submit" sx={{}}>

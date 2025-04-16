@@ -1,4 +1,5 @@
 import axios from "axios";
+import DevLog from "../utilities/DevLog";
 
 export async function GetCollection(token: string | undefined, collectionId: string)
 {
@@ -8,14 +9,15 @@ export async function GetCollection(token: string | undefined, collectionId: str
     }
     const config =
     {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
     }
     try
     {
         const response = await axios.get(`/api/v1/disccollections/${collectionId}`, config)
-        console.log("token used was: ", token);
-        console.log("Collection request received.");
-        console.log(response.data);
+        DevLog("token used was: ", token);
+        DevLog("Collection request received.");
+        DevLog(response.data);
         return response.data;
     }
     catch (e)

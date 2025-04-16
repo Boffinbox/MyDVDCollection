@@ -6,10 +6,6 @@ import { AccessTokenQueryOptions } from "../../utilities/Queries"
 import { Sheet, Typography, Link } from '@mui/joy';
 
 export const Route = createFileRoute('/_nonauth/home')({
-    beforeLoad: async ({ context: { queryClient } }) =>
-    {
-        queryClient.ensureQueryData(AccessTokenQueryOptions())
-    },
     component: Home
 })
 
@@ -43,7 +39,7 @@ function Home()
                         My DVD Collection
                     </Typography>
                     <Typography level="body-sm" sx={{ mx: 2 }}>
-                        Welcome to My DVD Collection! Your place for digitally tracking your DVDs, Blu-Rays, CDs, and more!
+                        Welcome to My DVD Collection! Your place for digitally tracking your DVDs, Blu-Rays, CDs, Books, and more!
                     </Typography>
                     <Typography sx={{ mx: 2 }}>
                         {tokenQuery.isSuccess ?

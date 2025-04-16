@@ -2,7 +2,7 @@ export { };
 
 const { loginSchema } = require("./validationSchema");
 
-const ExpressError = require("../helpers/expresserror");
+const ExpressError = require("../helpers/ExpressError");
 
 const validateLogin = (req, res, next) =>
 {

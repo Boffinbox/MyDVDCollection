@@ -1,8 +1,9 @@
 import axios from "axios";
+import DevLog from "../utilities/DevLog";
 
 export async function PostBarcode(token: string | undefined, collectionId: string, barcode: string)
 {
-    console.log("reached postbarcode")
+    DevLog("reached postbarcode")
     if (token == undefined)
     {
         throw new Error("No access token supplied to post barcode.");
@@ -13,14 +14,15 @@ export async function PostBarcode(token: string | undefined, collectionId: strin
     }
     const config =
     {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
     }
     try
     {
         const response = await axios.post(`/api/v1/disccollections/${collectionId}/userdvds`, userData, config)
-        console.log("token used was: ", token);
-        console.log("Post request received.");
-        console.log(response.data)
+        DevLog("token used was: ", token);
+        DevLog("Post request received.");
+        DevLog(response.data)
         return response.data
     }
     catch (e)

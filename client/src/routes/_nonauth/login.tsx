@@ -3,6 +3,8 @@ import { createFileRoute, Link as RouterLink, useNavigate } from "@tanstack/reac
 import { PostLogin } from "../../httpverbs/PostLogin";
 
 import { Sheet, FormControl, FormLabel, Input, Button, Typography, Link } from "@mui/joy";
+import { useQueryClient } from "@tanstack/react-query";
+import DevLog from "../../utilities/DevLog";
 
 export const Route = createFileRoute('/_nonauth/login')({
     component: LoginComponent
@@ -10,6 +12,8 @@ export const Route = createFileRoute('/_nonauth/login')({
 
 function LoginComponent()
 {
+    const queryClient = useQueryClient();
+
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({ email: "", password: "" })
@@ -28,19 +32,20 @@ function LoginComponent()
     async function handleSubmit(evt: React.FormEvent<HTMLFormElement>)
     {
         evt.preventDefault();
-        console.log("Form submitted!");
-        console.log("Email is: ", formData.email);
-        console.log("Password is: ", formData.password);
+        DevLog("Form submitted!");
+        DevLog("Email is: ", formData.email);
+        DevLog("Password is: ", formData.password);
         try
         {
-            await PostLogin(formData.email, formData.password);
+            let token = await PostLogin(formData.email, formData.password);
+            queryClient.setQueryData(["accesstoken"], token)
             setFormData(() => { return { email: "", password: "" } })
             navigate({ to: "/collections" });
         }
         catch
         {
             // todo
-            console.log("wrong credentials todo inside login.tsx")
+            DevLog("wrong credentials todo inside login.tsx")
         }
     }
 
@@ -70,7 +75,7 @@ function LoginComponent()
 
                     <div>
                         <Typography level="h4" component="h1">
-                            <b>Welcome to mDc!</b>
+                            <b>My DVD Collection</b>
                         </Typography>
                         <Typography level="body-sm">Sign in to continue.</Typography>
                     </div>

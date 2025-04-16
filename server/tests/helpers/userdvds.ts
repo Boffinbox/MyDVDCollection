@@ -23,7 +23,7 @@ export async function testDVDSetup(
     username: string = "boff",
     email: string = "boff@test.co.uk",
     password: string = "1234",
-    barcode: string = "7321905737437",
+    barcode: string = "7321900737432",
     title: string = "gremlins")
 {
     const userDetails = userFunctions.generateUserDetails(username, email, password);

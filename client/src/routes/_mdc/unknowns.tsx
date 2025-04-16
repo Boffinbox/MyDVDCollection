@@ -20,7 +20,8 @@ import { SingleLineForm } from '../../components/SingleLineForm';
 import { PostReference } from '../../httpverbs/PostReference';
 import { DeleteDisc } from '../../httpverbs/DeleteDisc';
 import { ScrollContext } from '../../components/ScrollContextProvider'
-import { useVirtualizer, VirtualItem, Virtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import DevLog from '../../utilities/DevLog';
 
 export const Route = createFileRoute('/_mdc/unknowns')({
     beforeLoad: async ({ context: { queryClient } }) =>
@@ -43,7 +44,16 @@ function UnknownCollection()
 
     // convert these unknowns into a simple array, with titles and discs
 
-    const data = []
+    const data: (
+        string |
+        {
+            _id: string;
+            rating: number;
+            watched: boolean;
+            referenceDVD: string,
+            collId: string
+
+        })[] = []
     for (let coll of unknowns)
     {
         data.push(coll.title)
@@ -53,6 +63,7 @@ function UnknownCollection()
             data.push(disc)
         }
     }
+    DevLog(data)
 
     const [open, setOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -180,7 +191,7 @@ function UnknownCollection()
                                         ref={virtualizer.measureElement}
                                     >
                                         {/* conditional to see if element is a coll title or a disc */}
-                                        {!item._id ?
+                                        {typeof item === "string" ?
                                             <>
                                                 <Sheet sx={{ height: "5px" }} />
                                                 <Divider />
@@ -199,7 +210,6 @@ function UnknownCollection()
                                                     key={item._id}
                                                     discId={item._id}
                                                     collectionId={item.collId}
-                                                    deleteFn={async () => await deleteDiscMutation.mutate(item._id)}
                                                     drawerFn={() => drawerFunction(item._id, item.collId)}
                                                     updateRefFn={async (title: string) => await updateRefDiscMutation.mutate({ discId: item._id, title })}
                                                 />
@@ -272,7 +282,11 @@ function UnknownCollection()
                     <SingleLineForm
                         submitButtonText="Update!"
                         labelText="New Title"
-                        onSubmit={(title: string) => updateRefDiscMutation.mutate({ discId: modalDisc.id, title })}
+                        onSubmit={(title: string) =>
+                        {
+                            setIsEditModalOpen(false)
+                            updateRefDiscMutation.mutate({ discId: modalDisc.id, title })
+                        }}
                     />
                 </ModalDialog>
             </Modal>
