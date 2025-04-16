@@ -8,6 +8,8 @@
 
 **MyDVDCollection** is a place for digitally tracking your DVDs, Blu-Rays, CDs, Books, and more. Scan barcodes, store them to your collections, and check against them when out shopping to see if you already own a piece of physical media. Just scan the item, and MyDVDCollection will tell you if you own it!
 
+![image](https://github.com/user-attachments/assets/a9257a8c-071d-430b-b79f-aa73d3e707b2)
+
 # Tech
 
 This project is built using a traditional [MERN tech stack](https://www.mongodb.com/resources/languages/mern-stack). Main packages used are in no particular order:
