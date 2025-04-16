@@ -1,7 +1,7 @@
 {
-  "name": "server",
+  "name": "my-dvd-collection-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Backend for MyDVDCollection",
   "main": "server.ts",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest --testTimeout=5000 --detectOpenHandles",
