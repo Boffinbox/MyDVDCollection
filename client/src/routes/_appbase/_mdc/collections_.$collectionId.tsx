@@ -6,24 +6,24 @@ import { SingleLineForm } from '../../../components/SingleLineForm'
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query'
 import
 {
-  AccessTokenQueryOptions,
-  CollectionQueryOptions,
+    AccessTokenQueryOptions,
+    CollectionQueryOptions,
 } from '../../../utilities/Queries'
 import { ICollection, IDisc, IReferenceDisc } from '../../../Interfaces'
 import { DiscListItem } from '../../../components/DiscListItem'
 import
 {
-  Button,
-  Divider,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemDecorator,
-  Modal,
-  ModalDialog,
-  Stack,
-  Typography,
+    Button,
+    Divider,
+    Drawer,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemDecorator,
+    Modal,
+    ModalDialog,
+    Stack,
+    Typography,
 } from '@mui/joy'
 import { useContext, useState } from 'react'
 import { Edit, InfoOutlined } from '@mui/icons-material'
@@ -32,312 +32,312 @@ import { useVirtualizer } from '@tanstack/react-virtual'
 import { ScrollContext } from '../../../components/ScrollContextProvider'
 
 export const Route = createFileRoute(
-  '/_appbase/_mdc/collections_/$collectionId',
+    '/_appbase/_mdc/collections_/$collectionId',
 )({
-  beforeLoad: async ({ context: { queryClient }, params }) =>
-  {
-    const token = await queryClient.ensureQueryData(AccessTokenQueryOptions())
-    await queryClient.ensureQueryData(
-      CollectionQueryOptions(token, params.collectionId),
-    )
-  },
-  component: Collection,
+    beforeLoad: async ({ context: { queryClient }, params }) =>
+    {
+        const token = await queryClient.ensureQueryData(AccessTokenQueryOptions())
+        await queryClient.ensureQueryData(
+            CollectionQueryOptions(token, params.collectionId),
+        )
+    },
+    component: Collection,
 })
 
 function Collection()
 {
-  const { collectionId } = Route.useParams()
+    const { collectionId } = Route.useParams()
 
-  const queryClient = useQueryClient()
+    const queryClient = useQueryClient()
 
-  const token: string | undefined = queryClient.getQueryData(['accesstoken'])
+    const token: string | undefined = queryClient.getQueryData(['accesstoken'])
 
-  // const collection: ICollection | undefined = queryClient.getQueryData(["collection", collectionId])
-  const collectionData = useQuery(CollectionQueryOptions(token, collectionId))
-  const collection = collectionData.data
+    // const collection: ICollection | undefined = queryClient.getQueryData(["collection", collectionId])
+    const collectionData = useQuery(CollectionQueryOptions(token, collectionId))
+    const collection = collectionData.data
 
-  const [open, setOpen] = useState(false)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-  const [modalDisc, setModalDisc] = useState<{ id: string; title: string }>({
-    id: 'undefined',
-    title: 'undefined',
-  })
+    const [open, setOpen] = useState(false)
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+    const [modalDisc, setModalDisc] = useState<{ id: string; title: string }>({
+        id: 'undefined',
+        title: 'undefined',
+    })
 
-  const scrollContext = useContext(ScrollContext)
+    const scrollContext = useContext(ScrollContext)
 
-  const virtualizer = useVirtualizer({
-    count: collection!.discs.length,
-    estimateSize: () => 70,
-    getScrollElement: () => scrollContext.scrollRef.current,
-    overscan: 4,
-  })
+    const virtualizer = useVirtualizer({
+        count: collection!.discs.length,
+        estimateSize: () => 70,
+        getScrollElement: () => scrollContext.scrollRef.current,
+        overscan: 4,
+    })
 
-  const virtualItems = virtualizer.getVirtualItems()
+    const virtualItems = virtualizer.getVirtualItems()
 
-  const newDiscMutation = useMutation({
-    mutationFn: (discId: string) => PostBarcode(token, collectionId, discId),
-    onSuccess: (returnedDisc: IDisc) =>
-    {
-      queryClient.setQueryData(
-        ['collection', collectionId],
-        (oldData: ICollection) =>
+    const newDiscMutation = useMutation({
+        mutationFn: (discId: string) => PostBarcode(token, collectionId, discId),
+        onSuccess: (returnedDisc: IDisc) =>
         {
-          oldData.discs.push(returnedDisc._id)
-          return oldData
+            queryClient.setQueryData(
+                ['collection', collectionId],
+                (oldData: ICollection) =>
+                {
+                    oldData.discs.push(returnedDisc._id)
+                    return oldData
+                },
+            )
         },
-      )
-    },
-  })
+    })
 
-  const updateRefDiscMutation = useMutation({
-    mutationFn: ({ discId, title }: { discId: string; title: string }) =>
-    {
-      let discData: IDisc = queryClient.getQueryData(['disc', discId])!
-      let refId = discData.referenceDVD
-      let refData: IReferenceDisc = queryClient.getQueryData([
-        'reference',
-        refId,
-      ])!
-      let barcode = refData.barcode
-      return PostReference({ token, barcode, title })
-    },
-    onSuccess: (returnedRef: IReferenceDisc) =>
-    {
-      queryClient.setQueryData(
-        ['reference', returnedRef._id],
-        (oldData: IReferenceDisc) =>
+    const updateRefDiscMutation = useMutation({
+        mutationFn: ({ discId, title }: { discId: string; title: string }) =>
         {
-          oldData.title = returnedRef.title
-          oldData.upcitemdb_truedata = returnedRef.upcitemdb_truedata
+            let discData: IDisc = queryClient.getQueryData(['disc', discId])!
+            let refId = discData.referenceDVD
+            let refData: IReferenceDisc = queryClient.getQueryData([
+                'reference',
+                refId,
+            ])!
+            let barcode = refData.barcode
+            return PostReference({ token, barcode, title })
         },
-      )
-      setModalDisc({ id: modalDisc.id, title: returnedRef.title })
-    },
-  })
-
-  const deleteDiscMutation = useMutation({
-    mutationFn: (discId: string) => DeleteDisc(token, collectionId, discId),
-    onSuccess: (returnedDisc: IDisc) =>
-    {
-      queryClient.setQueryData(
-        ['collection', collectionId],
-        (oldData: ICollection) =>
+        onSuccess: (returnedRef: IReferenceDisc) =>
         {
-          oldData.discs = oldData.discs.filter(
-            (discId: string) => discId !== returnedDisc._id,
-          )
-          return oldData
+            queryClient.setQueryData(
+                ['reference', returnedRef._id],
+                (oldData: IReferenceDisc) =>
+                {
+                    oldData.title = returnedRef.title
+                    oldData.upcitemdb_truedata = returnedRef.upcitemdb_truedata
+                },
+            )
+            setModalDisc({ id: modalDisc.id, title: returnedRef.title })
         },
-      )
-      queryClient.removeQueries({ queryKey: ['disc', returnedDisc._id] })
-    },
-  })
+    })
 
-  function drawerFunction(discId: string)
-  {
-    setOpen(true)
-    const discData: IDisc = queryClient.getQueryData(['disc', discId])!
-    const refData: IReferenceDisc = queryClient.getQueryData([
-      'reference',
-      discData.referenceDVD,
-    ])!
-    setModalDisc({ id: discData._id, title: refData.title })
-  }
+    const deleteDiscMutation = useMutation({
+        mutationFn: (discId: string) => DeleteDisc(token, collectionId, discId),
+        onSuccess: (returnedDisc: IDisc) =>
+        {
+            queryClient.setQueryData(
+                ['collection', collectionId],
+                (oldData: ICollection) =>
+                {
+                    oldData.discs = oldData.discs.filter(
+                        (discId: string) => discId !== returnedDisc._id,
+                    )
+                    return oldData
+                },
+            )
+            queryClient.removeQueries({ queryKey: ['disc', returnedDisc._id] })
+        },
+    })
 
-  function deleteDisc()
-  {
-    setOpen(false)
-    setIsEditModalOpen(false)
-    setIsDeleteModalOpen(false)
-    deleteDiscMutation.mutate(modalDisc.id)
-  }
+    function drawerFunction(discId: string)
+    {
+        setOpen(true)
+        const discData: IDisc = queryClient.getQueryData(['disc', discId])!
+        const refData: IReferenceDisc = queryClient.getQueryData([
+            'reference',
+            discData.referenceDVD,
+        ])!
+        setModalDisc({ id: discData._id, title: refData.title })
+    }
 
-  if (collection == undefined)
-  {
+    function deleteDisc()
+    {
+        setOpen(false)
+        setIsEditModalOpen(false)
+        setIsDeleteModalOpen(false)
+        deleteDiscMutation.mutate(modalDisc.id)
+    }
+
+    if (collection == undefined)
+    {
+        return (
+            <>
+                <div>Oh no! Something went wrong...</div>
+                <pre>{'404: No collection found at this URL.'}</pre>
+            </>
+        )
+    }
+
     return (
-      <>
-        <div>Oh no! Something went wrong...</div>
-        <pre>{'404: No collection found at this URL.'}</pre>
-      </>
-    )
-  }
-
-  return (
-    <>
-      <Stack gap={1} sx={{ height: '100%' }}>
-        <Stack
-          direction="row"
-          gap={1}
-          sx={{
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography level="h1">{collection.title}</Typography>
-          <Typography level="h4">
-            Disc count:{` `}
-            {collection.discs.length}
-          </Typography>
-        </Stack>
-        <Divider />
-        <SingleLineForm
-          submitButtonText="Submit!"
-          labelText="Barcode"
-          onSubmit={async (barcode) => await newDiscMutation.mutate(barcode)}
-        />
-        <List>
-          <div
-            style={{
-              position: 'relative',
-              height: `${virtualizer.getTotalSize()}px`,
-            }}
-          >
-            {virtualItems.map((vItem) =>
-            {
-              const disc = collection.discs[vItem.index]
-              return (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: `${vItem.size}px`,
-                    transform: `translateY(${vItem.start}px)`,
-                  }}
-                  key={vItem.key}
-                  data-index={vItem.index}
+        <>
+            <Stack gap={1} sx={{ height: '100%' }}>
+                <Stack
+                    direction="row"
+                    gap={1}
+                    sx={{
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                    }}
                 >
-                  <DiscListItem
-                    key={disc}
-                    discId={disc}
-                    collectionId={collectionId}
-                    drawerFn={() => drawerFunction(disc)}
-                    updateRefFn={async (title: string) =>
-                      await updateRefDiscMutation.mutate({
-                        discId: disc,
-                        title,
-                      })
-                    }
-                  />
-                </div>
-              )
-            })}
-          </div>
-        </List>
-      </Stack>
-      <Drawer
-        open={open}
-        onClose={() => setOpen(false)}
-        anchor="bottom"
-        size="xs"
-      >
-        <List
-          size="lg"
-          component="nav"
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <ListItem>{modalDisc.title}</ListItem>
-          <Divider />
-          <ListItemButton
-            onClick={() => setIsEditModalOpen(true)}
-            color="warning"
-            sx={{ fontWeight: 'lg' }}
-          >
-            <ListItemDecorator>
-              <Edit />
-            </ListItemDecorator>
-            Edit Title
-          </ListItemButton>
-          <Divider />
-          <ListItemButton
-            onClick={() => setIsDeleteModalOpen(true)}
-            color="danger"
-            sx={{ fontWeight: 'lg' }}
-          >
-            <ListItemDecorator>
-              <DeleteIcon />
-            </ListItemDecorator>
-            Delete
-          </ListItemButton>
-        </List>
-      </Drawer>
-      {/* edit modal */}
-      <Modal
-        open={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-      >
-        <ModalDialog
-          variant="outlined"
-          sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
-        >
-          <Typography
-            component="h2"
-            level="h4"
-            textColor="inherit"
-            sx={{ fontWeight: 'lg', mb: 1 }}
-          >
-            Rename Item
-          </Typography>
-          <SingleLineForm
-            submitButtonText="Update!"
-            labelText="New Title"
-            onSubmit={(title: string) =>
-            {
-              setIsEditModalOpen(false)
-              updateRefDiscMutation.mutate({ discId: modalDisc.id, title })
-            }}
-          />
-        </ModalDialog>
-      </Modal>
-      {/* delete modal */}
-      <Modal
-        open={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-      >
-        <ModalDialog
-          variant="outlined"
-          sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
-        >
-          <Typography
-            component="h2"
-            level="h4"
-            textColor="inherit"
-            sx={{ fontWeight: 'lg', mb: 1 }}
-          >
-            Confirm Deletion
-          </Typography>
-          <Typography
-            component="h2"
-            level="body-sm"
-            textColor="inherit"
-            sx={{ fontWeight: 'sm', mb: 1 }}
-          >
-            {modalDisc.title}
-          </Typography>
-          <Typography
-            level="body-sm"
-            startDecorator={<InfoOutlined />}
-            sx={{
-              alignItems: 'flex-start',
-              maxWidth: 240,
-              wordBreak: 'break-all',
-            }}
-          >
-            This action cannot be undone.
-          </Typography>
-          <Button onClick={() => deleteDisc()} color="danger">
-            Delete
-          </Button>
-        </ModalDialog>
-      </Modal>
-    </>
-  )
+                    <Typography level="h1">{collection.title}</Typography>
+                    <Typography level="h4">
+                        Disc count:{` `}
+                        {collection.discs.length}
+                    </Typography>
+                </Stack>
+                <Divider />
+                <SingleLineForm
+                    submitButtonText="Submit!"
+                    labelText="Barcode"
+                    onSubmit={async (barcode) => await newDiscMutation.mutate(barcode)}
+                />
+                <List>
+                    <div
+                        style={{
+                            position: 'relative',
+                            height: `${virtualizer.getTotalSize()}px`,
+                        }}
+                    >
+                        {virtualItems.map((vItem) =>
+                        {
+                            const disc = collection.discs[vItem.index]
+                            return (
+                                <div
+                                    style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        height: `${vItem.size}px`,
+                                        transform: `translateY(${vItem.start}px)`,
+                                    }}
+                                    key={vItem.key}
+                                    data-index={vItem.index}
+                                >
+                                    <DiscListItem
+                                        key={disc}
+                                        discId={disc}
+                                        collectionId={collectionId}
+                                        drawerFn={() => drawerFunction(disc)}
+                                        updateRefFn={async (title: string) =>
+                                            await updateRefDiscMutation.mutate({
+                                                discId: disc,
+                                                title,
+                                            })
+                                        }
+                                    />
+                                </div>
+                            )
+                        })}
+                    </div>
+                </List>
+            </Stack>
+            <Drawer
+                open={open}
+                onClose={() => setOpen(false)}
+                anchor="bottom"
+                size="xs"
+            >
+                <List
+                    size="lg"
+                    component="nav"
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'flex-end',
+                    }}
+                >
+                    <ListItem>{modalDisc.title}</ListItem>
+                    <Divider />
+                    <ListItemButton
+                        onClick={() => setIsEditModalOpen(true)}
+                        color="warning"
+                        sx={{ fontWeight: 'lg' }}
+                    >
+                        <ListItemDecorator>
+                            <Edit />
+                        </ListItemDecorator>
+                        Edit Title
+                    </ListItemButton>
+                    <Divider />
+                    <ListItemButton
+                        onClick={() => setIsDeleteModalOpen(true)}
+                        color="danger"
+                        sx={{ fontWeight: 'lg' }}
+                    >
+                        <ListItemDecorator>
+                            <DeleteIcon />
+                        </ListItemDecorator>
+                        Delete
+                    </ListItemButton>
+                </List>
+            </Drawer>
+            {/* edit modal */}
+            <Modal
+                open={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+                <ModalDialog
+                    variant="outlined"
+                    sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
+                >
+                    <Typography
+                        component="h2"
+                        level="h4"
+                        textColor="inherit"
+                        sx={{ fontWeight: 'lg', mb: 1 }}
+                    >
+                        Rename Item
+                    </Typography>
+                    <SingleLineForm
+                        submitButtonText="Update!"
+                        labelText="New Title"
+                        onSubmit={(title: string) =>
+                        {
+                            setIsEditModalOpen(false)
+                            updateRefDiscMutation.mutate({ discId: modalDisc.id, title })
+                        }}
+                    />
+                </ModalDialog>
+            </Modal>
+            {/* delete modal */}
+            <Modal
+                open={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            >
+                <ModalDialog
+                    variant="outlined"
+                    sx={{ maxWidth: 500, borderRadius: 'md', p: 3, boxShadow: 'lg' }}
+                >
+                    <Typography
+                        component="h2"
+                        level="h4"
+                        textColor="inherit"
+                        sx={{ fontWeight: 'lg', mb: 1 }}
+                    >
+                        Confirm Deletion
+                    </Typography>
+                    <Typography
+                        component="h2"
+                        level="body-sm"
+                        textColor="inherit"
+                        sx={{ fontWeight: 'sm', mb: 1 }}
+                    >
+                        {modalDisc.title}
+                    </Typography>
+                    <Typography
+                        level="body-sm"
+                        startDecorator={<InfoOutlined />}
+                        sx={{
+                            alignItems: 'flex-start',
+                            maxWidth: 240,
+                            wordBreak: 'break-all',
+                        }}
+                    >
+                        This action cannot be undone.
+                    </Typography>
+                    <Button onClick={() => deleteDisc()} color="danger">
+                        Delete
+                    </Button>
+                </ModalDialog>
+            </Modal>
+        </>
+    )
 }

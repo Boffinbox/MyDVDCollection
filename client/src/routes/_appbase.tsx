@@ -1,11 +1,8 @@
-import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
-import { QueryClient } from '@tanstack/react-query';
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { Sheet } from '@mui/joy';
 
-export const Route = createRootRouteWithContext<{
-    queryClient: QueryClient
-}>()({
-    component: AppBase
+export const Route = createFileRoute('/_appbase')({
+    component: AppBase,
 })
 
 function AppBase()
