@@ -6,7 +6,7 @@ import { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
-import { CssBaseline, Sheet } from '@mui/joy';
+import { CssBaseline } from '@mui/joy';
 import ErrorPage from '../utilities/ErrorPage';
 
 import axios from "axios"
@@ -74,18 +74,7 @@ function App()
     return <div>
         <CssVarsProvider theme={mdcTheme}>
             <CssBaseline>
-                <Sheet
-                    variant='plain'
-                    sx={{
-                        width: { md: 900 },
-                        mx: "auto",
-                        my: "auto",
-                        // debug color breakpoints
-                        // backgroundColor: { xs: "pink", sm: "lightgreen", md: "lightblue" },
-                    }}
-                >
-                    <Outlet />
-                </Sheet>
+                <Outlet />
             </CssBaseline>
         </CssVarsProvider>
         {showDevtools && (

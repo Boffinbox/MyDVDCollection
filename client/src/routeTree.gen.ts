@@ -11,294 +11,348 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as WebcamImport } from './routes/_webcam'
-import { Route as NonauthImport } from './routes/_nonauth'
-import { Route as MdcImport } from './routes/_mdc'
-import { Route as WebcamScannerImport } from './routes/_webcam/scanner'
-import { Route as NonauthLogoutImport } from './routes/_nonauth/logout'
-import { Route as NonauthLoginImport } from './routes/_nonauth/login'
-import { Route as NonauthHomeImport } from './routes/_nonauth/home'
-import { Route as NonauthAttributionsImport } from './routes/_nonauth/attributions'
-import { Route as MdcUnknownsImport } from './routes/_mdc/unknowns'
-import { Route as MdcNewformImport } from './routes/_mdc/newform'
-import { Route as MdcCollectionsImport } from './routes/_mdc/collections'
-import { Route as MdcCollectionsCollectionIdImport } from './routes/_mdc/collections_.$collectionId'
-import { Route as MdcCollectionsCollectionIdDiscIdImport } from './routes/_mdc/collections_.$collectionId_.$discId'
+import { Route as AppbaseImport } from './routes/_appbase'
+import { Route as IndexImport } from './routes/index'
+import { Route as AppbaseWebcamImport } from './routes/_appbase/_webcam'
+import { Route as AppbaseNonauthImport } from './routes/_appbase/_nonauth'
+import { Route as AppbaseMdcImport } from './routes/_appbase/_mdc'
+import { Route as AppbaseWebcamScannerImport } from './routes/_appbase/_webcam/scanner'
+import { Route as AppbaseNonauthLogoutImport } from './routes/_appbase/_nonauth/logout'
+import { Route as AppbaseNonauthLoginImport } from './routes/_appbase/_nonauth/login'
+import { Route as AppbaseNonauthHomeImport } from './routes/_appbase/_nonauth/home'
+import { Route as AppbaseNonauthAttributionsImport } from './routes/_appbase/_nonauth/attributions'
+import { Route as AppbaseMdcUnknownsImport } from './routes/_appbase/_mdc/unknowns'
+import { Route as AppbaseMdcNewformImport } from './routes/_appbase/_mdc/newform'
+import { Route as AppbaseMdcCollectionsImport } from './routes/_appbase/_mdc/collections'
+import { Route as AppbaseMdcCollectionsCollectionIdImport } from './routes/_appbase/_mdc/collections_.$collectionId'
+import { Route as AppbaseMdcCollectionsCollectionIdDiscIdImport } from './routes/_appbase/_mdc/collections_.$collectionId_.$discId'
 
 // Create/Update Routes
 
-const WebcamRoute = WebcamImport.update({
+const AppbaseRoute = AppbaseImport.update({
+  id: '/_appbase',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const IndexRoute = IndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AppbaseWebcamRoute = AppbaseWebcamImport.update({
   id: '/_webcam',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => AppbaseRoute,
 } as any)
 
-const NonauthRoute = NonauthImport.update({
+const AppbaseNonauthRoute = AppbaseNonauthImport.update({
   id: '/_nonauth',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => AppbaseRoute,
 } as any)
 
-const MdcRoute = MdcImport.update({
+const AppbaseMdcRoute = AppbaseMdcImport.update({
   id: '/_mdc',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => AppbaseRoute,
 } as any)
 
-const WebcamScannerRoute = WebcamScannerImport.update({
+const AppbaseWebcamScannerRoute = AppbaseWebcamScannerImport.update({
   id: '/scanner',
   path: '/scanner',
-  getParentRoute: () => WebcamRoute,
+  getParentRoute: () => AppbaseWebcamRoute,
 } as any)
 
-const NonauthLogoutRoute = NonauthLogoutImport.update({
+const AppbaseNonauthLogoutRoute = AppbaseNonauthLogoutImport.update({
   id: '/logout',
   path: '/logout',
-  getParentRoute: () => NonauthRoute,
+  getParentRoute: () => AppbaseNonauthRoute,
 } as any)
 
-const NonauthLoginRoute = NonauthLoginImport.update({
+const AppbaseNonauthLoginRoute = AppbaseNonauthLoginImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => NonauthRoute,
+  getParentRoute: () => AppbaseNonauthRoute,
 } as any)
 
-const NonauthHomeRoute = NonauthHomeImport.update({
+const AppbaseNonauthHomeRoute = AppbaseNonauthHomeImport.update({
   id: '/home',
   path: '/home',
-  getParentRoute: () => NonauthRoute,
+  getParentRoute: () => AppbaseNonauthRoute,
 } as any)
 
-const NonauthAttributionsRoute = NonauthAttributionsImport.update({
-  id: '/attributions',
-  path: '/attributions',
-  getParentRoute: () => NonauthRoute,
-} as any)
-
-const MdcUnknownsRoute = MdcUnknownsImport.update({
-  id: '/unknowns',
-  path: '/unknowns',
-  getParentRoute: () => MdcRoute,
-} as any)
-
-const MdcNewformRoute = MdcNewformImport.update({
-  id: '/newform',
-  path: '/newform',
-  getParentRoute: () => MdcRoute,
-} as any)
-
-const MdcCollectionsRoute = MdcCollectionsImport.update({
-  id: '/collections',
-  path: '/collections',
-  getParentRoute: () => MdcRoute,
-} as any)
-
-const MdcCollectionsCollectionIdRoute = MdcCollectionsCollectionIdImport.update(
+const AppbaseNonauthAttributionsRoute = AppbaseNonauthAttributionsImport.update(
   {
-    id: '/collections_/$collectionId',
-    path: '/collections/$collectionId',
-    getParentRoute: () => MdcRoute,
+    id: '/attributions',
+    path: '/attributions',
+    getParentRoute: () => AppbaseNonauthRoute,
   } as any,
 )
 
-const MdcCollectionsCollectionIdDiscIdRoute =
-  MdcCollectionsCollectionIdDiscIdImport.update({
+const AppbaseMdcUnknownsRoute = AppbaseMdcUnknownsImport.update({
+  id: '/unknowns',
+  path: '/unknowns',
+  getParentRoute: () => AppbaseMdcRoute,
+} as any)
+
+const AppbaseMdcNewformRoute = AppbaseMdcNewformImport.update({
+  id: '/newform',
+  path: '/newform',
+  getParentRoute: () => AppbaseMdcRoute,
+} as any)
+
+const AppbaseMdcCollectionsRoute = AppbaseMdcCollectionsImport.update({
+  id: '/collections',
+  path: '/collections',
+  getParentRoute: () => AppbaseMdcRoute,
+} as any)
+
+const AppbaseMdcCollectionsCollectionIdRoute =
+  AppbaseMdcCollectionsCollectionIdImport.update({
+    id: '/collections_/$collectionId',
+    path: '/collections/$collectionId',
+    getParentRoute: () => AppbaseMdcRoute,
+  } as any)
+
+const AppbaseMdcCollectionsCollectionIdDiscIdRoute =
+  AppbaseMdcCollectionsCollectionIdDiscIdImport.update({
     id: '/collections_/$collectionId_/$discId',
     path: '/collections/$collectionId/$discId',
-    getParentRoute: () => MdcRoute,
+    getParentRoute: () => AppbaseMdcRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_mdc': {
-      id: '/_mdc'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof MdcImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/_nonauth': {
-      id: '/_nonauth'
+    '/_appbase': {
+      id: '/_appbase'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof NonauthImport
+      preLoaderRoute: typeof AppbaseImport
       parentRoute: typeof rootRoute
     }
-    '/_webcam': {
-      id: '/_webcam'
+    '/_appbase/_mdc': {
+      id: '/_appbase/_mdc'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof WebcamImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AppbaseMdcImport
+      parentRoute: typeof AppbaseImport
     }
-    '/_mdc/collections': {
-      id: '/_mdc/collections'
+    '/_appbase/_nonauth': {
+      id: '/_appbase/_nonauth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AppbaseNonauthImport
+      parentRoute: typeof AppbaseImport
+    }
+    '/_appbase/_webcam': {
+      id: '/_appbase/_webcam'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AppbaseWebcamImport
+      parentRoute: typeof AppbaseImport
+    }
+    '/_appbase/_mdc/collections': {
+      id: '/_appbase/_mdc/collections'
       path: '/collections'
       fullPath: '/collections'
-      preLoaderRoute: typeof MdcCollectionsImport
-      parentRoute: typeof MdcImport
+      preLoaderRoute: typeof AppbaseMdcCollectionsImport
+      parentRoute: typeof AppbaseMdcImport
     }
-    '/_mdc/newform': {
-      id: '/_mdc/newform'
+    '/_appbase/_mdc/newform': {
+      id: '/_appbase/_mdc/newform'
       path: '/newform'
       fullPath: '/newform'
-      preLoaderRoute: typeof MdcNewformImport
-      parentRoute: typeof MdcImport
+      preLoaderRoute: typeof AppbaseMdcNewformImport
+      parentRoute: typeof AppbaseMdcImport
     }
-    '/_mdc/unknowns': {
-      id: '/_mdc/unknowns'
+    '/_appbase/_mdc/unknowns': {
+      id: '/_appbase/_mdc/unknowns'
       path: '/unknowns'
       fullPath: '/unknowns'
-      preLoaderRoute: typeof MdcUnknownsImport
-      parentRoute: typeof MdcImport
+      preLoaderRoute: typeof AppbaseMdcUnknownsImport
+      parentRoute: typeof AppbaseMdcImport
     }
-    '/_nonauth/attributions': {
-      id: '/_nonauth/attributions'
+    '/_appbase/_nonauth/attributions': {
+      id: '/_appbase/_nonauth/attributions'
       path: '/attributions'
       fullPath: '/attributions'
-      preLoaderRoute: typeof NonauthAttributionsImport
-      parentRoute: typeof NonauthImport
+      preLoaderRoute: typeof AppbaseNonauthAttributionsImport
+      parentRoute: typeof AppbaseNonauthImport
     }
-    '/_nonauth/home': {
-      id: '/_nonauth/home'
+    '/_appbase/_nonauth/home': {
+      id: '/_appbase/_nonauth/home'
       path: '/home'
       fullPath: '/home'
-      preLoaderRoute: typeof NonauthHomeImport
-      parentRoute: typeof NonauthImport
+      preLoaderRoute: typeof AppbaseNonauthHomeImport
+      parentRoute: typeof AppbaseNonauthImport
     }
-    '/_nonauth/login': {
-      id: '/_nonauth/login'
+    '/_appbase/_nonauth/login': {
+      id: '/_appbase/_nonauth/login'
       path: '/login'
       fullPath: '/login'
-      preLoaderRoute: typeof NonauthLoginImport
-      parentRoute: typeof NonauthImport
+      preLoaderRoute: typeof AppbaseNonauthLoginImport
+      parentRoute: typeof AppbaseNonauthImport
     }
-    '/_nonauth/logout': {
-      id: '/_nonauth/logout'
+    '/_appbase/_nonauth/logout': {
+      id: '/_appbase/_nonauth/logout'
       path: '/logout'
       fullPath: '/logout'
-      preLoaderRoute: typeof NonauthLogoutImport
-      parentRoute: typeof NonauthImport
+      preLoaderRoute: typeof AppbaseNonauthLogoutImport
+      parentRoute: typeof AppbaseNonauthImport
     }
-    '/_webcam/scanner': {
-      id: '/_webcam/scanner'
+    '/_appbase/_webcam/scanner': {
+      id: '/_appbase/_webcam/scanner'
       path: '/scanner'
       fullPath: '/scanner'
-      preLoaderRoute: typeof WebcamScannerImport
-      parentRoute: typeof WebcamImport
+      preLoaderRoute: typeof AppbaseWebcamScannerImport
+      parentRoute: typeof AppbaseWebcamImport
     }
-    '/_mdc/collections_/$collectionId': {
-      id: '/_mdc/collections_/$collectionId'
+    '/_appbase/_mdc/collections_/$collectionId': {
+      id: '/_appbase/_mdc/collections_/$collectionId'
       path: '/collections/$collectionId'
       fullPath: '/collections/$collectionId'
-      preLoaderRoute: typeof MdcCollectionsCollectionIdImport
-      parentRoute: typeof MdcImport
+      preLoaderRoute: typeof AppbaseMdcCollectionsCollectionIdImport
+      parentRoute: typeof AppbaseMdcImport
     }
-    '/_mdc/collections_/$collectionId_/$discId': {
-      id: '/_mdc/collections_/$collectionId_/$discId'
+    '/_appbase/_mdc/collections_/$collectionId_/$discId': {
+      id: '/_appbase/_mdc/collections_/$collectionId_/$discId'
       path: '/collections/$collectionId/$discId'
       fullPath: '/collections/$collectionId/$discId'
-      preLoaderRoute: typeof MdcCollectionsCollectionIdDiscIdImport
-      parentRoute: typeof MdcImport
+      preLoaderRoute: typeof AppbaseMdcCollectionsCollectionIdDiscIdImport
+      parentRoute: typeof AppbaseMdcImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface MdcRouteChildren {
-  MdcCollectionsRoute: typeof MdcCollectionsRoute
-  MdcNewformRoute: typeof MdcNewformRoute
-  MdcUnknownsRoute: typeof MdcUnknownsRoute
-  MdcCollectionsCollectionIdRoute: typeof MdcCollectionsCollectionIdRoute
-  MdcCollectionsCollectionIdDiscIdRoute: typeof MdcCollectionsCollectionIdDiscIdRoute
+interface AppbaseMdcRouteChildren {
+  AppbaseMdcCollectionsRoute: typeof AppbaseMdcCollectionsRoute
+  AppbaseMdcNewformRoute: typeof AppbaseMdcNewformRoute
+  AppbaseMdcUnknownsRoute: typeof AppbaseMdcUnknownsRoute
+  AppbaseMdcCollectionsCollectionIdRoute: typeof AppbaseMdcCollectionsCollectionIdRoute
+  AppbaseMdcCollectionsCollectionIdDiscIdRoute: typeof AppbaseMdcCollectionsCollectionIdDiscIdRoute
 }
 
-const MdcRouteChildren: MdcRouteChildren = {
-  MdcCollectionsRoute: MdcCollectionsRoute,
-  MdcNewformRoute: MdcNewformRoute,
-  MdcUnknownsRoute: MdcUnknownsRoute,
-  MdcCollectionsCollectionIdRoute: MdcCollectionsCollectionIdRoute,
-  MdcCollectionsCollectionIdDiscIdRoute: MdcCollectionsCollectionIdDiscIdRoute,
+const AppbaseMdcRouteChildren: AppbaseMdcRouteChildren = {
+  AppbaseMdcCollectionsRoute: AppbaseMdcCollectionsRoute,
+  AppbaseMdcNewformRoute: AppbaseMdcNewformRoute,
+  AppbaseMdcUnknownsRoute: AppbaseMdcUnknownsRoute,
+  AppbaseMdcCollectionsCollectionIdRoute:
+    AppbaseMdcCollectionsCollectionIdRoute,
+  AppbaseMdcCollectionsCollectionIdDiscIdRoute:
+    AppbaseMdcCollectionsCollectionIdDiscIdRoute,
 }
 
-const MdcRouteWithChildren = MdcRoute._addFileChildren(MdcRouteChildren)
+const AppbaseMdcRouteWithChildren = AppbaseMdcRoute._addFileChildren(
+  AppbaseMdcRouteChildren,
+)
 
-interface NonauthRouteChildren {
-  NonauthAttributionsRoute: typeof NonauthAttributionsRoute
-  NonauthHomeRoute: typeof NonauthHomeRoute
-  NonauthLoginRoute: typeof NonauthLoginRoute
-  NonauthLogoutRoute: typeof NonauthLogoutRoute
+interface AppbaseNonauthRouteChildren {
+  AppbaseNonauthAttributionsRoute: typeof AppbaseNonauthAttributionsRoute
+  AppbaseNonauthHomeRoute: typeof AppbaseNonauthHomeRoute
+  AppbaseNonauthLoginRoute: typeof AppbaseNonauthLoginRoute
+  AppbaseNonauthLogoutRoute: typeof AppbaseNonauthLogoutRoute
 }
 
-const NonauthRouteChildren: NonauthRouteChildren = {
-  NonauthAttributionsRoute: NonauthAttributionsRoute,
-  NonauthHomeRoute: NonauthHomeRoute,
-  NonauthLoginRoute: NonauthLoginRoute,
-  NonauthLogoutRoute: NonauthLogoutRoute,
+const AppbaseNonauthRouteChildren: AppbaseNonauthRouteChildren = {
+  AppbaseNonauthAttributionsRoute: AppbaseNonauthAttributionsRoute,
+  AppbaseNonauthHomeRoute: AppbaseNonauthHomeRoute,
+  AppbaseNonauthLoginRoute: AppbaseNonauthLoginRoute,
+  AppbaseNonauthLogoutRoute: AppbaseNonauthLogoutRoute,
 }
 
-const NonauthRouteWithChildren =
-  NonauthRoute._addFileChildren(NonauthRouteChildren)
+const AppbaseNonauthRouteWithChildren = AppbaseNonauthRoute._addFileChildren(
+  AppbaseNonauthRouteChildren,
+)
 
-interface WebcamRouteChildren {
-  WebcamScannerRoute: typeof WebcamScannerRoute
+interface AppbaseWebcamRouteChildren {
+  AppbaseWebcamScannerRoute: typeof AppbaseWebcamScannerRoute
 }
 
-const WebcamRouteChildren: WebcamRouteChildren = {
-  WebcamScannerRoute: WebcamScannerRoute,
+const AppbaseWebcamRouteChildren: AppbaseWebcamRouteChildren = {
+  AppbaseWebcamScannerRoute: AppbaseWebcamScannerRoute,
 }
 
-const WebcamRouteWithChildren =
-  WebcamRoute._addFileChildren(WebcamRouteChildren)
+const AppbaseWebcamRouteWithChildren = AppbaseWebcamRoute._addFileChildren(
+  AppbaseWebcamRouteChildren,
+)
+
+interface AppbaseRouteChildren {
+  AppbaseMdcRoute: typeof AppbaseMdcRouteWithChildren
+  AppbaseNonauthRoute: typeof AppbaseNonauthRouteWithChildren
+  AppbaseWebcamRoute: typeof AppbaseWebcamRouteWithChildren
+}
+
+const AppbaseRouteChildren: AppbaseRouteChildren = {
+  AppbaseMdcRoute: AppbaseMdcRouteWithChildren,
+  AppbaseNonauthRoute: AppbaseNonauthRouteWithChildren,
+  AppbaseWebcamRoute: AppbaseWebcamRouteWithChildren,
+}
+
+const AppbaseRouteWithChildren =
+  AppbaseRoute._addFileChildren(AppbaseRouteChildren)
 
 export interface FileRoutesByFullPath {
-  '': typeof WebcamRouteWithChildren
-  '/collections': typeof MdcCollectionsRoute
-  '/newform': typeof MdcNewformRoute
-  '/unknowns': typeof MdcUnknownsRoute
-  '/attributions': typeof NonauthAttributionsRoute
-  '/home': typeof NonauthHomeRoute
-  '/login': typeof NonauthLoginRoute
-  '/logout': typeof NonauthLogoutRoute
-  '/scanner': typeof WebcamScannerRoute
-  '/collections/$collectionId': typeof MdcCollectionsCollectionIdRoute
-  '/collections/$collectionId/$discId': typeof MdcCollectionsCollectionIdDiscIdRoute
+  '/': typeof IndexRoute
+  '': typeof AppbaseWebcamRouteWithChildren
+  '/collections': typeof AppbaseMdcCollectionsRoute
+  '/newform': typeof AppbaseMdcNewformRoute
+  '/unknowns': typeof AppbaseMdcUnknownsRoute
+  '/attributions': typeof AppbaseNonauthAttributionsRoute
+  '/home': typeof AppbaseNonauthHomeRoute
+  '/login': typeof AppbaseNonauthLoginRoute
+  '/logout': typeof AppbaseNonauthLogoutRoute
+  '/scanner': typeof AppbaseWebcamScannerRoute
+  '/collections/$collectionId': typeof AppbaseMdcCollectionsCollectionIdRoute
+  '/collections/$collectionId/$discId': typeof AppbaseMdcCollectionsCollectionIdDiscIdRoute
 }
 
 export interface FileRoutesByTo {
-  '': typeof WebcamRouteWithChildren
-  '/collections': typeof MdcCollectionsRoute
-  '/newform': typeof MdcNewformRoute
-  '/unknowns': typeof MdcUnknownsRoute
-  '/attributions': typeof NonauthAttributionsRoute
-  '/home': typeof NonauthHomeRoute
-  '/login': typeof NonauthLoginRoute
-  '/logout': typeof NonauthLogoutRoute
-  '/scanner': typeof WebcamScannerRoute
-  '/collections/$collectionId': typeof MdcCollectionsCollectionIdRoute
-  '/collections/$collectionId/$discId': typeof MdcCollectionsCollectionIdDiscIdRoute
+  '/': typeof IndexRoute
+  '': typeof AppbaseWebcamRouteWithChildren
+  '/collections': typeof AppbaseMdcCollectionsRoute
+  '/newform': typeof AppbaseMdcNewformRoute
+  '/unknowns': typeof AppbaseMdcUnknownsRoute
+  '/attributions': typeof AppbaseNonauthAttributionsRoute
+  '/home': typeof AppbaseNonauthHomeRoute
+  '/login': typeof AppbaseNonauthLoginRoute
+  '/logout': typeof AppbaseNonauthLogoutRoute
+  '/scanner': typeof AppbaseWebcamScannerRoute
+  '/collections/$collectionId': typeof AppbaseMdcCollectionsCollectionIdRoute
+  '/collections/$collectionId/$discId': typeof AppbaseMdcCollectionsCollectionIdDiscIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/_mdc': typeof MdcRouteWithChildren
-  '/_nonauth': typeof NonauthRouteWithChildren
-  '/_webcam': typeof WebcamRouteWithChildren
-  '/_mdc/collections': typeof MdcCollectionsRoute
-  '/_mdc/newform': typeof MdcNewformRoute
-  '/_mdc/unknowns': typeof MdcUnknownsRoute
-  '/_nonauth/attributions': typeof NonauthAttributionsRoute
-  '/_nonauth/home': typeof NonauthHomeRoute
-  '/_nonauth/login': typeof NonauthLoginRoute
-  '/_nonauth/logout': typeof NonauthLogoutRoute
-  '/_webcam/scanner': typeof WebcamScannerRoute
-  '/_mdc/collections_/$collectionId': typeof MdcCollectionsCollectionIdRoute
-  '/_mdc/collections_/$collectionId_/$discId': typeof MdcCollectionsCollectionIdDiscIdRoute
+  '/': typeof IndexRoute
+  '/_appbase': typeof AppbaseRouteWithChildren
+  '/_appbase/_mdc': typeof AppbaseMdcRouteWithChildren
+  '/_appbase/_nonauth': typeof AppbaseNonauthRouteWithChildren
+  '/_appbase/_webcam': typeof AppbaseWebcamRouteWithChildren
+  '/_appbase/_mdc/collections': typeof AppbaseMdcCollectionsRoute
+  '/_appbase/_mdc/newform': typeof AppbaseMdcNewformRoute
+  '/_appbase/_mdc/unknowns': typeof AppbaseMdcUnknownsRoute
+  '/_appbase/_nonauth/attributions': typeof AppbaseNonauthAttributionsRoute
+  '/_appbase/_nonauth/home': typeof AppbaseNonauthHomeRoute
+  '/_appbase/_nonauth/login': typeof AppbaseNonauthLoginRoute
+  '/_appbase/_nonauth/logout': typeof AppbaseNonauthLogoutRoute
+  '/_appbase/_webcam/scanner': typeof AppbaseWebcamScannerRoute
+  '/_appbase/_mdc/collections_/$collectionId': typeof AppbaseMdcCollectionsCollectionIdRoute
+  '/_appbase/_mdc/collections_/$collectionId_/$discId': typeof AppbaseMdcCollectionsCollectionIdDiscIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | ''
     | '/collections'
     | '/newform'
@@ -312,6 +366,7 @@ export interface FileRouteTypes {
     | '/collections/$collectionId/$discId'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | ''
     | '/collections'
     | '/newform'
@@ -325,32 +380,32 @@ export interface FileRouteTypes {
     | '/collections/$collectionId/$discId'
   id:
     | '__root__'
-    | '/_mdc'
-    | '/_nonauth'
-    | '/_webcam'
-    | '/_mdc/collections'
-    | '/_mdc/newform'
-    | '/_mdc/unknowns'
-    | '/_nonauth/attributions'
-    | '/_nonauth/home'
-    | '/_nonauth/login'
-    | '/_nonauth/logout'
-    | '/_webcam/scanner'
-    | '/_mdc/collections_/$collectionId'
-    | '/_mdc/collections_/$collectionId_/$discId'
+    | '/'
+    | '/_appbase'
+    | '/_appbase/_mdc'
+    | '/_appbase/_nonauth'
+    | '/_appbase/_webcam'
+    | '/_appbase/_mdc/collections'
+    | '/_appbase/_mdc/newform'
+    | '/_appbase/_mdc/unknowns'
+    | '/_appbase/_nonauth/attributions'
+    | '/_appbase/_nonauth/home'
+    | '/_appbase/_nonauth/login'
+    | '/_appbase/_nonauth/logout'
+    | '/_appbase/_webcam/scanner'
+    | '/_appbase/_mdc/collections_/$collectionId'
+    | '/_appbase/_mdc/collections_/$collectionId_/$discId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  MdcRoute: typeof MdcRouteWithChildren
-  NonauthRoute: typeof NonauthRouteWithChildren
-  WebcamRoute: typeof WebcamRouteWithChildren
+  IndexRoute: typeof IndexRoute
+  AppbaseRoute: typeof AppbaseRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  MdcRoute: MdcRouteWithChildren,
-  NonauthRoute: NonauthRouteWithChildren,
-  WebcamRoute: WebcamRouteWithChildren,
+  IndexRoute: IndexRoute,
+  AppbaseRoute: AppbaseRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -363,75 +418,88 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_mdc",
-        "/_nonauth",
-        "/_webcam"
+        "/",
+        "/_appbase"
       ]
     },
-    "/_mdc": {
-      "filePath": "_mdc.tsx",
+    "/": {
+      "filePath": "index.tsx"
+    },
+    "/_appbase": {
+      "filePath": "_appbase.tsx",
       "children": [
-        "/_mdc/collections",
-        "/_mdc/newform",
-        "/_mdc/unknowns",
-        "/_mdc/collections_/$collectionId",
-        "/_mdc/collections_/$collectionId_/$discId"
+        "/_appbase/_mdc",
+        "/_appbase/_nonauth",
+        "/_appbase/_webcam"
       ]
     },
-    "/_nonauth": {
-      "filePath": "_nonauth.tsx",
+    "/_appbase/_mdc": {
+      "filePath": "_appbase/_mdc.tsx",
+      "parent": "/_appbase",
       "children": [
-        "/_nonauth/attributions",
-        "/_nonauth/home",
-        "/_nonauth/login",
-        "/_nonauth/logout"
+        "/_appbase/_mdc/collections",
+        "/_appbase/_mdc/newform",
+        "/_appbase/_mdc/unknowns",
+        "/_appbase/_mdc/collections_/$collectionId",
+        "/_appbase/_mdc/collections_/$collectionId_/$discId"
       ]
     },
-    "/_webcam": {
-      "filePath": "_webcam.tsx",
+    "/_appbase/_nonauth": {
+      "filePath": "_appbase/_nonauth.tsx",
+      "parent": "/_appbase",
       "children": [
-        "/_webcam/scanner"
+        "/_appbase/_nonauth/attributions",
+        "/_appbase/_nonauth/home",
+        "/_appbase/_nonauth/login",
+        "/_appbase/_nonauth/logout"
       ]
     },
-    "/_mdc/collections": {
-      "filePath": "_mdc/collections.tsx",
-      "parent": "/_mdc"
+    "/_appbase/_webcam": {
+      "filePath": "_appbase/_webcam.tsx",
+      "parent": "/_appbase",
+      "children": [
+        "/_appbase/_webcam/scanner"
+      ]
     },
-    "/_mdc/newform": {
-      "filePath": "_mdc/newform.tsx",
-      "parent": "/_mdc"
+    "/_appbase/_mdc/collections": {
+      "filePath": "_appbase/_mdc/collections.tsx",
+      "parent": "/_appbase/_mdc"
     },
-    "/_mdc/unknowns": {
-      "filePath": "_mdc/unknowns.tsx",
-      "parent": "/_mdc"
+    "/_appbase/_mdc/newform": {
+      "filePath": "_appbase/_mdc/newform.tsx",
+      "parent": "/_appbase/_mdc"
     },
-    "/_nonauth/attributions": {
-      "filePath": "_nonauth/attributions.tsx",
-      "parent": "/_nonauth"
+    "/_appbase/_mdc/unknowns": {
+      "filePath": "_appbase/_mdc/unknowns.tsx",
+      "parent": "/_appbase/_mdc"
     },
-    "/_nonauth/home": {
-      "filePath": "_nonauth/home.tsx",
-      "parent": "/_nonauth"
+    "/_appbase/_nonauth/attributions": {
+      "filePath": "_appbase/_nonauth/attributions.tsx",
+      "parent": "/_appbase/_nonauth"
     },
-    "/_nonauth/login": {
-      "filePath": "_nonauth/login.tsx",
-      "parent": "/_nonauth"
+    "/_appbase/_nonauth/home": {
+      "filePath": "_appbase/_nonauth/home.tsx",
+      "parent": "/_appbase/_nonauth"
     },
-    "/_nonauth/logout": {
-      "filePath": "_nonauth/logout.tsx",
-      "parent": "/_nonauth"
+    "/_appbase/_nonauth/login": {
+      "filePath": "_appbase/_nonauth/login.tsx",
+      "parent": "/_appbase/_nonauth"
     },
-    "/_webcam/scanner": {
-      "filePath": "_webcam/scanner.tsx",
-      "parent": "/_webcam"
+    "/_appbase/_nonauth/logout": {
+      "filePath": "_appbase/_nonauth/logout.tsx",
+      "parent": "/_appbase/_nonauth"
     },
-    "/_mdc/collections_/$collectionId": {
-      "filePath": "_mdc/collections_.$collectionId.tsx",
-      "parent": "/_mdc"
+    "/_appbase/_webcam/scanner": {
+      "filePath": "_appbase/_webcam/scanner.tsx",
+      "parent": "/_appbase/_webcam"
     },
-    "/_mdc/collections_/$collectionId_/$discId": {
-      "filePath": "_mdc/collections_.$collectionId_.$discId.tsx",
-      "parent": "/_mdc"
+    "/_appbase/_mdc/collections_/$collectionId": {
+      "filePath": "_appbase/_mdc/collections_.$collectionId.tsx",
+      "parent": "/_appbase/_mdc"
+    },
+    "/_appbase/_mdc/collections_/$collectionId_/$discId": {
+      "filePath": "_appbase/_mdc/collections_.$collectionId_.$discId.tsx",
+      "parent": "/_appbase/_mdc"
     }
   }
 }
