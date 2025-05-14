@@ -51,6 +51,7 @@ function Scanner()
     const [isCaptured, setIsCaptured] = useState(false);
     const [isOwnedBarcode, setIsOwnedBarcode] = useState(true);
     const [isAddAttempt, setIsAddAttempt] = useState(false);
+    const [isDisabled, setIsDisabled] = useState(false)
 
     const [isError, setIsError] = useState(false);
     const [isUnknown, setIsUnknown] = useState(false);
@@ -385,6 +386,7 @@ function Scanner()
                                                     >
                                                         {!formData.collectionId ?
                                                             <>
+                                                                {/* this is the dummy button for after a successful add */}
                                                                 Add to a collection
                                                             </> : <>
                                                                 Add to your {collections.find((e) => e._id == formData.collectionId)!.title} collection!
@@ -395,45 +397,77 @@ function Scanner()
                                             </>
                                             :
                                             <>
-                                                <ButtonGroup
-                                                    variant="solid"
-                                                    sx={{ width: "40%" }}
-                                                >
-                                                    <Button
-                                                        onClick={async () => 
-                                                        {
-                                                            setOpenModal(() => true)
-                                                        }}
-                                                        color="success"
-                                                        sx={{ width: "20%", height: "12dvh" }}
-                                                    >
-                                                        <ArrowDropDown />
-                                                    </Button>
-                                                    <Button
-                                                        onClick={async () => 
-                                                        {
-                                                            if (formData.collectionId == "")
-                                                            {
-                                                                setOpenModal(() => true)
-                                                            }
-                                                            else
-                                                            {
-                                                                await newDiscMutation.mutate(formData.barcode)
-                                                                // setIsCaptured(() => false)
-                                                            }
-                                                        }}
-                                                        color="success"
-                                                        sx={{ width: "80%", height: "12dvh" }}
-                                                    >
-                                                        {!formData.collectionId ?
-                                                            <>
-                                                                Add to a collection
-                                                            </> : <>
-                                                                Add to your {collections.find((e) => e._id == formData.collectionId)!.title} collection!
-                                                            </>
-                                                        }
-                                                    </Button>
-                                                </ButtonGroup>
+                                                {isDisabled ?
+                                                    <>
+                                                        <ButtonGroup
+                                                            variant="solid"
+                                                            sx={{ width: "40%" }}
+                                                        >
+                                                            <Button
+                                                                // not real buttons, these appear to avoid duplicate adding
+                                                                color="danger"
+                                                                sx={{ width: "20%", height: "12dvh" }}
+                                                                disabled
+                                                            >
+                                                                <ArrowDropDown />
+                                                            </Button>
+                                                            <Button
+                                                                color="danger"
+                                                                sx={{ width: "80%", height: "12dvh" }}
+                                                                disabled
+                                                            >
+                                                                {!formData.collectionId ?
+                                                                    <>
+                                                                        Add to a collection
+                                                                    </> : <>
+                                                                        Add to your {collections.find((e) => e._id == formData.collectionId)!.title} collection!
+                                                                    </>
+                                                                }
+                                                            </Button>
+                                                        </ButtonGroup>
+                                                    </> : <>
+                                                        <ButtonGroup
+                                                            variant="solid"
+                                                            sx={{ width: "40%" }}
+                                                        >
+                                                            <Button
+                                                                onClick={async () => 
+                                                                {
+                                                                    setOpenModal(() => true)
+                                                                }}
+                                                                color="success"
+                                                                sx={{ width: "20%", height: "12dvh" }}
+                                                            >
+                                                                <ArrowDropDown />
+                                                            </Button>
+                                                            <Button
+                                                                onClick={async (e) => 
+                                                                {
+                                                                    if (formData.collectionId == "")
+                                                                    {
+                                                                        setOpenModal(() => true)
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        await setIsDisabled(() => true)
+                                                                        await newDiscMutation.mutate(formData.barcode)
+                                                                        // setIsCaptured(() => false)
+                                                                    }
+                                                                }}
+                                                                color="success"
+                                                                sx={{ width: "80%", height: "12dvh" }}
+                                                            >
+                                                                {!formData.collectionId ?
+                                                                    <>
+                                                                        Add to a collection
+                                                                    </> : <>
+                                                                        Add to your {collections.find((e) => e._id == formData.collectionId)!.title} collection!
+                                                                    </>
+                                                                }
+                                                            </Button>
+                                                        </ButtonGroup>
+                                                    </>
+                                                }
                                             </>
                                         }
                                         <Button
@@ -443,6 +477,7 @@ function Scanner()
                                                 setIsError(false)
                                                 setIsUnknown(false)
                                                 setIsAddAttempt(false)
+                                                setIsDisabled(false)
                                             }}
                                             sx={{ width: "40%", height: "12dvh" }}
                                         >
