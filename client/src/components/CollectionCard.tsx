@@ -33,7 +33,7 @@ export function CollectionCard(
             <Card variant="soft" sx={{ mb: 2 }}>
                 <CardOverflow>
                     <AspectRatio ratio="4" flex>
-                        <img src="/dev/collection.jpg" />
+                        <img src="/dev/collection_small.jpg" />
                     </AspectRatio>
                 </CardOverflow>
                 <CardContent orientation="horizontal"
