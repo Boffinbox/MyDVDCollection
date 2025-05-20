@@ -38,7 +38,8 @@ function Index()
                         my: 2,
                         color: "white",
                         fontSize: "5.5em",
-                        textAlign: "center"
+                        textAlign: "center",
+                        textShadow: "0.1rem 0.1rem 2rem rgba(255,255,255,0.2)",
                     }} >
                     My DVD Collection
                 </Typography>
@@ -46,8 +47,9 @@ function Index()
                     sx={{
                         my: 2,
                         color: "white",
-                        fontSize: "1em",
-                        textAlign: "center"
+                        fontSize: "1rem",
+                        textAlign: "center",
+                        textShadow: "0.1rem 0.1rem 2rem rgba(255,255,255,0.3)"
                     }}>
                     Welcome to My DVD Collection! Your place for digitally tracking your
                     DVDs, Blu-Rays, CDs, Books, and more!
@@ -56,14 +58,15 @@ function Index()
                     <Typography
                         sx={{
                             my: 2,
-                            fontSize: "1.2em"
+                            fontSize: "1.2rem",
+                            textShadow: "0.1rem 0.1rem 2rem rgba(255,255,255,0.3)"
                         }}>
                         {tokenQuery.isSuccess ? (
-                            <Link component={RouterLink} to="/collections">
+                            <Link component={RouterLink} sx={{ color: "rgb(55,150,244)" }} to="/collections">
                                 Click here
                             </Link>
                         ) : (
-                            <Link component={RouterLink} to="/login">
+                            <Link component={RouterLink} sx={{ color: "rgb(55,150,244)" }} to="/login">
                                 Click here
                             </Link>
                         )}
@@ -74,9 +77,9 @@ function Index()
                 {/* <Box sx={{ my: 2 }}>
                     <Typography level="body-sm"
                         sx={{
-                            fontSize: "0.8em"
+                            fontSize: "0.8rem"
                         }}>
-                        <Link component={RouterLink} to="/home">
+                        <Link component={RouterLink} sx={{ color: "rgb(55,150,244)" }} to="/home">
                             Click here to go back to the old homepage
                         </Link>
                     </Typography>
