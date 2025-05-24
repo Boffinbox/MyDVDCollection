@@ -1,29 +1,38 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useQueryClient, useQuery, useMutation } from '@tanstack/react-query'
-import { useContext, useState } from "react";
+import { useContext, useState } from 'react'
 import
 {
     AccessTokenQueryOptions,
-    UnknownsQueryOptions
-} from '../../utilities/Queries'
+    UnknownsQueryOptions,
+} from '../../../utilities/Queries'
+import { ICollection, IDisc, IReferenceDisc } from '../../../Interfaces'
+import { DiscListItem } from '../../../components/DiscListItem'
 import
 {
-    ICollection,
-    IDisc,
-    IReferenceDisc,
-} from '../../Interfaces'
-import { DiscListItem } from '../../components/DiscListItem'
-import { Button, Divider, Drawer, List, ListItem, ListItemButton, ListItemDecorator, Modal, ModalDialog, Sheet, Stack, Typography } from '@mui/joy'
+    Button,
+    Divider,
+    Drawer,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemDecorator,
+    Modal,
+    ModalDialog,
+    Sheet,
+    Stack,
+    Typography,
+} from '@mui/joy'
 import { Edit, InfoOutlined } from '@mui/icons-material'
-import DeleteIcon from '@mui/icons-material/Delete';
-import { SingleLineForm } from '../../components/SingleLineForm';
-import { PostReference } from '../../httpverbs/PostReference';
-import { DeleteDisc } from '../../httpverbs/DeleteDisc';
-import { ScrollContext } from '../../components/ScrollContextProvider'
-import { useVirtualizer } from '@tanstack/react-virtual';
-import DevLog from '../../utilities/DevLog';
+import DeleteIcon from '@mui/icons-material/Delete'
+import { SingleLineForm } from '../../../components/SingleLineForm'
+import { PostReference } from '../../../httpverbs/PostReference'
+import { DeleteDisc } from '../../../httpverbs/DeleteDisc'
+import { ScrollContext } from '../../../components/ScrollContextProvider'
+import { useVirtualizer } from '@tanstack/react-virtual'
+import DevLog from '../../../utilities/DevLog'
 
-export const Route = createFileRoute('/_mdc/unknowns')({
+export const Route = createFileRoute('/_appbase/_mdc/unknowns')({
     beforeLoad: async ({ context: { queryClient } }) =>
     {
         const token = await queryClient.ensureQueryData(AccessTokenQueryOptions())
@@ -45,15 +54,15 @@ function UnknownCollection()
     // convert these unknowns into a simple array, with titles and discs
 
     const data: (
-        string |
-        {
-            _id: string;
-            rating: number;
-            watched: boolean;
-            referenceDVD: string,
+        | string
+        | {
+            _id: string
+            rating: number
+            watched: boolean
+            referenceDVD: string
             collId: string
-
-        })[] = []
+        }
+    )[] = []
     for (let coll of unknowns)
     {
         data.push(coll.title)
@@ -65,70 +74,87 @@ function UnknownCollection()
     }
     DevLog(data)
 
-    const [open, setOpen] = useState(false);
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [open, setOpen] = useState(false)
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
-    const [modalDisc, setModalDisc] = useState<{ id: string, title: string, collId: string }>({ id: "undefined", title: "undefined", collId: "undefined" })
+    const [modalDisc, setModalDisc] = useState<{
+        id: string
+        title: string
+        collId: string
+    }>({ id: 'undefined', title: 'undefined', collId: 'undefined' })
 
     const scrollContext = useContext(ScrollContext)
 
-    const virtualizer = useVirtualizer(
-        {
-            count: data.length,
-            estimateSize: () => 70,
-            getScrollElement: () => scrollContext.scrollRef.current,
-            overscan: 4
-        }
-    )
+    const virtualizer = useVirtualizer({
+        count: data.length,
+        estimateSize: () => 70,
+        getScrollElement: () => scrollContext.scrollRef.current,
+        overscan: 4,
+    })
     const virtualItems = virtualizer.getVirtualItems()
 
     const updateRefDiscMutation = useMutation({
-        mutationFn: ({ discId, title }: { discId: string, title: string }) =>
+        mutationFn: ({ discId, title }: { discId: string; title: string }) =>
         {
-            let discData: IDisc = queryClient.getQueryData(["disc", discId])!
+            let discData: IDisc = queryClient.getQueryData(['disc', discId])!
             let refId = discData.referenceDVD
-            let refData: IReferenceDisc = queryClient.getQueryData(["reference", refId])!
+            let refData: IReferenceDisc = queryClient.getQueryData([
+                'reference',
+                refId,
+            ])!
             let barcode = refData.barcode
             return PostReference({ token, barcode, title })
         },
         onSuccess: (returnedRef: IReferenceDisc) =>
         {
-            queryClient.setQueryData(["reference", returnedRef._id],
+            queryClient.setQueryData(
+                ['reference', returnedRef._id],
                 (oldData: IReferenceDisc) =>
                 {
                     oldData.title = returnedRef.title
                     oldData.upcitemdb_truedata = returnedRef.upcitemdb_truedata
-                }
+                },
             )
-            setModalDisc({ id: modalDisc.id, title: returnedRef.title, collId: modalDisc.id })
-        }
+            setModalDisc({
+                id: modalDisc.id,
+                title: returnedRef.title,
+                collId: modalDisc.id,
+            })
+        },
     })
 
     const deleteDiscMutation = useMutation({
-        mutationFn: ({ discId, collId }: { discId: string, collId: string }) => DeleteDisc(token, collId, discId),
+        mutationFn: ({ discId, collId }: { discId: string; collId: string }) =>
+            DeleteDisc(token, collId, discId),
         onSuccess: (returnedDisc: IDisc) =>
         {
-            queryClient.setQueryData(["unknowns"],
-                (oldData: ICollection[]) =>
+            queryClient.setQueryData(['unknowns'], (oldData: ICollection[]) =>
+            {
+                let index = oldData.findIndex((coll) => coll._id === modalDisc.collId)
+                if (index == -1)
                 {
-                    let index = oldData.findIndex((coll) => coll._id === modalDisc.collId)
-                    if (index == -1)
-                    {
-                        return oldData
-                    }
-                    oldData[index].discs = oldData[index].discs.filter((disc: any) => disc._id !== returnedDisc._id)
                     return oldData
-                })
-            queryClient.removeQueries({ queryKey: ["disc", returnedDisc._id] })
-            queryClient.invalidateQueries({ queryKey: ["collection", modalDisc.collId] })
-        }
+                }
+                oldData[index].discs = oldData[index].discs.filter(
+                    (disc: any) => disc._id !== returnedDisc._id,
+                )
+                return oldData
+            })
+            queryClient.removeQueries({ queryKey: ['disc', returnedDisc._id] })
+            queryClient.invalidateQueries({
+                queryKey: ['collection', modalDisc.collId],
+            })
+        },
     })
 
     function drawerFunction(discId: string, collId: string)
     {
         setOpen(true)
-        const discData: IDisc = queryClient.getQueryData(["disc", discId])!
-        const refData: IReferenceDisc = queryClient.getQueryData(["reference", discData.referenceDVD])!
+        const discData: IDisc = queryClient.getQueryData(['disc', discId])!
+        const refData: IReferenceDisc = queryClient.getQueryData([
+            'reference',
+            discData.referenceDVD,
+        ])!
         setModalDisc({ id: discData._id, title: refData.title, collId })
     }
 
@@ -137,7 +163,10 @@ function UnknownCollection()
         setOpen(false)
         setIsEditModalOpen(false)
         setIsDeleteModalOpen(false)
-        deleteDiscMutation.mutate({ discId: modalDisc.id, collId: modalDisc.collId })
+        deleteDiscMutation.mutate({
+            discId: modalDisc.id,
+            collId: modalDisc.collId,
+        })
     }
 
     if (unknownsQuery.isLoading)
@@ -168,10 +197,12 @@ function UnknownCollection()
                 </Typography>
                 <Divider />
                 <List>
-                    <div style={{
-                        position: "relative",
-                        height: `${virtualizer.getTotalSize()}px`,
-                    }}>
+                    <div
+                        style={{
+                            position: 'relative',
+                            height: `${virtualizer.getTotalSize()}px`,
+                        }}
+                    >
                         <div
                             style={{
                                 position: 'absolute',
@@ -191,38 +222,41 @@ function UnknownCollection()
                                         ref={virtualizer.measureElement}
                                     >
                                         {/* conditional to see if element is a coll title or a disc */}
-                                        {typeof item === "string" ?
+                                        {typeof item === 'string' ? (
                                             <>
-                                                <Sheet sx={{ height: "5px" }} />
+                                                <Sheet sx={{ height: '5px' }} />
                                                 <Divider />
-                                                <Sheet sx={{ height: "5px" }} />
-                                                <Typography level="body-md" noWrap
-                                                >
+                                                <Sheet sx={{ height: '5px' }} />
+                                                <Typography level="body-md" noWrap>
                                                     <i>{item}</i>
                                                 </Typography>
-                                                <Sheet sx={{ height: "5px" }} />
+                                                <Sheet sx={{ height: '5px' }} />
                                                 <Divider />
-                                                <Sheet sx={{ height: "5px" }} />
+                                                <Sheet sx={{ height: '5px' }} />
                                             </>
-                                            :
+                                        ) : (
                                             <>
                                                 <DiscListItem
                                                     key={item._id}
                                                     discId={item._id}
                                                     collectionId={item.collId}
                                                     drawerFn={() => drawerFunction(item._id, item.collId)}
-                                                    updateRefFn={async (title: string) => await updateRefDiscMutation.mutate({ discId: item._id, title })}
+                                                    updateRefFn={async (title: string) =>
+                                                        await updateRefDiscMutation.mutate({
+                                                            discId: item._id,
+                                                            title,
+                                                        })
+                                                    }
                                                 />
-                                            </>}
-
+                                            </>
+                                        )}
                                     </div>
                                 )
-                            })
-                            }
+                            })}
                         </div>
                     </div>
                 </List>
-            </Stack >
+            </Stack>
             <Drawer
                 open={open}
                 onClose={() => setOpen(false)}
@@ -233,9 +267,9 @@ function UnknownCollection()
                     size="lg"
                     component="nav"
                     sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "flex-end",
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'flex-end',
                     }}
                 >
                     <ListItem>{modalDisc.title}</ListItem>
@@ -243,7 +277,8 @@ function UnknownCollection()
                     <ListItemButton
                         onClick={() => setIsEditModalOpen(true)}
                         color="warning"
-                        sx={{ fontWeight: "lg" }}>
+                        sx={{ fontWeight: 'lg' }}
+                    >
                         <ListItemDecorator>
                             <Edit />
                         </ListItemDecorator>
@@ -253,7 +288,8 @@ function UnknownCollection()
                     <ListItemButton
                         onClick={() => setIsDeleteModalOpen(true)}
                         color="danger"
-                        sx={{ fontWeight: "lg" }}>
+                        sx={{ fontWeight: 'lg' }}
+                    >
                         <ListItemDecorator>
                             <DeleteIcon />
                         </ListItemDecorator>
@@ -319,7 +355,11 @@ function UnknownCollection()
                     <Typography
                         level="body-sm"
                         startDecorator={<InfoOutlined />}
-                        sx={{ alignItems: 'flex-start', maxWidth: 240, wordBreak: 'break-all' }}
+                        sx={{
+                            alignItems: 'flex-start',
+                            maxWidth: 240,
+                            wordBreak: 'break-all',
+                        }}
                     >
                         This action cannot be undone.
                     </Typography>

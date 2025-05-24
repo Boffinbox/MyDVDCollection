@@ -6,7 +6,7 @@ import
     CollectionQueryOptions,
     DiscQueryOptions,
     ReferenceQueryOptions,
-} from '../../utilities/Queries'
+} from '../../../utilities/Queries'
 import
 {
     AspectRatio,
@@ -19,14 +19,18 @@ import
 } from '@mui/joy'
 
 export const Route = createFileRoute(
-    '/_mdc/collections_/$collectionId_/$discId',
+    '/_appbase/_mdc/collections_/$collectionId_/$discId',
 )({
     component: Disc,
     beforeLoad: async ({ context: { queryClient }, params }) =>
     {
         const token = await queryClient.ensureQueryData(AccessTokenQueryOptions())
-        await queryClient.ensureQueryData(CollectionQueryOptions(token, params.collectionId))
-        await queryClient.ensureQueryData(DiscQueryOptions(token, params.collectionId, params.discId))
+        await queryClient.ensureQueryData(
+            CollectionQueryOptions(token, params.collectionId),
+        )
+        await queryClient.ensureQueryData(
+            DiscQueryOptions(token, params.collectionId, params.discId),
+        )
     },
 })
 
