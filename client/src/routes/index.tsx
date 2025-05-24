@@ -30,7 +30,7 @@ function Index()
                     alignItems: 'center',
                     justifyContent: 'center',
                     px: 2,
-                    py: 2,
+                    py: 2
                 }}
             >
                 <Box
@@ -45,7 +45,7 @@ function Index()
                         sx={{
                             my: 2,
                             color: "white",
-                            fontSize: "5.5em",
+                            fontSize: { xs: "4em", sm: "5.5em" },
                             textAlign: "center",
                             textShadow: "0.1rem 0.1rem 2rem rgba(255,255,255,0.2)",
                         }} >
