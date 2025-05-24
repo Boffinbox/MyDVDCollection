@@ -38,7 +38,7 @@ function Logout()
     const navigate = useNavigate()
 
     // this is just a fake delay to make the user feel good
-    Wait(1000).then(() => navigate({ to: '/home' }))
+    Wait(1000).then(() => navigate({ to: '/' }))
 
     return (
         <>

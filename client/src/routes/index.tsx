@@ -33,57 +33,66 @@ function Index()
                     py: 2,
                 }}
             >
-                <Typography component="h1"
+                <Box
                     sx={{
-                        my: 2,
-                        color: "white",
-                        fontSize: "5.5em",
-                        textAlign: "center",
-                        textShadow: "0.1rem 0.1rem 2rem rgba(255,255,255,0.2)",
-                    }} >
-                    My DVD Collection
-                </Typography>
-                <Typography level="body-sm"
-                    sx={{
-                        my: 2,
-                        color: "white",
-                        fontSize: "1rem",
-                        textAlign: "center",
-                        textShadow: "0.1rem 0.1rem 2rem rgba(255,255,255,0.3)"
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: "99dvh",
                     }}>
-                    Welcome to My DVD Collection! Your place for digitally tracking your
-                    DVDs, Blu-Rays, CDs, Books, and more!
-                </Typography>
-                <Box sx={{ my: 2 }}>
-                    <Typography
+                    <Typography component="h1"
                         sx={{
                             my: 2,
-                            fontSize: "1.2rem",
+                            color: "white",
+                            fontSize: "5.5em",
+                            textAlign: "center",
+                            textShadow: "0.1rem 0.1rem 2rem rgba(255,255,255,0.2)",
+                        }} >
+                        My DVD Collection
+                    </Typography>
+                    <Typography level="body-sm"
+                        sx={{
+                            my: 2,
+                            color: "white",
+                            fontSize: "1rem",
+                            textAlign: "center",
                             textShadow: "0.1rem 0.1rem 2rem rgba(255,255,255,0.3)"
                         }}>
-                        {tokenQuery.isSuccess ? (
-                            <Link component={RouterLink} sx={{ color: "rgb(55,150,244)" }} to="/collections">
-                                Click here
-                            </Link>
-                        ) : (
-                            <Link component={RouterLink} sx={{ color: "rgb(55,150,244)" }} to="/login">
-                                Click here
-                            </Link>
-                        )}
-                        {` `}
-                        <Typography sx={{ color: "white" }}>and get started!</Typography>
+                        Welcome to My DVD Collection! Your place for digitally tracking your
+                        DVDs, Blu-Rays, CDs, Books, and more!
                     </Typography>
+                    <Box sx={{ my: 2 }}>
+                        <Typography
+                            sx={{
+                                my: 2,
+                                fontSize: "1.2rem",
+                                textShadow: "0.1rem 0.1rem 2rem rgba(255,255,255,0.3)"
+                            }}>
+                            {tokenQuery.isSuccess ? (
+                                <Link component={RouterLink} sx={{ color: "rgb(55,150,244)" }} to="/collections">
+                                    Click here
+                                </Link>
+                            ) : (
+                                <Link component={RouterLink} sx={{ color: "rgb(55,150,244)" }} to="/login">
+                                    Click here
+                                </Link>
+                            )}
+                            {` `}
+                            <Typography sx={{ color: "white" }}>and get started!</Typography>
+                        </Typography>
+                    </Box>
                 </Box>
-                {/* <Box sx={{ my: 2 }}>
+                <Box sx={{ my: 2, alignSelf: "end", height: "1dvh" }}>
                     <Typography level="body-sm"
                         sx={{
                             fontSize: "0.8rem"
                         }}>
-                        <Link component={RouterLink} sx={{ color: "rgb(55,150,244)" }} to="/home">
-                            Click here to go back to the old homepage
+                        <Link component={RouterLink} sx={{ color: "rgb(55,150,244)" }} to="/legal">
+                            Attributions
                         </Link>
                     </Typography>
-                </Box> */}
+                </Box>
             </Sheet>
         </CssBaseline >
     </>

@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as LegalImport } from './routes/legal'
 import { Route as AppbaseImport } from './routes/_appbase'
 import { Route as IndexImport } from './routes/index'
 import { Route as AppbaseWebcamImport } from './routes/_appbase/_webcam'
@@ -28,6 +29,12 @@ import { Route as AppbaseMdcCollectionsCollectionIdImport } from './routes/_appb
 import { Route as AppbaseMdcCollectionsCollectionIdDiscIdImport } from './routes/_appbase/_mdc/collections_.$collectionId_.$discId'
 
 // Create/Update Routes
+
+const LegalRoute = LegalImport.update({
+  id: '/legal',
+  path: '/legal',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AppbaseRoute = AppbaseImport.update({
   id: '/_appbase',
@@ -135,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof AppbaseImport
+      parentRoute: typeof rootRoute
+    }
+    '/legal': {
+      id: '/legal'
+      path: '/legal'
+      fullPath: '/legal'
+      preLoaderRoute: typeof LegalImport
       parentRoute: typeof rootRoute
     }
     '/_appbase/_mdc': {
@@ -303,6 +317,7 @@ const AppbaseRouteWithChildren =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof AppbaseWebcamRouteWithChildren
+  '/legal': typeof LegalRoute
   '/collections': typeof AppbaseMdcCollectionsRoute
   '/newform': typeof AppbaseMdcNewformRoute
   '/unknowns': typeof AppbaseMdcUnknownsRoute
@@ -318,6 +333,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof AppbaseWebcamRouteWithChildren
+  '/legal': typeof LegalRoute
   '/collections': typeof AppbaseMdcCollectionsRoute
   '/newform': typeof AppbaseMdcNewformRoute
   '/unknowns': typeof AppbaseMdcUnknownsRoute
@@ -334,6 +350,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/_appbase': typeof AppbaseRouteWithChildren
+  '/legal': typeof LegalRoute
   '/_appbase/_mdc': typeof AppbaseMdcRouteWithChildren
   '/_appbase/_nonauth': typeof AppbaseNonauthRouteWithChildren
   '/_appbase/_webcam': typeof AppbaseWebcamRouteWithChildren
@@ -354,6 +371,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | ''
+    | '/legal'
     | '/collections'
     | '/newform'
     | '/unknowns'
@@ -368,6 +386,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | ''
+    | '/legal'
     | '/collections'
     | '/newform'
     | '/unknowns'
@@ -382,6 +401,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_appbase'
+    | '/legal'
     | '/_appbase/_mdc'
     | '/_appbase/_nonauth'
     | '/_appbase/_webcam'
@@ -401,11 +421,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppbaseRoute: typeof AppbaseRouteWithChildren
+  LegalRoute: typeof LegalRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppbaseRoute: AppbaseRouteWithChildren,
+  LegalRoute: LegalRoute,
 }
 
 export const routeTree = rootRoute
@@ -419,7 +441,8 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/_appbase"
+        "/_appbase",
+        "/legal"
       ]
     },
     "/": {
@@ -432,6 +455,9 @@ export const routeTree = rootRoute
         "/_appbase/_nonauth",
         "/_appbase/_webcam"
       ]
+    },
+    "/legal": {
+      "filePath": "legal.tsx"
     },
     "/_appbase/_mdc": {
       "filePath": "_appbase/_mdc.tsx",

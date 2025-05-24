@@ -56,9 +56,9 @@ function Home()
                         )}
                         {` `}and get started!
                     </Typography>
-                    <Link component={RouterLink} to="/">
+                    {/* <Link component={RouterLink} to="/">
                         Click here to go back to index page
-                    </Link>
+                    </Link> */}
                 </Sheet>
             </Sheet>
         </>
