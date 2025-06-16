@@ -12,6 +12,8 @@ import
 
 const passportLocalMongoose = require("passport-local-mongoose")
 
+import { UserRole } from "./helpers/Enums"
+
 setGlobalOptions(
     {
         options:
@@ -136,12 +138,6 @@ class Session
 const emailRegExpLiteral =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-enum UserType
-{
-    Demo = "demo",
-    Regular = "regular",
-    Admin = "admin"
-}
 
 @modelOptions({
     schemaOptions: {
@@ -193,8 +189,8 @@ class User
     collections!: Ref<DiscCollection>[];
 
     // demo setup for portfolio
-    @prop({ required: true, enum: UserType, default: UserType.Regular })
-    userType!: UserType
+    @prop({ required: true, enum: UserRole, default: UserRole.Regular })
+    userRole!: UserRole
 
     @prop({ default: false })
     isFresh: boolean
