@@ -1,6 +1,6 @@
-import { StringMap } from "ts-jest";
-
 export { };
+
+import { IUserDetails } from "./users";
 
 const request = require("supertest");
 const app = require("../../app.ts");
@@ -39,7 +39,7 @@ export async function testDVDSetup(
     const dvd = dvdRes.body
 
     const returnObject: {
-        userDetails: string,
+        userDetails: IUserDetails,
         userToken: string,
         collId: string,
         title: string,
