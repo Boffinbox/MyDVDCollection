@@ -5,6 +5,8 @@ const { UserModel } = require("../models")
 
 const getUserDocument = require("../helpers/GetUserDocument");
 
+import { UserRole } from "../helpers/Enums"
+
 async function getTokens(user)
 {
     const jwt = getToken({ _id: user._id, username: user.username })
@@ -60,7 +62,12 @@ export async function login(req, res)
 {
     const newUser = await getUserDocument(req, res);
     const userTokens = await getTokens(newUser);
-    const user = addNewRefreshTokenToUser(newUser, userTokens.refreshToken);
+    let user = addNewRefreshTokenToUser(newUser, userTokens.refreshToken);
+    if (user.userRole === UserRole.Demo && user.isFresh === false)
+    {
+        // await demo refresh logic for portfolio
+        user = await ResetDemoAccount(user)
+    }
     user.save().then((user) =>
     {
         return res.cookie("refreshToken", userTokens.refreshToken, COOKIE_OPTIONS).status(200).send({ success: true, token: userTokens.jwt })
@@ -138,4 +145,11 @@ export async function logout(req, res)
     {
         return res.status(401).send("Unauthorized");
     })
+}
+
+async function ResetDemoAccount(user)
+{
+    // await demo refresh logic for portfolio
+    user.isFresh = true
+    return user
 }

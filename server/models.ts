@@ -141,7 +141,6 @@ const emailRegExpLiteral =
 
 @modelOptions({
     schemaOptions: {
-        timestamps: true,
         toJSON: {
             transform: function (doc, ret, options)
             {
