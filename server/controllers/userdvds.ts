@@ -9,6 +9,8 @@ const
 const getUserDocument = require("../helpers/GetUserDocument");
 const { getReferenceDVD } = require("./referencedvds.ts");
 
+import { UserRole } from "../helpers/Enums";
+
 export async function getDVD(req, res)
 {
     const user = await getUserDocument(req, res);
@@ -53,19 +55,21 @@ export async function addDVD(req, res)
     {
         res.status(503).json({ message: "could not get reference dvd" });
     }
-    else
+    const newDVD = new UserDVDModel({
+        referenceDVD: referenceDVD._id,
+        rating: 5,
+        watched: false
+    })
+    await newDVD.populate("referenceDVD");
+    collectionToModify.discs.push(newDVD._id);
+    if (user.isFresh === true && user.userRole === UserRole.Demo)
     {
-        const newDVD = new UserDVDModel({
-            referenceDVD: referenceDVD._id,
-            rating: 5,
-            watched: false
-        })
-        await newDVD.populate("referenceDVD");
-        collectionToModify.discs.push(newDVD._id);
-        await newDVD.save();
-        await collectionToModify.save();
-        res.status(201).json(newDVD);
+        user.isFresh = false
+        await user.save()
     }
+    await newDVD.save();
+    await collectionToModify.save();
+    res.status(201).json(newDVD);
 }
 
 export async function updateDVD(req, res)
@@ -126,6 +130,11 @@ export async function deleteDVD(req, res)
         return res.status(401).json({ message: "wrong collection, disc mismatch" });
     }
     const deletedDisc = await UserDVDModel.findByIdAndDelete(discId);
+    if (user.isFresh === true && user.userRole === UserRole.Demo)
+    {
+        user.isFresh = false
+        await user.save()
+    }
     await DiscCollectionModel.findByIdAndUpdate(collectionId, { $pull: { discs: discId } });
     res.status(200).json(deletedDisc);
 }
