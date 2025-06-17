@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken")
 const { getToken, getRefreshToken, COOKIE_OPTIONS } = require("../auth/authenticate");
 
-const { UserModel } = require("../models")
+const { UserModel, DiscCollectionModel, UserDVDModel } = require("../models")
 
 const getUserDocument = require("../helpers/GetUserDocument");
 
@@ -68,7 +68,7 @@ export async function login(req, res)
         // await demo refresh logic for portfolio
         user = await ResetDemoAccount(user)
     }
-    user.save().then((user) =>
+    await user.save().then((user) =>
     {
         return res.cookie("refreshToken", userTokens.refreshToken, COOKIE_OPTIONS).status(200).send({ success: true, token: userTokens.jwt })
     }
@@ -186,7 +186,49 @@ export async function setDemo(req, res)
 
 async function ResetDemoAccount(user)
 {
-    // await demo refresh logic for portfolio
-    user.isFresh = true
+    // firstly, scrub the demo account clean
+    for (const id of user.collections)
+    {
+        await DiscCollectionModel.findOneAndDelete({ _id: id })
+        // this also pulls all the discs, see models.ts "findOneAndDelete"
+        await UserModel.findByIdAndUpdate(user._id, { $pull: { collections: id } });
+    }
+    let cloneTarget = await getCloneTarget()
+    if (cloneTarget) // then clone over the goodies
+    {
+        for (const coll of cloneTarget.collections)
+        {
+            const newDiscCollection = new DiscCollectionModel({
+                title: coll.title,
+                discs: []
+            });
+            for (const disc of coll.discs)
+            {
+                const newDisc = new UserDVDModel({
+                    referenceDVD: disc.referenceDVD._id,
+                    rating: disc.rating,
+                    watched: disc.watched
+                })
+                newDiscCollection.discs.push(newDisc._id)
+                await newDisc.save()
+            }
+            user.collections.push(newDiscCollection._id);
+            await newDiscCollection.save();
+        }
+        user.isFresh = true
+    }
     return user
+}
+
+async function getCloneTarget()
+{
+    if (process.env.DEMO_CLONE_ADDRESS === null) return null
+    let cloneTarget = await UserModel.findOne({ email: process.env.DEMO_CLONE_ADDRESS })
+        .populate({
+            path: "collections",
+            populate: {
+                path: "discs"
+            }
+        }).exec();
+    return cloneTarget
 }

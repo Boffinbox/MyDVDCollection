@@ -191,7 +191,7 @@ class User
     @prop({ required: true, enum: UserRole, default: UserRole.Regular })
     userRole!: UserRole
 
-    @prop({ default: false })
+    @prop({ default: true })
     isFresh: boolean
 
     // i have to list these here or else typescript doesn't recognize
