@@ -147,6 +147,43 @@ export async function logout(req, res)
     })
 }
 
+export async function setDemo(req, res)
+{
+    const {
+        email,
+        registrationKey
+    }: {
+        email: string,
+        registrationKey: string
+    } = req.body;
+    if (registrationKey != process.env.REGISTRATION_KEY)
+    {
+        return res.status(403).json(`wrong registration key provided ;)`);
+    }
+    const user = await UserModel.findOne({ email })
+    if (!user)
+    {
+        return res.status(404).json(`user not found :(`)
+    }
+    console.log(user)
+    if (user.userRole === UserRole.Regular)
+    {
+        user.userRole = UserRole.Demo
+        await user.save()
+        return res.status(201).json(`${email} is now a ${UserRole.Demo} account`)
+    }
+    else if (user.userRole === UserRole.Demo)
+    {
+        user.userRole = UserRole.Regular
+        await user.save()
+        return res.status(200).json(`${email} is now a ${UserRole.Regular} account`)
+    }
+    else
+    {
+        return res.status(403).json(`this user is not eligible to be converted to demo access`);
+    }
+}
+
 async function ResetDemoAccount(user)
 {
     // await demo refresh logic for portfolio

@@ -76,3 +76,19 @@ test(`make a user, login, then logout, then try to misuse the invalid refresh to
         .send();
     expect(resTwo.status).toBe(401);
 })
+
+test(`make a user, then make them into a demo account, then swap them back`, async () =>
+{
+    const registrationKey = process.env.REGISTRATION_KEY
+    const userDetails = userFunctions.generateUserDetails();
+    await userFunctions.registerAUser(userDetails);
+    const makeDemo = await request(app)
+        .post(`${api}/users/demo`)
+        .send({ email: userDetails.email, registrationKey });
+    // this also confirms that registration makes users a "regular" user
+    expect(makeDemo.status).toBe(201)
+    const makeRegular = await request(app)
+        .post(`${api}/users/demo`)
+        .send({ email: userDetails.email, registrationKey });
+    expect(makeRegular.status).toBe(200)
+})
