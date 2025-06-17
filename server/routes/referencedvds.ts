@@ -17,6 +17,6 @@ router.get('/barcodes', verifyUser, TryCatchAsync(referencedvds.getUserBarcodes)
 
 router.get("/:referenceId", validateReference, TryCatchAsync(referencedvds.getSoloReferenceDVD))
 
-router.post("/", validateNewDVD, TryCatchAsync(referencedvds.updateReferenceDVD))
+router.post("/", verifyUser, validateNewDVD, TryCatchAsync(referencedvds.updateReferenceDVD))
 
 module.exports = router;

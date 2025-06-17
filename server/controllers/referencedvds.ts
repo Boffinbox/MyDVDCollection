@@ -4,6 +4,8 @@ const axios = require("axios");
 
 const { ReferenceDVDModel, UserModel } = require("../models");
 
+import { UserRole } from "../helpers/Enums"
+
 export async function getAllReferenceDVDs(req, res)
 {
     const listOfAllReferenceDVDs = await ReferenceDVDModel.find({})
@@ -188,6 +190,15 @@ async function newReferenceDVD(barcode: string, title: string, upcitemdb_truedat
 
 export async function updateReferenceDVD(req, res)
 {
+    const user = await UserModel.findById({ _id: req.user._id })
+    if (!user)
+    {
+        return res.status(401).send("Unauthorized");
+    }
+    if (user.userRole === UserRole.Demo)
+    {
+        return res.status(401).send("Demo account may *not* update titles!");
+    }
     const { barcode, title } = req.body
     if (!barcode || !title)
     {
@@ -201,7 +212,6 @@ export async function updateReferenceDVD(req, res)
     referenceDVDToUpdate.title = title // set the title, before checking if there is new data
     if (referenceDVDToUpdate.upcitemdb_truedata == false) // do a upcitemdb pass to try and get the real data
     {
-
         let newDVDData = await externalAPICall(barcode, title, false)
         if (newDVDData)
         {
