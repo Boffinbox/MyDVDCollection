@@ -3,6 +3,8 @@ export { };
 const { DiscCollectionModel, UserModel } = require("../models")
 const getUserDocument = require("../helpers/GetUserDocument");
 
+import { UserRole } from "../helpers/Enums";
+
 export async function index(req, res)
 {
     const userId = req.user._id
@@ -61,6 +63,11 @@ export async function newCollection(req, res)
         discs: []
     });
     user.collections.push(newDiscCollection._id);
+    if (user.isFresh === true && user.userRole === UserRole.Demo)
+    {
+        user.isFresh = false
+        await user.save()
+    }
     await newDiscCollection.save();
     await user.save();
     res.status(201).json(newDiscCollection);
@@ -81,6 +88,11 @@ export async function updateCollection(req, res)
         return res.status(503).json({ message: "couldn't find collection" });
     }
     collectionToModify.title = title
+    if (user.isFresh === true && user.userRole === UserRole.Demo)
+    {
+        user.isFresh = false
+        await user.save()
+    }
     await collectionToModify.save()
     res.status(200).json(collectionToModify);
 }
@@ -98,6 +110,11 @@ export async function deleteCollection(req, res)
             _id: collectionId
         }
     )
+    if (user.isFresh === true && user.userRole === UserRole.Demo)
+    {
+        user.isFresh = false
+        await user.save()
+    }
     await UserModel.findByIdAndUpdate(user._id, { $pull: { collections: collectionId } });
     res.status(200).json(collectionToDelete);
 }
