@@ -56,6 +56,13 @@ const loginSchema = Joi.object(
     }
 ).required()
 
+const demoSchema = Joi.object(
+    {
+        email: Joi.string().max(128).escapeHTML().required(),
+        registrationKey: Joi.string().escapeHTML().required()
+    }
+).required()
+
 const newCollectionSchema = Joi.object(
     {
         title: Joi.string().max(128).escapeHTML().required(),
@@ -79,6 +86,7 @@ const patchDVDSchema = Joi.object(
 module.exports = {
     registrationSchema,
     loginSchema,
+    demoSchema,
     newCollectionSchema,
     barcodeSchema,
     newDVDSchema,

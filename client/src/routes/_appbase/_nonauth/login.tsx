@@ -65,6 +65,28 @@ function LoginComponent()
         }
     }
 
+    async function handleDemoLogin(evt: React.FormEvent<HTMLFormElement>)
+    {
+        evt.preventDefault()
+        DevLog('Form submitted!')
+        DevLog('Email is: ', `${import.meta.env.VITE_DEMO_EMAIL}`)
+        DevLog('Password is: ', `${import.meta.env.VITE_DEMO_PASSWORD}`)
+        try
+        {
+            let token = await PostLogin(`${import.meta.env.VITE_DEMO_EMAIL}`, `${import.meta.env.VITE_DEMO_PASSWORD}`)
+            queryClient.setQueryData(['accesstoken'], token)
+            setFormData(() =>
+            {
+                return { email: '', password: '' }
+            })
+            navigate({ to: '/collections' })
+        } catch
+        {
+            // todo
+            DevLog('problem with demo login in login.tsx')
+        }
+    }
+
     return (
         <>
             <Sheet
@@ -138,7 +160,13 @@ function LoginComponent()
                         Don&apos;t have an account?
                     </Typography>
                     <Typography level="body-xs">
-                        Signups are currently closed. 🙁
+                        Signups are currently closed, but you can {' '}
+                        <form action="" onSubmit={handleDemoLogin} style={{ display: 'inline' }}>
+                            <Link component="button" type='submit'>
+                                access a demo account
+                            </Link>
+                        </form>
+                        {' '} if you wish.
                     </Typography>
                 </Sheet>
             </Sheet>

@@ -112,3 +112,23 @@ test(`get barcodes object`, async () =>
     expect(data["123456"].collArray.indexOf(collIdOne)).toBeGreaterThan(-1)
     expect(data["123456"].collArray.indexOf(collIdTwo)).toBeGreaterThan(-1)
 })
+
+test(`try to update a title as a demo user`, async () =>
+{
+    const registrationKey = process.env.REGISTRATION_KEY
+    const testSetup = await userDVDFunctions.testDVDSetup();
+    expect(testSetup.dvdRes.status).toBe(201);
+    expect(testSetup.dvdRes.body.referenceDVD.barcode).toEqual("7321900737432")
+    expect(testSetup.dvdRes.body.referenceDVD.title).toEqual("gremlins")
+
+    const makeDemo = await request(app)
+        .post(`${api}/users/demo`)
+        .send({ email: testSetup.userDetails.email, registrationKey });
+    expect(makeDemo.status).toBe(201)
+
+    const updateRefDvdRes = await request(app)
+        .post(`${api}/referencedvds/`)
+        .set(`Authorization`, `Bearer ${testSetup.userToken}`)
+        .send({ barcode: "7321900737432", title: "pp" });
+    expect(updateRefDvdRes.status).toBe(401);
+})

@@ -1,9 +1,11 @@
 const jwt = require("jsonwebtoken")
 const { getToken, getRefreshToken, COOKIE_OPTIONS } = require("../auth/authenticate");
 
-const { UserModel } = require("../models")
+const { UserModel, DiscCollectionModel, UserDVDModel } = require("../models")
 
 const getUserDocument = require("../helpers/GetUserDocument");
+
+import { UserRole } from "../helpers/Enums"
 
 async function getTokens(user)
 {
@@ -60,8 +62,13 @@ export async function login(req, res)
 {
     const newUser = await getUserDocument(req, res);
     const userTokens = await getTokens(newUser);
-    const user = addNewRefreshTokenToUser(newUser, userTokens.refreshToken);
-    user.save().then((user) =>
+    let user = addNewRefreshTokenToUser(newUser, userTokens.refreshToken);
+    if (user.userRole === UserRole.Demo && user.isFresh === false)
+    {
+        // await demo refresh logic for portfolio
+        user = await ResetDemoAccount(user)
+    }
+    await user.save().then((user) =>
     {
         return res.cookie("refreshToken", userTokens.refreshToken, COOKIE_OPTIONS).status(200).send({ success: true, token: userTokens.jwt })
     }
@@ -138,4 +145,90 @@ export async function logout(req, res)
     {
         return res.status(401).send("Unauthorized");
     })
+}
+
+export async function setDemo(req, res)
+{
+    const {
+        email,
+        registrationKey
+    }: {
+        email: string,
+        registrationKey: string
+    } = req.body;
+    if (registrationKey != process.env.REGISTRATION_KEY)
+    {
+        return res.status(403).json(`wrong registration key provided ;)`);
+    }
+    const user = await UserModel.findOne({ email })
+    if (!user)
+    {
+        return res.status(404).json(`user not found :(`)
+    }
+    console.log(user)
+    if (user.userRole === UserRole.Regular)
+    {
+        user.userRole = UserRole.Demo
+        await user.save()
+        return res.status(201).json(`${email} is now a ${UserRole.Demo} account`)
+    }
+    else if (user.userRole === UserRole.Demo)
+    {
+        user.userRole = UserRole.Regular
+        await user.save()
+        return res.status(200).json(`${email} is now a ${UserRole.Regular} account`)
+    }
+    else
+    {
+        return res.status(403).json(`this user is not eligible to be converted to demo access`);
+    }
+}
+
+async function ResetDemoAccount(user)
+{
+    // firstly, scrub the demo account clean
+    for (const id of user.collections)
+    {
+        await DiscCollectionModel.findOneAndDelete({ _id: id })
+        // this also pulls all the discs, see models.ts "findOneAndDelete"
+        await UserModel.findByIdAndUpdate(user._id, { $pull: { collections: id } });
+    }
+    let cloneTarget = await getCloneTarget()
+    if (cloneTarget) // then clone over the goodies
+    {
+        for (const coll of cloneTarget.collections)
+        {
+            const newDiscCollection = new DiscCollectionModel({
+                title: coll.title,
+                discs: []
+            });
+            for (const disc of coll.discs)
+            {
+                const newDisc = new UserDVDModel({
+                    referenceDVD: disc.referenceDVD._id,
+                    rating: disc.rating,
+                    watched: disc.watched
+                })
+                newDiscCollection.discs.push(newDisc._id)
+                await newDisc.save()
+            }
+            user.collections.push(newDiscCollection._id);
+            await newDiscCollection.save();
+        }
+        user.isFresh = true
+    }
+    return user
+}
+
+async function getCloneTarget()
+{
+    if (process.env.DEMO_CLONE_ADDRESS === null) return null
+    let cloneTarget = await UserModel.findOne({ email: process.env.DEMO_CLONE_ADDRESS })
+        .populate({
+            path: "collections",
+            populate: {
+                path: "discs"
+            }
+        }).exec();
+    return cloneTarget
 }

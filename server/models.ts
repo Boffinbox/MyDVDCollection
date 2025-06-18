@@ -12,6 +12,8 @@ import
 
 const passportLocalMongoose = require("passport-local-mongoose")
 
+import { UserRole } from "./helpers/Enums"
+
 setGlobalOptions(
     {
         options:
@@ -136,6 +138,7 @@ class Session
 const emailRegExpLiteral =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
+
 @modelOptions({
     schemaOptions: {
         toJSON: {
@@ -183,6 +186,13 @@ class User
 
     @prop({ required: true, default: [], ref: () => DiscCollection })
     collections!: Ref<DiscCollection>[];
+
+    // demo setup for portfolio
+    @prop({ required: true, enum: UserRole, default: UserRole.Regular })
+    userRole!: UserRole
+
+    @prop({ default: true })
+    isFresh: boolean
 
     // i have to list these here or else typescript doesn't recognize
     // the passport-local-mongoose methods :(
